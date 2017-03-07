@@ -18,6 +18,8 @@
   "dependencies": {
     "bower": "*",
     "install": "~1.0.4",
+    "bootstrap" : "~3.3.5", 
+    "jquery.shorten": "git://github.com/MarcDiethelm/jQuery-Shorten.git",
     "jquery": "~2.1.4",
     "jquery-ui": "~1.11.4",
     "traceur-runtime": "~0.0.95",
@@ -59,7 +61,7 @@
       "/": "dist"
     },
     "jquery.shorten": {
-      "/": "src/jquery.shorten.js"
+      "/": "jquery.shorten.js"
     },
     "d3-slider": {
       "/": [
