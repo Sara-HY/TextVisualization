@@ -1,0 +1,37 @@
+<% extends "../includes/view.html" %>
+
+<% block templates %>
+    <% raw %>
+    <script type="text/template/lodash" id="topic-template">
+        <div class="topic-wrapper thumbnail" group-id=<%=group.id%> topic-id=<%=topic.id%>>
+            <div class="group-title">
+                <div class="group-color-indicater" style="background-color: <%=group.color%>"></div>
+<!--                 <div class="group-controller-group pull-right btn-group">
+                    <a class="btn btn-default btn-xs active"><i class="fa fa-file-o"></i></a>
+                    <a class="btn btn-default btn-xs"><i class="fa fa-plus-square-o"></i></a>
+                    <a class="btn btn-default btn-xs"><i class="fa fa-minus-square-o"></i></a>
+                </div> -->
+                <div class="group-controller-group pull-right btn-group">
+                    <a class="btn btn-default btn-xs filter-btn" group-id=<%=group.id%>><i class="fa fa-filter"></i></a>
+                </div>                
+                <strong>#<%=group.id%>: <%=group.name%></strong> <span class="badge"><%=group.data.length%></span>
+            </div>
+            <div class="group-docs hide" group-id=<%=group.id%>>
+                <% _.each(docs, function(doc) { %>
+                    <div class="group-doc" doc-id=<%=doc._index%> group-id=<%=group.id%> title="<%=doc.title%>"><%=doc.title%></div>
+                <% }) %>
+                </ul>
+            </div>
+            <div class="topic-keywords">
+                <% var index = 0; %>
+                <% var keywords = topic.words.keywords.slice(0, 15); %>
+                <% _.forEach(keywords, function(word){ %>
+                    <% var w = Math.min(25, Math.max(Math.round(word["degree"]*1000)/250*100 + 5, 12)) %>
+                        <span class="word" style="font-size:<%=w%>px; margin:5px;"><%=word.word%></span>
+                    </dd>
+                <% }) %>
+            </div>            
+        </div>
+    </script>
+    <% endraw %>
+<% endblock %>

@@ -1,0 +1,12 @@
+.example {
+    height: 1.2em;
+    overflow : hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+}
+
+.display-none {
+    display: none;
+}

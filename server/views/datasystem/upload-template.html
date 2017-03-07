@@ -1,0 +1,73 @@
+<!-- The template to display files available for upload -->
+<script id="template-upload" type="text/x-tmpl">
+{% for (var i=0, file; file=o.files[i]; i++) { %}
+    <tr class="template-upload fade">
+        <td>
+            <span class="preview"></span>
+        </td>
+        <td>
+            <p class="name">{%=file.name%}</p>
+            <strong class="error text-danger"></strong>
+        </td>
+        <td>
+            <p class="size">Processing...</p>
+            <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-bar progress-bar-success" style="width:0%;"></div></div>
+        </td>
+        <td>
+            {% if (!i && !o.options.autoUpload) { %}
+                <button class="btn btn-primary start" disabled>
+                    <i class="glyphicon glyphicon-upload"></i>
+                    <span>Start</span>
+                </button>
+            {% } %}
+            {% if (!i) { %}
+                <button class="btn btn-warning cancel">
+                    <i class="glyphicon glyphicon-ban-circle"></i>
+                    <span>Cancel</span>
+                </button>
+            {% } %}
+        </td>
+    </tr>
+{% } %}
+</script>
+
+<!-- The template to display files available for download -->
+<script id="template-download" type="text/x-tmpl">
+{% for (var i=0, file; file=o.files[i]; i++) { %}
+    <tr class="template-download fade">
+        <td></td>
+        <td>
+            <p class="name">
+                {% if (file.url) { %}
+                    <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.name%}">{%=file.name%}</a>
+                {% } else { %}
+                    <span>{%=file.name%}</span>
+                {% } %}
+            </p>
+            {% if (file.error) { %}
+                <div><span class="label label-danger">Error</span> {%=file.error%}</div>
+            {% } %}
+        </td>
+        <td>
+            {% if ( (file.fileMeta != null) && (file.fileMeta.size != null)) { %}
+                {%=bytesToSize(file.fileMeta.size)%}
+            {% } %}
+        </td>
+        <td>
+            {% if ( (file.fileMeta != null) && (file.fileMeta.uploadTime != null)) { %}
+                {%=(new Date(file.fileMeta.uploadTime)).Format("yyyy-MM-dd hh:mm:ss")%}
+            {% } %}
+        </td>
+        <td>
+            {% if (file.fileMeta != null && (file.fileMeta.name.endsWith(".json") || file.fileMeta.name.endsWith(".csv")) ) { %}
+                <a href="process/{%=file._id%}" class="btn btn-primary process-btn">Process</a>
+            {% } %}
+            <span delete-url="/upload/delete/{%=file._id%}" class="btn btn-danger delete-btn">Delete</span>
+            {% if (file.processStatus != null && file.processStatus.status == "processed") { %}
+                <a href="http://vis.pku.edu.cn/textva/index.html?datasetid={%=file._id%}" class="btn btn-default analyze-btn">Analyze</span>
+            {% } %}            
+            
+        </td>
+    </tr>
+{% } %}
+</script>

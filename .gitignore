@@ -1,0 +1,12 @@
+.DS_Store
+test
+server/node_modules/
+server/bower_components/
+server/target/
+client/node_modules/
+client/bower_components/
+client/dist/
+client/build/
+textva.sublime-workspace
+client/.sublime-grunt.cache
+server/.sublime-grunt.cache

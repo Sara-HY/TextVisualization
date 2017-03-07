@@ -1,0 +1,41 @@
+.data-list-view {
+    font-size: 12px; 
+
+    #filter-btn {
+        position: absolute; 
+        right: 55px; 
+        top: 2px; 
+        z-index: 10;
+    }
+    
+    #clear-btn {
+        position: absolute; 
+        right: 10px; 
+        top: 2px; 
+        z-index: 10;
+    }
+
+    table.dataTable {
+        td {
+            font-size: 12px;
+            max-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        tr.hover td {
+            overflow: auto;
+            text-overflow: clip;
+            white-space: normal;
+        }
+
+        tr.active td {
+            overflow: auto;
+            text-overflow: clip;
+            white-space: normal;        
+        }
+    }
+
+}
+

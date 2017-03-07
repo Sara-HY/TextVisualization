@@ -1,0 +1,35 @@
+.entity-graph-view {
+
+    // .node circle{
+    //     stroke: #fff;
+    //     stroke-width: 1.5px;
+    // }
+
+    .link {
+        stroke: #999;
+        stroke-opacity: .6;
+    }
+
+    .node.entity-place circle {
+        fill: #1f77b4;
+    }
+
+    .node.entity-name circle {
+        fill: #ff7f0e;
+    }
+
+    .node.entity-organization circle {
+        fill: #2ca02c;
+    }
+
+    .node.not-selected, .link.not-selected {
+        opacity: 0.1;
+    }
+
+    .node text {
+        fill: rgb(85, 85, 85);
+        font-family: Arial;
+        font-size: 12px;
+    }
+    
+}

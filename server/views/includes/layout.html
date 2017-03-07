@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Text Visual Analytics System</title>
+    {% block head %}  {% endblock %}
+
+    <link href="/libraries/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/stylesheets/style.css" rel="stylesheet">
+
+
+    {% block head-include %} {% endblock %}
+</head>
+
+<body>
+    {% block header %}
+        {% include "header.html" %}
+    {% endblock %}
+
+    {% block content %}
+
+    {% endblock %}
+
+    {% block footer %}
+
+    {% endblock %}
+
+    
+    <script type="text/javascript" src="/libraries/jquery/jquery.js"></script>
+    <script type="text/javascript" src="/libraries/jquery-ui/jquery-ui.js"></script>    
+    <script type="text/javascript" src="/libraries/bootstrap/js/bootstrap.js"></script>
+    <script type="text/javascript" src="/libraries/underscore/underscore.js"></script>
+
+    {% block foot-include %}
+
+    {% endblock %}
+</body>
+</html>

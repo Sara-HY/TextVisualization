@@ -1,0 +1,26 @@
+<% extends "../includes/view.html" %>
+
+<% block view-content %>  
+    <table id="data-table" class="display"></table>
+<% endblock %>
+
+<% block templates %>
+    <script type="text/template" id="paper-template">
+        <span class="doc-id" doc-id="{{data._index}}"></span>
+        <h5>{{data.title}}</h5>
+        <div class="detail-info">
+            <div class="abstract">
+                <b>Abstract: </b>{{data.abstract}}
+            </div>
+            <b>Keywords: </b>
+            {% for keyword in data.keywords %}
+                <span class="keyword">{{keyword.word}}; </span>
+            {% endfor %}
+            <br>            
+            <b>Authors: </b>
+            {% for author in data.authors %}
+                <span class="author">{{author}}; </span>
+            {% endfor %}
+        </div>
+    </script>
+<% endblock %>

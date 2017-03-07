@@ -1,0 +1,162 @@
+[
+    {
+        "Class": "TimelineView",
+        "id": "timeline-view",
+        "title": "Timeline View",
+        "layout": {
+            "position": "absolute",
+            "left": "25%",
+            "right": "15%",
+            "bottom": 0,
+            "height": "200px"
+        }
+    },
+    {
+        "Class": "DocumentGalaxyView",
+        "id": "document-galaxy-view",
+        "title": "Document Graph View",
+        "layout": {
+            "position": "absolute",
+            "top": "50px",
+            "left": "0%",
+            "width": "25%",
+            "bottom": "40%",
+        }
+    },
+    {
+        "Class": "EntityGraphView",
+        "id": "entity-graph-view",
+        "title": "Entity Graph View",
+        "layout": {
+            "position": "absolute",
+            "top": "60%",
+            "left": "0%",
+            "width": "25%",
+            "bottom": "0"
+        }
+    },
+    {
+        "Class": "TopicConfigView",
+        "id": "topic-config-view",
+        "title": "Topic Configuration",
+        "layout": {
+            "position": "absolute",
+            "top": "50px",
+            "right": 0,
+            "width": "15%",
+            "height": "150px"
+        }
+    },
+    {
+        "Class": "DataListView",
+        "id": "data-list-view",
+        "title": "Data List View",
+        "layout": {
+            "position": "absolute",
+            "right": 0,
+            "width": "15%",
+            "bottom": "200px",
+            "top": "200px"
+        }
+    },
+    {
+        "Class": "GroupListView",
+        "id": "group-list-view",
+        "title": "Group List View",
+        "layout": {
+            "position": "absolute",
+            "width": "15%",
+            "right": "0",
+            "bottom": "0",
+            "height": "200px"
+        }
+    },
+    {
+        "Class": "TopicListView",
+        "id": "topic-list-view",
+        "title": "Topic List View",
+        "layout": {
+            "position": "absolute",
+            "right": "15%",
+            "width": "15%",
+            "top": "50px",
+            "bottom": "200px"
+        }
+    },
+    {
+        "Class": "TopicMatrixView",
+        "id": "topic-matrix-view",
+        "title": "Topic Matrix View",
+        "layout": {
+            "position": "absolute",
+            "left": "48%",
+            "width": "22%",
+            "top": "50px",
+            "bottom": "200px"
+        }
+    },
+    {
+        "Class": "DendrogramView",
+        "id": "dendrogram-view",
+        "title": "Dendrogram View",
+        "layout": {
+            "position": "absolute",
+            "left": "25%",
+            "width": "23%",
+            "top": "50px",
+            "bottom": "200px"
+        }
+    },
+
+
+
+    // {
+    //     "Class": "TopicSelectionView",
+    //     "id": "topic-selection-view",
+    //     "title": "Cluster Selection View",
+    //     "layout": {
+    //         "position": "absolute",
+    //         "left": "0%",
+    //         "width": "45%",
+    //         "bottom": "200px",
+    //         "top": "50px"
+    //     }
+    // },
+    // {
+    //     "Class": "WordMonitorView",
+    //     "id": "word-monitor-view",
+    //     "title": "Term Monitor View",
+    //     "layout": {
+    //         "position": "absolute",
+    //         "left": "45%",
+    //         "width": "30%",
+    //         "bottom": "0px",
+    //         "height": "280px"
+    //     }
+    // },   
+    // {
+    //     "Class": "SessionDetailView",
+    //     "id": "session-detail-view",
+    //     "title": "Recommendation View",
+    //     "layout": {
+    //         "position": "absolute",
+    //         "left": 0,
+    //         "width": "45%",
+    //         "bottom": "0px",
+    //         "height": "200px"
+    //     }
+    // },  
+    // {
+    //     "Class": "GroupListView",
+    //     "id": "group-list-view",
+    //     "title": "Session List View",
+    //     "layout": {
+    //         "position": "absolute",
+    //         "right": "0%",
+    //         "width": "25%",
+    //         "top": "50px",
+    //         "bottom": "50%"
+    //     }
+    // },
+
+]

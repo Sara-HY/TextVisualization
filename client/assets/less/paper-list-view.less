@@ -1,0 +1,27 @@
+.paper-list-view {
+    font-size: 12px; 
+    
+    table.dataTable {
+        td {
+            font-size: 12px;
+            max-width: 0;
+            // overflow: hidden;
+            // text-overflow: ellipsis;
+            // white-space: nowrap;
+        }
+
+        tr.hover td {
+            overflow: auto;
+            text-overflow: clip;
+            white-space: normal;
+        }
+
+        tr.active td {
+            overflow: auto;
+            text-overflow: clip;
+            white-space: normal;        
+        }
+    }
+
+}
+

@@ -1,0 +1,60 @@
+<% extends "../includes/view.html" %>
+
+
+<% block view-content %>    
+    <div class="svg-container">
+        <div class="session-btn-group btn-group">
+            <span id="delete-btn" class="btn btn-default btn-sm">
+                <i class="fa fa-trash"></i>
+            </span>
+        </div>
+        <div class="alternatives-btn-group btn-group">
+            <a id="rerun-btn" class="btn btn-default btn-sm">
+                <i class="fa fa-refresh"></i>
+            </a>
+        </div>   
+
+        <div class="run-stack">
+
+        </div>  
+        <hr class="spliter-line">
+    </div>
+    <svg class="defs-wrapper"></svg>
+
+<% endblock %>
+
+<% block templates %>
+    <script type="text/template" id="alternative-tip-template">
+        {{doc.title}}
+    </script>
+
+    <script type="text/template" id="selected-tip-template">
+        {{doc.title}}<br/>
+<!--         <span class="btn btn-default btn-xs delete-btn" group-id={{groupID}} doc-id={{docID}}><i class="fa fa-times"></i></span> -->
+    </script> 
+
+    <script type="text/template" id="run-tab-template">
+        <div class="run-tab-wrapper">
+            <a class="run-tab btn btn-default" run-id={{runID-1}}>
+                <span class="run-id"><b>{{runID}}</b></span>
+                <span class="detail"><small>{{available}}/{{total}}</small></span>
+            </a>
+        </div>
+        <!-- <br/> -->
+    </script>
+
+
+    <% raw %>
+    <script type="text/template/lodash" id="gradient-defs">
+        <% var percent = 100 / colors.length %>
+        <linearGradient id="<%=id%>">
+            <% _.each(colors, function(color, i) { %>
+                <% var start = i * percent %>
+                <% var end = (i + 1) * percent %>
+                <stop offset="<%=start%>%" stop-color="<%=color%>"/>
+                <stop offset="<%=end%>%" stop-color="<%=color%>"></stop>
+            <% }) %>
+        </linearGradient>
+    </script>
+    <% endraw %>
+<% endblock %>

@@ -1,0 +1,62 @@
+<% extends "../includes/view.html" %>
+
+<% block view-content %>  
+    <div id="group-list"></div>
+
+    <div class="modal fade" id="group-edit-modal" group-id="">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Edit</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-inline">
+                        <select class="form-control" id="group-a"></select>
+                        <select class="form-control" id="opeartion">
+                            <option>∩</option>
+                            <option>∪</option>
+                            <option>-</option>
+                        </select>
+                        <select class="form-control" id="group-b"></select>
+                    </form>
+                    <div class="text-center">
+                        <span class="btn btn-default btn-primary" id="group-edit-ok-btn">OK</span>
+                    </div>                    
+                </div>
+            </div>
+        </div>
+    </div>    
+<% endblock %>
+
+
+<% block templates %>
+    <script type="text/template" id="group-template">
+        <div class="thumbnail group-wrapper" group-id={{group.id}} group-type={{group.type}}>
+            <div class="group-title">
+                <div class="group-color-indicater" style="background-color: {{group.color}}"></div>
+                <div class="group-controller-group pull-right btn-group">
+                    {% if group.type =="Filter" %}
+                        <a class="btn btn-default btn-xs confirm-btn" group-id={{group.id}}><i class="fa fa-check"></i></a>
+                    {% elif group.type == "Group" %}
+                        <a class="btn btn-default btn-xs edit-btn" group-id={{group.id}}><i class="fa fa-edit"></i></a>
+                        <a class="btn btn-default btn-xs delete-btn" group-id={{group.id}}><i class="fa fa-times"></i></a>
+                    {% endif %}
+                </div>
+                <strong>{{group.name}}</strong> <span class="badge">{{group.data.length}}</span> 
+            </div>
+<!--             <div class="group-docs" group-id={{group.id}}>
+                {% for doc in docs %}
+                    <div class="group-doc" doc-id={{doc._index}} group-id={{group.id}}>{{doc.title}}</div>
+                {% endfor %}
+                </ul>
+            </div> -->
+            <div class="group-keywords">
+                {% for word in topWords %}
+                    <!-- {% set fontSize = Math.min(Math.max(word.weight * 100, 12), 25) %} -->
+                    <span class="word" style="font-size:12px;">{{word.word}}</span>                    
+                {% endfor %}
+            </div>
+        </div>
+    </script>
+<% endblock %>

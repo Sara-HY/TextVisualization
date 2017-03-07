@@ -1,0 +1,51 @@
+[
+    {
+        "Class": "DataListView",
+        "id": "data-list-view",
+        "title": "Data List View",
+        "layout": {
+            "position": "absolute",
+            "left": 0,
+            "top": "50px",
+            "width": "20%",
+            "bottom": "200px"
+        }
+    },
+    {
+        "Class": "TimelineView",
+        "id": "timeline-view",
+        "title": "Timeline View",
+        "layout": {
+            "position": "absolute",
+            "left": 0,
+            "right": 0,
+            "bottom": 0,
+            "height": "200px"
+        }
+    },
+    {
+        "Class": "DocumentGalaxyView",
+        "id": "document-galaxy-view",
+        "title": "Document Galaxy View",
+        "layout": {
+            "position": "absolute",
+            "top": "50px",
+            "left": "20%",
+            "width": "40%",
+            "bottom": "200px"
+        }
+    },
+    {
+        "Class": "EntityGraphView",
+        "id": "entity-graph-view",
+        "title": "Entity Graph View",
+        "layout": {
+            "position": "absolute",
+            "top": "50px",
+            "left": "60%",
+            "right": 0,
+            "bottom": "200px"
+        }
+    }
+
+]

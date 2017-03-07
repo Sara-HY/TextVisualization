@@ -1,0 +1,33 @@
+<% extends "../includes/view.html" %>
+
+
+<% block view-content %>    
+    
+
+<% endblock %>
+
+<% block templates %>
+    <script type="text/template" id="group-detail-template">
+        <div group-id={{group.id}}>
+            <div class="group-docs">
+                {% for doc in docs %}
+                    {% set width = doc.dist * 50 %}
+                    {% set left = 50 - width %}
+                    <div class="group-doc" doc-id={{doc.doc._index}} group-id={{group.id}}>
+                        <i class="fa fa-minus remove-btn" doc-id="{{doc.doc._index}}" group-id="{{group.id}}" ></i>
+                        <div class="dist-indicator" style="width:{{width}}px; margin-left:{{left}}px"></div> 
+                        [{{doc.doc._index}}] {{doc.doc.title}}
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="recommend">
+                {% for doc in similarDocs %}
+                    <div class="group-doc" doc-id={{doc._index}} group-id={{group.id}}>
+                        <i class="fa fa-plus add-btn" doc-id="{{doc._index}}" group-id="{{group.id}}"></i> 
+                        [{{doc._index}}] {{doc.title}}
+                    </div>
+                {% endfor %}                
+            </div>
+        </div>
+    </script>    
+<% endblock %>

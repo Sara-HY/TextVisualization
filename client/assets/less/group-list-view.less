@@ -1,0 +1,46 @@
+.group-list-view {
+    .thumbnail {
+        margin-bottom: 10px !important;
+    }
+
+    .group-wrapper.active {
+        border: 1px solid black;
+    }
+
+    .group-color-indicater {
+        display: inline-block;
+        width: 15px;
+        height: 15px;
+    }
+
+    .group-docs {
+        // margin-left: 10px;
+        // margin-right: 10px;
+        // margin-top: 5px;
+        // border-radius: 2px;
+        // border: 1px solid #bbb;
+        padding: 5px;
+        .group-doc {
+            font-size: 12px;
+            height: 1.5em;
+            margin: 2px 0px 2px 0px;
+            overflow: hidden;
+            border-bottom: 1px solid #ccc;
+            width: 100%;
+            cursor: pointer;
+
+            &:before {
+                content:" ";
+            }
+
+            &:first-child {
+                border-top: 1px solid #ccc;
+            }
+        }   
+
+    }
+    .group-keywords {
+        margin: 0px 5px 2px 5px;
+    }       
+
+}

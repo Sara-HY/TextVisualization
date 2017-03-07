@@ -1,0 +1,14 @@
+<script type="text/template" id="view-template">
+    <div class="dragbox-wrapper {{viewClass}}" id="{{viewID}}">
+        <div class="dragbox">
+            <div class="header"><span class="title">{{viewTitle}}</span></div>
+            <div class="dragbox-content" id="{{viewID}}-dragbox-content">
+                <% block view-content %>  
+                <% endblock %>
+            </div>
+        </div>
+    </div>
+</script>
+
+<% block templates %>
+<% endblock %>

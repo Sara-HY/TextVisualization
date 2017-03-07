@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Text Visual Analysis System</title>
+    <% block head %>  <% endblock %>
+
+    <link href="libs/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="libs/jquery-ui/jquery-ui.css" rel="stylesheet">
+    <link href="libs/font-awesome/css/font-awesome.css" rel="stylesheet">
+
+    <link href="css/style.css" rel="stylesheet">  
+    <% block head-include %> <% endblock %>
+</head>
+
+<body>
+    <% block header %>
+        <% include "includes/header.html" %>
+    <% endblock %>
+
+    <div id="views-wrapper"></div>
+
+
+    <% block footer %> <% endblock %>
+
+    <script type="text/javascript" src="libs/traceur-runtime/traceur-runtime.js"></script>
+    
+    <script src="libs/system.js/system.js"></script>
+    <script>
+        System.config({
+            baseURL: '.',
+            map: {
+                "json": "libs/plugin-json/json.js",
+                "text": "libs/plugin-text/text.js",
+                "css": "libs/plugin-css/css.js",
+                "jquery": "libs/jquery/jquery.js",
+                "jquery-ui": "libs/jquery-ui/jquery-ui.js",
+                "d3": "libs/d3/d3.js",
+                "d3-tip": "libs/d3-tip/index.js",
+                "d3-tip-css": "libs/d3-tip/d3-tip.css",
+                "d3-slider": "libs/d3-slider/d3.slider.js",
+                "d3-slider-css": "libs/d3-slider/d3.slider.css",
+                "scrollTo": "libs/jquery.scrollTo/jquery.scrollTo.js",
+                "swig": "libs/swig/swig.js",
+                "lodash": "libs/lodash/lodash.js",
+                "spin": "libs/spin.js/spin.js",
+                "dat-gui": "libs/dat-gui/dat.gui.js",
+                "dat-gui-css": "css/dat.gui.css",
+                "pubsub": "libs/PubSubJS/pubsub.js",
+                "bootstrap": "libs/bootstrap/js/bootstrap.js",
+                "jquery-dataTables": "libs/datatables/jquery.dataTables.js",
+                "jquery-dataTables-css": "libs/datatables/jquery.dataTables.css",
+                "jquery-md5": "libs/jquery-md5/jquery.md5.js",
+                "crossfilter": "libs/crossfilter/crossfilter.js",
+                "dc": "libs/dcjs/dc.js",
+                "dc-css": "libs/dcjs/dc.css"
+            },
+            meta: {
+                'spin': { format: 'global' },
+                'crossfilter': {format: 'global'},
+                'dc': {format: 'global'},
+                'd3-tip': { format: 'global'},
+                'd3-slider': { format: 'global'}
+            },
+            depCache: {
+                bootstrap: ['jquery'] // bootstrap depends on jquery
+            }            
+        });
+
+        
+        System.import("jquery");
+        System.import("d3");
+        System.import("swig");
+        System.import("jquery-ui");
+        System.import("lodash");
+        System.import("pubsub");
+        System.import("bootstrap");
+
+        System.import('src/App.js');
+    </script>
+
+    <% block foot-include %> <% endblock %>
+
+</body>
+</html>

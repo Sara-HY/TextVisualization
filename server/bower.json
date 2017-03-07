@@ -1,0 +1,28 @@
+{
+  "name": "TextVA",
+  "description": "",
+  "main": "",
+  "authors": [
+    "Zeek"
+  ],
+  "license": "MIT",
+  "moduleType": [],
+  "homepage": "",
+  "private": true,
+  "dependencies": {
+    "jquery": "jQuery#~2.1.4",
+    "bootstrap": "~3.3.6",
+    "jquery-ui": "jqueryui#~1.11.4",
+    "blueimp-file-upload": "~9.11.2",
+    "blueimp-gallery": "~2.16.0",
+    "underscore": "~1.8.3"
+  },
+  "exportsOverride": {
+    "bootstrap": {
+      "/": "dist"
+    },
+    "blueimp-file-upload": {
+      "/": "/"
+    }
+  }
+}

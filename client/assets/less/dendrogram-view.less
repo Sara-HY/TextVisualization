@@ -1,0 +1,27 @@
+.dendrogram-view {
+    .link {
+        fill: none;
+        stroke: #ccc;
+        stroke-width: 1.5px;        
+    }
+
+    .node circle {
+        fill: #fff;
+        stroke: steelblue;
+        stroke-width: 1.5px;
+    }    
+    
+    rect.cluster {
+        stroke: #555;
+        fill: rgba(0,0,0,0.1);
+        cursor: pointer;
+
+        &.selected {
+            stroke: red;
+        }
+    }
+}
+
+.dendrogram-tip {
+    width: 200px !important;
+}

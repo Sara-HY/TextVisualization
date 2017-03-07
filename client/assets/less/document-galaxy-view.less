@@ -1,0 +1,82 @@
+.graph-tip {
+    position: absolute;
+    top: 50px !important;
+
+    // &.top {
+    //     left: 45% !important;
+    //     top: 50px !important;
+    // }
+
+    // &.bottom {
+    //     left: initial !important;
+    //     top: initial !important;
+    //     right: 25% !important;
+    //     bottom: 250px !important;
+    // }
+}
+
+
+.document-galaxy-view {
+    user-select: none;
+    -webkit-user-select: none;
+
+    .filtered-out {
+        display: none;
+    }
+    .not-selected {
+        opacity: 0.2;
+    }
+    
+    .controller-btn-group {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+    }
+
+    .polygon-selection {
+        stroke: darkgray;
+        stroke-width: 1px;
+        stoke-opacity: 1;
+        fill: #888;
+        opacity: 0.2;
+    }
+
+    .doc-dot {
+        opacity: 0.7;
+    }
+
+    .selected .doc-dot, .drag-highlight .doc-dot {
+        opacity: 1;
+        stroke: red;
+        stroke-width: 2px;        
+    }
+
+    .bubble.droppable {
+        stroke-width: 5px !important;
+    }
+
+    .bubble.editing {
+        stroke-dasharray: 5,5;
+        animation: editing 40s linear infinite;
+    }
+
+    .highlight .doc-dot {
+        stroke: red;
+        animation: highlight 2s infinite;
+    }
+
+
+    @keyframes highlight
+    {
+        0% { stroke-width: 1px; }
+        50% { stroke-width: 3px; }
+        100% { stroke-width: 1px; }
+    }
+
+    @keyframes editing
+    {
+        to {
+            stroke-dashoffset: 1000;
+        }
+    }
+}
