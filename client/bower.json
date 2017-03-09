@@ -36,7 +36,7 @@
     "dat-gui": "~0.5.1",
     "PubSubJS": "pubsub-js#~1.5.3",
     "dat-gui-light-theme": "git@github.com:liabru/dat-gui-light-theme.git",
-    "plugin-json": "git://github.com/systemjs/plugin-json#~0.1.0",
+    "plugin-json": "git://github.com/systemjs/plugin-json#0.1.0",
     "d3-slider": "git@github.com:MasterMaps/d3-slider.git",
     "spin.js": "~2.3.2",
     "font-awesome": "fontawesome#~4.5.0",

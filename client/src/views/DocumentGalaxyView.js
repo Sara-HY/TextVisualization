@@ -3,7 +3,7 @@ import {DataUtils} from "../DataUtils.js"
 import {DataCenter} from "../DataCenter.js"
 import {FilterCenter} from "../FilterCenter.js"
 import {BaseView} from './BaseView.js';
-import {SessionHelper} from "../SessionHelper.js"
+// import {SessionHelper} from "../SessionHelper.js"
 import viewTemplate from "../../templates/views/document-galaxy-view.html!text"
 
 import "d3-tip"

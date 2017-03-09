@@ -5,7 +5,7 @@ import {GroupCenter} from "../GroupCenter.js"
 import {Group} from "../Group.js"
 import {Utils} from "../Utils.js"
 import {Config} from "../Config.js";
-import {SessionHelper} from "../SessionHelper.js"
+// import {SessionHelper} from "../SessionHelper.js"
 import viewTemplate from "../../templates/views/topic-selection-view.html!text"
 import "jquery-md5"
 import "scripts/sankey.js"

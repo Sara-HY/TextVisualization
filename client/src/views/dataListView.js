@@ -52,7 +52,8 @@ class DataListView extends BaseView {
             data: this.data,
             pageLength: 100,
             columns: [
-                // {data: mainTimeField, title: mainTimeField},
+                {data: "_id", title: "id"},
+                {data: mainTimeField, title: mainTimeField},
                 {data: mainTextField, title: mainTextField}
             ]
         });

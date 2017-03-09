@@ -1,0 +1,29 @@
+<% extends "../includes/view.html" %>
+
+<% block templates %>
+    <% raw %>
+    <script type="text/template/lodash" id="facets-template">
+        <div class="topic-wrapper thumbnail" group-id=<%=group.id%> topic-id=<%=topic.id%>>
+            <div class="group-title">
+                <div class="group-color-indicater" style="background-color: <%=group.color%>"></div>
+                <div class="group-controller-group pull-right btn-group">
+                    <a class="btn btn-default btn-xs active"><i class="fa fa-file-o"></i></a>
+                    <a class="btn btn-default btn-xs"><i class="fa fa-plus-square-o"></i></a>
+                    <a class="btn btn-default btn-xs"><i class="fa fa-minus-square-o"></i></a>
+                </div>
+                <div class="group-controller-group pull-right btn-group">
+                    <a class="btn btn-default btn-xs filter-btn" group-id=<%=group.id%>><i class="fa fa-filter"></i></a>
+                </div>                
+                <strong>#<%=group.id%>: <%=group.name%></strong> <span class="badge"><%=group.data.length%></span>
+            </div>
+            <div class="group-sites" group-id=<%=group.id%>>
+                <% _.each(sites, function(site) { %>
+                <% var w = Math.min(15, site.count/2)%>
+                    <span class="site" style="font-size:<%=w%>px; margin: 5px;"> <%=site.site%></span>
+                <% }) %>
+                </ul>
+            </div>           
+        </div>
+    </script>
+    <% endraw %>
+<% endblock %>

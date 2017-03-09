@@ -1,0 +1,35 @@
+.facets-view {
+    .group-color-indicater {
+        display: inline-block;
+        width: 15px;
+        height: 15px;
+    }
+
+    .group-docs {
+        margin-left: 10px;
+        margin-right: 10px;
+        border-radius: 2px;
+        border: 1px solid #bbb;
+        padding: 5px;
+        .group-doc {
+            height: 1.5em;
+            overflow: hidden;
+            border-top: 1px solid #ccc;            
+            width: 100%;
+            cursor: pointer;
+
+            &:before {
+                content:" ";
+            }
+
+            &:first-child {
+                border-top: none;
+            }
+
+            &.fix {
+                font-weight: bold;
+            }
+        }        
+    }
+
+}

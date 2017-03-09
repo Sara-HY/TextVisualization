@@ -2,7 +2,7 @@ import {BaseView} from './BaseView.js';
 import {DataUtils} from "../DataUtils.js"
 import {DataCenter} from "../DataCenter.js"
 import {Utils} from "../Utils.js"
-import {SessionHelper} from "../SessionHelper.js"
+// import {SessionHelper} from "../SessionHelper.js"
 import viewTemplate from "../../templates/views/session-detail-view.html!text"
 
 import "d3-tip"

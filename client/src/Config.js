@@ -1,6 +1,6 @@
 let Config = {
-    serverUrl: "http://localhost:5002"
+    serverUrl: "http://vis.pku.edu.cn/textvaserver/"
 }
 
-
+ 
 export { Config };
