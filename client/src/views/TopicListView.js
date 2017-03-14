@@ -41,6 +41,7 @@ class TopicListView extends BaseView {
         })
         $(this.getContainer()).on("click", ".topic-keywords .word", function() {
             PubSub.publish("KeywordMonitor.Add", {word: $(this).text()});
+            console.log($(this).text());
         })        
         $(this.getContainer()).on("click", ".filter-btn", function() {
             var groupID = +$(this).attr("group-id");
@@ -64,7 +65,6 @@ class TopicListView extends BaseView {
         var _this = this;
         var docs = DataCenter.data;
         var tpl = _.template($(_this.viewTemplate).find("#topic-template").html())
-        console.log(tpl);
         var groups = _.filter(GroupCenter.groups, function(group) {
                 return group.type == "Topic";
             });
@@ -78,7 +78,6 @@ class TopicListView extends BaseView {
                 groupDocs.push(docs[docID]);
             }
             var html = tpl({group: group, topic: topic, docs: groupDocs});
-            console.log(group, topic, groupDocs);
             $(_this.getContainer()).append(html);
         }
 

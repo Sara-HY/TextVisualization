@@ -23,18 +23,18 @@
     //         "bottom": "40%",
     //     }
     // },
-    // {
-    //     "Class": "EntityGraphView",
-    //     "id": "entity-graph-view",
-    //     "title": "Entity Graph View",
-    //     "layout": {
-    //         "position": "absolute",
-    //         "top": "60%",
-    //         "left": "0%",
-    //         "width": "25%",
-    //         "bottom": "0"
-    //     }
-    // },
+    {
+        "Class": "EntityGraphView",
+        "id": "entity-graph-view",
+        "title": "Entity Graph View",
+        "layout": {
+            "position": "absolute",
+            "top": "50%",
+            "left": "0%",
+            "width": "25%",
+            "bottom": "0"
+        }
+    },
     {
         "Class": "TopicConfigView",
         "id": "topic-config-view",
@@ -59,18 +59,18 @@
             "top": "50px"
         }
     },
-    // {
-    //     "Class": "GroupListView",
-    //     "id": "group-list-view",
-    //     "title": "Group List View",
-    //     "layout": {
-    //         "position": "absolute",
-    //         "width": "15%",
-    //         "right": "0",
-    //         "bottom": "0",
-    //         "height": "200px"
-    //     }
-    // },
+    {
+        "Class": "GroupListView",
+        "id": "group-list-view",
+        "title": "Group List View",
+        "layout": {
+            "position": "absolute",
+            "width": "25%",
+            "right": "25%",
+            "bottom": "0",
+            "height": "50%"
+        }
+    },
     {
         "Class": "TopicListView",
         "id": "topic-list-view",
@@ -168,6 +168,18 @@
             "width": "25%",
             "top": "50px",
             "bottom": "50%"
+        } 
+    },
+    {
+        "Class": "TopicEntityView",
+        "id": "topic-entity-view",
+        "title": "Topic Entity View",
+        "layout": {
+            "position": "absolute",
+            "left": "25%",
+            "width": "25%",
+            "height": "50%",
+            "bottom": "0"
         } 
     }
 

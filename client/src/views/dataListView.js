@@ -48,12 +48,14 @@ class DataListView extends BaseView {
         var mainTimeField = DataCenter.fields._MAINTIME;
         var mainTextField = DataCenter.fields._MAINTEXT;
 
+        console.log("data", this.data);
+
         this.dataTable = table.DataTable({
             data: this.data,
             pageLength: 100,
             columns: [
                 {data: "_id", title: "id"},
-                {data: mainTimeField, title: mainTimeField},
+                {data: "_MAINTIME", title: mainTimeField},
                 {data: mainTextField, title: mainTextField}
             ]
         });

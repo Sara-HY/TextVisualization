@@ -16,14 +16,10 @@ class FacetsView extends BaseView {
 
 	_init(){
 		var _this = this;
-		this.labels = new Array(DataCenter.data.length);
-		for (var i = 0; i < this.labels.length; i++)
-			this.labels[i] = [];
 		PubSub.subscribe("DataCenter.TopicModel.Update", function(){
 			_this.topicModel = DataCenter.topicModel;
 		})	
 		PubSub.subscribe("GroupCenter.Groups.Update", function(){
-			console.log("GroupCenter.Groups.Update");
 			_this.renderGroup();
 			// _this.render();
 		})
@@ -38,7 +34,6 @@ class FacetsView extends BaseView {
             });
         $(this.getContainer()).html("");
         for (var i = 0; i < groups.length; i++) {
-        	console.log(i, groups.length);
             var group = groups[i];
             var topic = _this.topicModel.getTopicByGroupID(group.id);
 
@@ -49,7 +44,6 @@ class FacetsView extends BaseView {
             			"site": docs[docID]["site"],
             			"count": 1
             		});
-            		console.log(docs[docID]["site"]);
             	}
             	else{
             		var flag = 0;
@@ -64,14 +58,13 @@ class FacetsView extends BaseView {
 		        			"site": docs[docID]["site"],
 		        			"count": 1
 		        		});
-		        		console.log(docs[docID]["site"]);
 		        	}
             	}
             }
             groupSites.sort(function(a,b){  
         		return b.count - a.count;  
     		}); 
-    		console.log("groupSites", groupSites);
+    		// console.log("groupSites", groupSites);
             var html = tpl({group: group, topic: topic, sites: groupSites});
             $(_this.getContainer()).append(html);
         }

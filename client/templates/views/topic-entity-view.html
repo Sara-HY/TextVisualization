@@ -1,0 +1,48 @@
+<% extends "../includes/view.html" %>
+
+<% block view-content%>
+	<div id = "entity-box" style="height: 100%;">
+		<div class = "entitys" style="float: left;">
+			<div class="thumbnail" id="entity-name">
+				<input type="checkbox" checked="checked" id="name"/><label> name </label>
+				<!-- <button class="btn btn-primary" role="button">name</button>  -->
+				<div id="entity-name-list"></div>
+			</div>
+		</div>
+		<div class = "entitys" style="float: left;">
+			<div class="thumbnail" id="entity-place">
+				<input type="checkbox" checked="checked" id="place"/><label> place </label>
+				<!-- <button class="btn btn-primary" role="button">name</button> -->
+				<div id="entity-place-list"></div>
+			</div>
+		</div>
+		<div class = "entitys" style="float: left;">
+			<div class="thumbnail" id="entity-organization">
+				<input type="checkbox" checked="checked" id="organization"/><label> organization </label>
+				<!-- <button class="btn btn-primary" role="button">name</button> -->
+				<div id="entity-organization-list"></div>
+			</div>
+		</div>
+	</div>
+
+
+<% endblock %>
+
+<% block templates %>
+	<script type="text/template/lodash" id="topic-entity-template">
+		<div class="thumbnail group-wrapper" group-id={{group.id}} topic-id={{topic.id}}>
+			<div class="group-color-indicator" style="background-color: {{group.color}}"></div>
+			<div class="group-controller-group pull-right btn-group">
+				<a class="btn btn-default btn-xs filter-btn" ><i class="fa fa-filter"></i></a>
+			</div>
+			<strong>{{entity}}#{{topic.id}}: {{group.name}}</strong>
+			<span class="badge">{{group.data.length}}</span>
+			<div class="entity" topic-id={{topic.id}}>
+				{% for facet in facets %}
+					<span style="font-size:{{ Math.min(15, facet.count/2)}}px; margin: 5px;"> {{facet.facet}} </span>
+				{% endfor %}
+				</ul>
+			</div>
+		</div>	
+	</script>
+<% endblock %>

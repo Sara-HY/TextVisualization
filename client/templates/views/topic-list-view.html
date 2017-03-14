@@ -12,11 +12,11 @@
                     <a class="btn btn-default btn-xs"><i class="fa fa-minus-square-o"></i></a>
                 </div> -->
                 <div class="group-controller-group pull-right btn-group">
-                    <a class="btn btn-default btn-xs filter-btn" group-id=<%=group.id%>><i class="fa fa-filter"></i></a>
+                    <a class="btn btn-default btn-xs filter-btn" ><i class="fa fa-filter"></i></a>
                 </div>                
-                <strong>#<%=group.id%>: <%=group.name%></strong> <span class="badge"><%=group.data.length%></span>
+                <strong>#<%=topic.id%>: <%=group.name%></strong> <span class="badge"><%=group.data.length%></span>
             </div>
-            <div class="group-docs hide" group-id=<%=group.id%>>
+            <div class="group-docs hide">
                 <% _.each(docs, function(doc) { %>
                     <div class="group-doc" doc-id=<%=doc._index%> group-id=<%=group.id%> title="<%=doc.title%>"><%=doc.title%></div>
                 <% }) %>

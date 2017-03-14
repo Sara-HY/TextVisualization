@@ -14,6 +14,7 @@ import {DendrogramView} from "./views/DendrogramView.js";
 import {GroupListView} from "./views/GroupListView.js";
 import {TopicListView} from "./views/TopicListView.js";
 import {FacetsView} from "./views/FacetsView.js"
+import {TopicEntityView} from "./views/TopicEntityView.js"
 import {TopicMatrixView} from "./views/TopicMatrixView.js";
 import {TopicConfigView} from "./views/TopicConfigView.js";
 // import {WordMonitorView} from "./views/WordMonitorView.js";
