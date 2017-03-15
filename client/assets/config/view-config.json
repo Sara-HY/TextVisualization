@@ -53,10 +53,10 @@
         "title": "Data List View",
         "layout": {
             "position": "absolute",
-            "right": "25%",
-            "width": "25%",
-            "bottom": "50%",
-            "top": "50px"
+            "left": "25%",
+            "width": "50%",
+            "bottom": "0",
+            "top": "50%"
         }
     },
     {
@@ -66,7 +66,7 @@
         "layout": {
             "position": "absolute",
             "width": "25%",
-            "right": "25%",
+            "right": "0%",
             "bottom": "0",
             "height": "50%"
         }
@@ -176,10 +176,10 @@
         "title": "Topic Entity View",
         "layout": {
             "position": "absolute",
-            "left": "25%",
+            "left": "50%",
             "width": "25%",
-            "height": "50%",
-            "bottom": "0"
+            "top": "50px",
+            "bottom": "50%"
         } 
     }
 

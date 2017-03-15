@@ -37,43 +37,60 @@ class FacetsView extends BaseView {
             var group = groups[i];
             var topic = _this.topicModel.getTopicByGroupID(group.id);
 
-            var groupSites = [];
-            for (var docID of group.data) {
-            	if(groupSites.length == 0){
-            		groupSites.push({
-            			"site": docs[docID]["site"],
-            			"count": 1
-            		});
-            	}
-            	else{
-            		var flag = 0;
-        		    for(var j = 0; j < groupSites.length; j++){
-		        		if(docs[docID]["site"] == groupSites[j]["site"]){
-		        			groupSites[j]["count"]++;
-		        			flag = 1;
-		        		}
-		        	}
-		        	if(flag == 0){
-		        		groupSites.push({
-		        			"site": docs[docID]["site"],
-		        			"count": 1
-		        		});
-		        	}
-            	}
-            }
+           //  var groupSites = [];
+           //  for (var docID of group.data) {
+           //  	if(groupSites.length == 0){
+           //  		groupSites.push({
+           //  			"site": docs[docID]["site"],
+           //  			"count": 1
+           //  		});
+           //  	}
+           //  	else{
+           //  		var flag = 0;
+        		 //    for(var j = 0; j < groupSites.length; j++){
+		        	// 	if(docs[docID]["site"] == groupSites[j]["site"]){
+		        	// 		groupSites[j]["count"]++;
+		        	// 		flag = 1;
+		        	// 	}
+		        	// }
+		        	// if(flag == 0){
+		        	// 	groupSites.push({
+		        	// 		"site": docs[docID]["site"],
+		        	// 		"count": 1
+		        	// 	});
+		        	// }
+           //  	}
+           //  }
+            
+            //map 
+            var map = {};
+			var groupSites = [];
+            for(var docID of group.data){
+            	var site = docs[docID]["site"];
+			  	if(!map[site]){
+			    	map[site] = {
+			      		site: site,
+			     		count: 1
+			    	}
+			    	groupSites.push(map[site]);
+			  	}
+			  	else{
+			      	map[site]["count"]++;
+			  	}
+          	}
+          	
+
             groupSites.sort(function(a,b){  
         		return b.count - a.count;  
-    		}); 
+    		});
     		// console.log("groupSites", groupSites);
             var html = tpl({group: group, topic: topic, sites: groupSites});
             $(_this.getContainer()).append(html);
         }
 	}
 
-
 	render() {
-		var docs = DataCenter.data;
-		
+		var docs = DataCenter.data;	
 
 	}
 }

@@ -1,7 +1,14 @@
 <% extends "../includes/view.html" %>
 
 <% block view-content %>  
-    <span class="btn btn-default btn-xs" id="filter-btn">Filter</span>
-    <span class="btn btn-default btn-xs" id="clear-btn">Clear</span>
-    <table id="data-table" class="display"></table>
+	<div>
+		<input type="text" id="keyword" value=""/>
+        <span class="btn btn-default btn-xs" id="search-btn">search</span>
+        <span class="btn btn-default btn-xs" id="filter-btn">Filter</span>
+    	<span class="btn btn-default btn-xs" id="clear-btn">Clear</span>
+    </div>
+    <div class="list-table">
+    	<table id="data-table" class="display"></table>
+    </div>
+    <div class="text-content" id="content"></div>
 <% endblock %>

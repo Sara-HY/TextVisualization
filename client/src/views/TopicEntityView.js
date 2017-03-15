@@ -87,38 +87,62 @@ class TopicEntityView extends BaseView {
                 var group = groups[i];
                 var topic = this.topicModel.getTopicByGroupID(group.id);
 
+                // var groupEntity = [];
+                // // console.log(groupEntity, group, docs);
+                // for (var docID of group.data) {
+                //     if (groupEntity.length == 0) {
+                //         for(var k = 0; k < docs[docID]["_ner"][entity].length; k++){
+                //         	groupEntity.push({
+                //             	"facet": docs[docID]["_ner"][entity][k],
+                //             	"count": 1
+                //         	})
+                //         }
+                //     } 
+                //     else {
+                //         for(var k = 0; k < docs[docID]["_ner"][entity].length; k++){
+                //         	var flag = 0;
+                //         	for (var j = 0; j < groupEntity.length; j++) {
+                //         		if (docs[docID]["_ner"][entity][k] == groupEntity[j]["facet"]) {
+                //                 	groupEntity[j]["count"]++;
+                //                 	flag = 1;
+                //             	}
+                //             }
+                //            	if(!flag){
+                //         		groupEntity.push({
+                //         			"facet": docs[docID]["_ner"][entity][k],
+                //         			"count": 1
+                //     			})
+                //         	}  
+                //         }
+                //     }   
+                // }
+                // groupEntity.sort(function(a, b) {
+                //     return b.count - a.count;
+                // });
+                // console.log(groupEntity);
+
+                var map = {};
                 var groupEntity = [];
-                // console.log(groupEntity, group, docs);
-                for (var docID of group.data) {
-                    if (groupEntity.length == 0) {
-                        for(var k = 0; k < docs[docID]["_ner"][entity].length; k++){
-                        	groupEntity.push({
-                            	"facet": docs[docID]["_ner"][entity][k],
-                            	"count": 1
-                        	})
-                        }
-                    } 
-                    else {
-                        for(var k = 0; k < docs[docID]["_ner"][entity].length; k++){
-                        	var flag = 0;
-                        	for (var j = 0; j < groupEntity.length; j++) {
-                        		if (docs[docID]["_ner"][entity][k] == groupEntity[j]["facet"]) {
-                                	groupEntity[j]["count"]++;
-                                	flag = 1;
-                            	}
+                for(var docID of group.data){
+                    for(var j = 0; j < docs[docID]["_ner"][entity].length; j++){
+                        var facet = docs[docID]["_ner"][entity][j];
+                        if(!map[facet]){
+                            map[facet] = {
+                                facet: facet,
+                                count: 1
                             }
-                           	if(!flag){
-                        		groupEntity.push({
-                        			"facet": docs[docID]["_ner"][entity][k],
-                        			"count": 1
-                    			})
-                        	}  
+                            groupEntity.push(map[facet]);
                         }
-                    }   
+                        else{
+                            map[facet]["count"]++;
+                        }
+                    }
                 }
                 groupEntity.sort(function(a, b) {
-                        return b.count - a.count;
+                    return b.count - a.count;
                 });
+                console.log(groupEntity);
+
                 var html = tpl({entity: entity, group: group, topic: topic, facets: groupEntity});
                 $(_this.getContainer()).find(entityDiv).append(html);
             }
