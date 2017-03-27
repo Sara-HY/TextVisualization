@@ -2,6 +2,7 @@ var express = require('express');
 var config = require('../config.js');
 var router = express.Router();
 var path = require('path')
+var swig = require('swig')
 var fs = require('fs')
 
 var g = require.main.require("./global.js");
@@ -23,16 +24,21 @@ var options = {
         allowOrigin: '*',
         allowMethods: 'OPTIONS, HEAD, GET, POST, PUT, DELETE',
         allowHeaders: 'Content-Type, Content-Range, Content-Disposition'
+    },
+    storage : {
+        type : 'local'
     }
+
 };
 
 
-var uploader = require('blueimp-file-upload-expressjs')(options);
+var uploader = require('uni-blueimp-file-upload-expressjs')(options);
 
 router.get('/', function(req, res) {
-    uploader.get(req, res, async function (err,obj) {
+    // uploader.get(req, res, async function (err,obj) {
+    uploader.get(req, res, async function (obj) {
         try {
-            var rlt = await g.db.syncQuery(g.datasetCollection, {});
+            var rlt = await g.db.syncQuery(g.datasetCollection, {"usrName": req.session.user});
             rlt = rlt.sort(function(a, b) {
                 return new Date(b.fileMeta.uploadTime).getTime() - new Date(a.fileMeta.uploadTime).getTime()
             })
@@ -41,7 +47,7 @@ router.get('/', function(req, res) {
                 d["name"] = d["fileName"];
                 d["url"] = "/uploaded/files/" + d["fileName"];
             }
-            var data = {files: rlt};
+            var data = { files: rlt , Webpath: g.webPath};
             response.success(res, data);
         } catch (e) {
             response.error(res, e);
@@ -50,14 +56,16 @@ router.get('/', function(req, res) {
 });
 
 router.post('/', function(req, res) {
-    uploader.post(req, res, async function (error,obj, redirect) {
+    // uploader.post(req, res, async function (error, obj, redirect) {
+    uploader.post(req, res, async function (obj, redirect, error) {
         try {
             if(!error) {
                 for (var i = 0; i < obj.files.length; i++) {
                     var data = { 
+                        usrName: req.session.user,
                         fileName: obj.files[i].name, 
                         fileMeta: {
-                            name: obj.files[i].name,
+                            name: obj.files[i].originalName,
                             size: obj.files[i].size,
                             type: obj.files[i].type,
                             uploadTime: new Date().getTime(),
@@ -77,7 +85,7 @@ router.post('/', function(req, res) {
         } catch (e) {
             response.error(res, e);
         }
-    });
+    });  
 });
 
 // the path SHOULD match options.uploadUrl

@@ -39,9 +39,13 @@
         <td>
             <p class="name">
                 {% if (file.url) { %}
-                    <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.name%}">{%=file.name%}</a>
+                    {% if (file.fileMeta) { %}
+                        <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.name%}">{%=file.fileMeta.name%}</a>
+                    {%} else { %}
+                        <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.name%}">{%=file.originalName%}</a>
+                    {% } %}
                 {% } else { %}
-                    <span>{%=file.name%}</span>
+                    <span>{%=file.originalName%}</span>
                 {% } %}
             </p>
             {% if (file.error) { %}
@@ -51,7 +55,10 @@
         <td>
             {% if ( (file.fileMeta != null) && (file.fileMeta.size != null)) { %}
                 {%=bytesToSize(file.fileMeta.size)%}
+            {% } else { %}
+                {% location.reload(); %}
             {% } %}
+            
         </td>
         <td>
             {% if ( (file.fileMeta != null) && (file.fileMeta.uploadTime != null)) { %}
@@ -64,10 +71,12 @@
             {% } %}
             <span delete-url="/upload/delete/{%=file._id%}" class="btn btn-danger delete-btn">Delete</span>
             {% if (file.processStatus != null && file.processStatus.status == "processed") { %}
-                <a href="http://vis.pku.edu.cn/textva/index.html?datasetid={%=file._id%}" class="btn btn-default analyze-btn">Analyze</span>
+            {% var href = o.options.redirect + file._id; %}
+                <a href={%=href%} class="btn btn-default analyze-btn">Analyze</span>
             {% } %}            
             
         </td>
     </tr>
 {% } %}
 </script>
+    

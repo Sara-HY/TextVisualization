@@ -5,17 +5,35 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var session = require('express-session');
 
-var routes = require('./routes/index');
+var index = require('./routes/index');
 var api = require('./routes/api/api');
 var users = require('./routes/users');
 var dataSystem = require('./routes/dataSystem');
 var upload = require('./routes/upload');
 
 
-
 var app = express();
+app.use(session({ 
+    resave: false,
+    saveUninitialized: true,
+    secret: 'secret',
+    cookie:{ 
+        maxAge: 1000*60*30
+    }
+}));
 
+app.use(function(req,res,next){ 
+    res.locals.user = req.session.user;
+    var err = req.session.error;
+    delete req.session.error;
+    res.locals.message = "";
+    if(err){ 
+        res.locals.message = '<div class="alert alert-danger" style="margin-bottom:20px;color:red;">'+err+'</div>';
+    }
+    next();
+});
 
 // view engine setup
 // app.set('views', path.join(__dirname, 'views'));
@@ -53,7 +71,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', routes);
+app.use('/', index);
 app.use('/api', api);
 app.use('/users', users);
 app.use('/datasystem', dataSystem);

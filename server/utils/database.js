@@ -60,5 +60,5 @@ module.exports = function(dbPath, dbName) {
                 resolve(data);    
             });
         });
-    }    
+    }   
 }

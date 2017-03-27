@@ -10,3 +10,13 @@
 .display-none {
     display: none;
 }
+
+.step {
+	position: relative;
+}
+
+.next {
+	position: absolute; 
+	bottom: 10%; 
+	right: 5%;
+}

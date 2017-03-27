@@ -3,7 +3,7 @@
   "description": "",
   "main": "",
   "authors": [
-    "Zeek"
+    "Sara Han"
   ],
   "license": "MIT",
   "moduleType": [],
@@ -15,7 +15,8 @@
     "jquery-ui": "jqueryui#~1.11.4",
     "blueimp-file-upload": "~9.11.2",
     "blueimp-gallery": "~2.16.0",
-    "underscore": "~1.8.3"
+    "underscore": "~1.8.3",
+    "particles.js": "^2.0.0"
   },
   "exportsOverride": {
     "bootstrap": {

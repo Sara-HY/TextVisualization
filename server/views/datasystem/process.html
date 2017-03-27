@@ -1,13 +1,18 @@
 {% extends "../includes/layout.html" %}
 
     {% block head-include %}
+        <link rel="stylesheet" href="/stylesheets/style.css">
         <link rel="stylesheet" href="/stylesheets/process.css">
+    {% endblock %}
+
+    {% block header %}
+        {% include "header.html" %}
     {% endblock %}
 
     {% block content %}
 
     <data dataset-id="{{datasetID}}"></data> 
-    <div class="container">
+    <div class="process-container">
         <div class="step" step=0>
             <h2 class="">Data Fields</h2>
             <hr>
@@ -43,18 +48,15 @@
                     </ul>
                 </div>
             </div>
-            <div>
-                <span id="save-field-btn" class="btn btn-default btn-primary next-btn" style="margin-left: 20px" step=0>Next</span>
+            <div class="next">
+                <span id="save-field-btn" class="btn btn-default btn-primary next-btn" step=0>Next</span>
             </div>
         </div>
-
-        <br><br><br>
-
         <div class="step display-none" step=1>
             <h2 class="">NLP Process</h2>
             <hr>
             <div class="row">
-                <div class="col-md-12" style="margin-left: 20px">
+                <div class="col-md-12" style="margin-left: 20px; position: relative;">
                     <form id="nlp-process-list">
                         <div class="checkbox">
                             <label><input type="checkbox" id="nlp-process-ch-seg-checkbox" name="chinese"><strong>Chinese Segmentation and NER</strong></label>
@@ -62,22 +64,21 @@
                         <div class="checkbox">
                             <label><input type="checkbox" id="nlp-process-ch-ner-checkbox" name="english"><strong>English</strong></label>
                         </div>
-                    </form>            
-                    <span id="save-nlp-process-btn" class="btn btn-default btn-primary next-btn" step=1>Next</span>
+                    </form>          
                 </div>
             </div>
+            <div class="next">
+                <span id="save-nlp-process-btn" class="btn btn-default btn-primary next-btn" step=1>Next</span>
+            </div>  
         </div>
         <hr/>
-
         <div class="step display-none" step=2 >
-            <div class="row">
+            <div class="row" style="text-align: center;">
                 <div class="col-md-12">
                     <span id="start-process-btn" class="btn btn-primary">Start Process</span>
                 </div>
             </div>
         </div>
-
-
         <div class="modal fade" id="process-status-modal" style="margin-top: 150px">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -85,138 +86,19 @@
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                         <h4 class="modal-title">Processing Status</h4>
                     </div>
-                    <div class="modal-body h4 text-center"></div>
+                    <div class="modal-body h4 text-center">
+                        <p id="Status"> </p>
+                        <a id="Analyze" href={{webPath}}{{datasetID}} class="btn btn-primary analyze-btn hide" target="_blank">Analyze</a>
+                    </div>
                 </div>
             </div>
         </div>
+    </div>
+{% endblock %}
 
-
-    {% endblock %}
-
-
-{% block foot-include %}
-
-
-<script>
-    
-
-    function loadMetaInfo() {
-        var datasetID = $("data").attr("dataset-id");
-        var url = "/api/data/" + datasetID + "/meta";
-        $.get(url, function(data) {
-            if (data && data.fields) {
-                for (var key in data.fields) {
-                    $("#field-list .value select[field=" + key + "]").val(data.fields[key]);
-                }
-            }
-            if (data && data.preprocess) {
-                for (var i = 0; i < data.preprocess.length; i++) {
-                    console.log("#nlp-process-list input[name=" + data.preprocess[i] + "]")
-                    $("#nlp-process-list input[name=" + data.preprocess[i] + "]").attr("checked", true)
-                }
-            }
-        })
-    }
-
-    $(document).ready(function() { 
-        $(".step").hide();
-        $(".step[step=0]").show();
-        loadMetaInfo();
-        $("#save-field-btn").click(function() {
-            var fields = {};
-            $("#field-list .field-pair").each(function() {
-                var name = $(this).find(".key").attr("field");
-                var value = $(this).find(".value select").val();
-                fields[name] = value;
-            })
-            var datasetID = $("data").attr("dataset-id");
-            var url = "/api/datasystem/process/" + datasetID;
-            console.log(url);
-            var data = {fields: fields};
-            $.ajax({
-                url: url,
-                data: {"data": JSON.stringify(data)},
-                type: "put",
-            }).done(function(d) {
-                console.log(d);
-                // alert("保存成功");
-            })
-        })
-        $("#save-nlp-process-btn").click(function() {
-            var preprocess = [];
-            $("#nlp-process-list input[type=checkbox]").each(function() {
-                if ($(this)[0].checked == true) {
-                    console.log($(this).attr("name"));
-                    preprocess.push($(this).attr("name"));
-                }
-            })
-
-            var data = {preprocess: preprocess};
-            var datasetID = $("data").attr("dataset-id");
-            var url = "/api/datasystem/process/" + datasetID;
-            $.ajax({
-                url: url,
-                data: {"data": JSON.stringify(data)},
-                type: "put",
-            }).done(function(d) {
-                // alert("保存成功");
-            })
-        })
-
-
-        $("#start-process-btn").click(function() {
-            var datasetID = $("data").attr("dataset-id");
-            var url = "/api/datasystem/process/start/" + datasetID;
-            $.ajax({
-                url: url,
-                type: "get"
-            }).done(function(d) {
-                $("#process-status-modal").modal();
-                changeStatus();
-                setTimeout(queryStatus(), 1000);
-            })
-        })
-
-        $(".next-btn").click(function() {
-            var step = +$(this).attr("step") + 1;
-            console.log("step", step);
-            $(".step[step=" + step + "]").show();
-        })
-
-    })
-
-    function queryStatus() {
-        var datasetID = $("data").attr("dataset-id");
-        $.get("/api/datasystem/process/status/" + datasetID, function(data) {
-            console.log(data.data)
-            changeStatus(data.data)
-            if (data.data == null || data.data.status != "processing") {
-                return;
-            }
-            setTimeout(function() {
-                queryStatus();
-            }, 2000);
-        })
-
-    }
-
-    function changeStatus(status) {
-        if (status == null) {
-            $("#process-status-modal .modal-body").text("Start processing");
-        } else {
-            $("#process-status-modal .modal-body").html("<p>Status:" + status.status + "<p/><p>" + status.message + "</p>");
-
-
-            if (status.status == "processed") {
-                var datasetID = $("data").attr("dataset-id");
-                var href = "http://vis.pku.edu.cn/textva/index.html?datasetid=" + datasetID;
-                var btn = "<a href='" + href + "' class='btn btn-primary analyze-btn' target='_blank'>Analyze</div>";
-                $("#process-status-modal .modal-body").append(btn);
-            }
-        }
-    }
-
-
-</script>
-
+{% block foot-include %} 
+    <script type="text/javascript" src="/libraries/jquery/jquery.js"></script> 
+    <script type="text/javascript" src="/libraries/jquery-ui/jquery-ui.js"></script>     
+    <script type="text/javascript" src="/libraries/bootstrap/js/bootstrap.js"></script>  
+    <script type="text/javascript" src="/javascripts/datasystem/process.js"></script>
 {% endblock %}

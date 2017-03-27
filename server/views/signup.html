@@ -1,0 +1,118 @@
+{% extends "includes/layout.html" %}
+
+{% block content %}
+<style type="text/css" media="screen">
+		.signup-container {
+			position: absolute;
+			top: 20%;
+		}
+
+		.index-tab-navs {
+            margin-bottom: 10px;
+            font-size: 18px;
+            text-align: center
+        }
+        
+        .index-tab-navs .navs-slider {
+            position: relative;
+            display: inline-block;
+        }
+
+        .index-tab-navs a {
+            float: left;
+            width: 4em;
+            line-height: 35px;
+            opacity: .7;
+            -ms-filter: " alpha(Opacity=70) ";
+            -webkit-transition: opacity .15s, color .15s;
+            transition: opacity .15s, color .15s
+        } 	
+        .sign-in-tip {
+        	font-size: 22px;
+		    font-weight: 300;
+		    color: #555;
+		    line-height: 30px;
+        }
+</style>
+
+<div class="signup-container">
+	<div class="index-tab-navs">
+	    <div class="navs-slider">
+	        <a href="/signup" style="margin-right: 50px;">Sign Up</a>
+	        <a href="/signin">Sign In</a>
+	        <span class="navs-slider-bar"></span>
+	    </div>
+	</div>
+	<form class="col-sm-offset-4 col-sm-4 form-horizontal" role="form" method="post" onsubmit="return false">
+		<fieldset>
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<p class="sign-in-tip">Register to our site</h3>
+					<p>Enter your information to register:</p>
+				</div>
+				<div class="panel-body m15">
+					<div class="form-group">
+						<div class="input-group">
+							<span class="input-group-addon">
+							<span class="glyphicon glyphicon-user"></span>
+							</span>
+							<input type="text" class="form-control" id="username" name="username" placeholder="Username" required>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="input-group">
+							<span class="input-group-addon">
+							<span class="glyphicon glyphicon-lock"></span>
+							</span>
+							<input type="text" class="form-control" id="password" name="password" placeholder="Password" required>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="input-group">
+							<span class="input-group-addon">
+							<span class="glyphicon glyphicon-lock"></span>
+							</span>
+							<input type="text" class="form-control" id="password1" name="password1" placeholder="Retype the password" required>
+						</div>
+					</div>
+					<div class="form-group">
+						<button type="submit" class="btn btn-primary btn-block" id="register1">Sign Up</button>
+					</div>
+				</div>
+			</div>
+		</fieldset>
+	</form>
+</div>
+
+    <script type="text/javascript" src="/libraries/jquery/jquery.js"></script>   
+    <script type="text/javascript" src="/libraries/bootstrap/js/bootstrap.js"></script>
+	<script type="text/javascript"> 
+		$("#register1").click(function(){ 
+			console.log("yes");
+			var username = $("#username").val();
+			var password = $("#password").val();
+			var password1 = $("#password1").val();
+			if(password !== password1){ 
+				$("#password").css("border","1px solid red");
+				$("#password1").css("border","1px solid red");
+			}else if(password === password1){
+			var data = {"userName":username, "userPwd":password};
+			console.log(data);
+			$.ajax({ 
+				url: '/register',
+				type: 'post',
+				data: data,
+				success: function(data,status){ 
+					if(status == 'success'){ 
+						location.href = 'login';
+					}
+				},
+				error: function(data,err){ 
+						location.href = 'register';
+				}
+			}); 
+		}
+	});
+</script>
+
+{% endblock %}

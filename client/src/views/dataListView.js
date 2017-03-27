@@ -63,8 +63,9 @@ class DataListView extends BaseView {
             lengthchange: false,
             paging: false,
             columns: [
-                {data: "_id", title: "id"},
-                {data: "_MAINTIME", title: mainTimeField}
+                // {data: "_id", title: "id"},
+                {data: "_MAINTIME", title: mainTimeField},
+                {data: "title", title: "title"}
                 // {data: mainTextField, title: mainTextField}
             ]
         });
@@ -187,8 +188,7 @@ class DataListView extends BaseView {
             
             $(_this.getContainer()).find("#content").html(new_html);
             
-            if(test === 0 && sets.nullReport){
-                alert("没有搜索结果");    
+            if(test === 0 && sets.nullReport){   
                 return false;
             }
             

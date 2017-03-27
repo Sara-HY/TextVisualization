@@ -30,7 +30,6 @@ router.put("/process/:id", async function(req, res, next) {
                 data[key] = attrs[key];
             }
         }
-        console.log(data)
         await g.db.syncSave(g.datasetCollection, data);
         response.success(res);
     } catch (e) {

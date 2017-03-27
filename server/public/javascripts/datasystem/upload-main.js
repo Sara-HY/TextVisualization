@@ -21,17 +21,6 @@ $(function () {
         url: '/upload'
     });
 
-    // Enable iframe cross-domain access via redirect option:
-    $('#fileupload').fileupload(
-        'option',
-        'redirect',
-        window.location.href.replace(
-            /\/[^\/]*$/,
-            '/cors/result.html?%s'
-        )
-    );
-
-
     // Load existing files:
     $('#fileupload').addClass('fileupload-processing');
     $.ajax({
@@ -45,6 +34,7 @@ $(function () {
     }).done(function (result) {
         console.log(result);
         result = result.data;
+        $(this).fileupload('option','redirect', result.Webpath);
         $(this).fileupload('option', 'done')
             .call(this, $.Event('done'), {result: result});
     });
@@ -66,7 +56,7 @@ $(function () {
             }
 
         })
-    })
+    });
 
 });
 
@@ -103,4 +93,6 @@ function bytesToSize(bytes) {
         sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
         i = Math.floor(Math.log(bytes) / Math.log(k));
    return (bytes / Math.pow(k, i)).toPrecision(3) + ' ' + sizes[i];
-}
+};
+
+

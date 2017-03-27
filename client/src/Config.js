@@ -1,5 +1,5 @@
 let Config = {
-    serverUrl: "http://vis.pku.edu.cn/textvaserver/"
+    serverUrl: "http://localhost:5002"
 }
 
  

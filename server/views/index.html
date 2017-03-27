@@ -1,7 +1,102 @@
 {% extends "includes/layout.html" %}
+{% block head-include %}
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <link rel="stylesheet" href="/stylesheets/index.css">
+{% endblock %}
 
 {% block content %}
- 
-  <p>Welcome to Vis Group</p>
+<div id="particles-js"></div>
+<div class="sign-container">
+    <div class="index-tab-navs">
+        <div class="navs-slider">
+            <a class="sign-type" id="sign-up">Sign Up</a>
+            <span class="navs-slider-bar" id="sign-up-bar" style="display: none;"></span>
+            <a class="sign-type" id="sign-in">Sign In</a>
+            <span class="navs-slider-bar" id="sign-in-bar" style="display: block;"></span>
+        </div>
+	</div>
+	<div id="sign-up-form" style="display: none;">
+		<form class="col-sm-offset-4 col-sm-4 form-horizontal" role="form" method="post" onsubmit="return false">
+			<fieldset>
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<p class="sign-in-tip">Register to our site</h3>
+						<p>Enter your information to register:</p>
+					</div>
+					<div class="panel-body m15">
+						<div class="form-group">
+							<div class="input-group">
+								<span class="input-group-addon">
+								<span class="glyphicon glyphicon-user"></span>
+								</span>
+								<input type="text" class="form-control" id="up-username" name="username" placeholder="Username" required>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="input-group">
+								<span class="input-group-addon">
+								<span class="glyphicon glyphicon-lock"></span>
+								</span>
+								<input type="password" class="form-control" id="up-password" name="password" placeholder="Password" required>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="input-group">
+								<span class="input-group-addon">
+								<span class="glyphicon glyphicon-lock"></span>
+								</span>
+								<input type="password" class="form-control" id="retype-password" name="retype-password" placeholder="Retype the password" required>
+							</div>
+						</div>
+						<div class="form-group">
+							<button type="submit" class="btn btn-primary btn-block" id="SignUp">Sign Up</button>
+						</div>
+					</div>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+	<div id="sign-in-form" style="display: block;">
+		<form class="col-sm-offset-4 col-sm-4 form-horizontal" role="form" method="post" onsubmit="return false">
+			<fieldset>
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<p class="sign-in-tip">Login to our site</p>
+						<p>Enter your Username and Password to log on:</p>
+					</div>
+					<div class="panel-body m15">
+						<div class="form-group">
+							<div class="input-group">
+								<span class="input-group-addon">
+								<span class="glyphicon glyphicon-user"></span>
+								</span>
+								<input type="text" class="form-control" id="in-username" name="username" placeholder="Username" required>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="input-group">
+								<span class="input-group-addon">
+								<span class="glyphicon glyphicon-lock"></span>
+								</span>
+								<input type="password" class="form-control" id="in-password" name="password" placeholder="Password" required>
+							</div>
+						</div>
+						<div class="form-group">
+							<button type="submit" class="btn btn-primary btn-block" id="signIn">Sign In</button>
+						</div>
+					</div>
+				</div>
+			</fieldset>
+		</form>
+	</div>	
+</div>
+{% endblock %}
+
+{% block foot-include %}
+	<script type="text/javascript" src="/libraries/jquery/jquery.js"></script>   
+	<script type="text/javascript" src="/libraries/bootstrap/js/bootstrap.js"></script>
+	<script type="text/javascript" src="/libraries/particles.js/particles.js"></script>
+	<script type="text/javascript">particlesJS.load("particles-js", "config/particles.json");</script>
+	<script type="text/javascript" src="/javascripts/sign.js"></script>
 
 {% endblock %}

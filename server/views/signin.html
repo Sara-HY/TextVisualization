@@ -1,0 +1,117 @@
+{% extends "includes/layout.html" %}
+
+{% block content %}
+<style type="text/css" media="screen">
+		.signin-container {
+			position: absolute;
+			top: 20%;
+		}
+
+		.index-tab-navs {
+            margin-bottom: 10px;
+            font-size: 18px;
+            text-align: center
+        }
+        
+        .index-tab-navs .navs-slider {
+            position: relative;
+            display: inline-block;
+        }
+
+        .index-tab-navs .navs-slider .navs-slider-bar {
+		    position: absolute;
+		    left: 0;
+		    bottom: 0;
+		    margin: 0 .8em;
+		    width: 2.4em;
+		    height: 2px;
+		    background: #0f88eb;
+		    -webkit-transition: left .15s ease-in;
+		    transition: left .15s ease-in
+		}
+        
+        .index-tab-navs a {
+            float: left;
+            width: 4em;
+            line-height: 35px;
+            opacity: .7;
+            -ms-filter: " alpha(Opacity=70) ";
+            -webkit-transition: opacity .15s, color .15s;
+            transition: opacity .15s, color .15s
+        } 	
+        .sign-in-tip {
+        	font-size: 22px;
+		    font-weight: 300;
+		    color: #555;
+		    line-height: 30px;
+        }
+</style>
+<div class="signin-container">
+    <div class="index-tab-navs">
+        <div class="navs-slider">
+            <a href="/signup" style="margin-right: 50px;">Sign Up</a>
+            <a href="/signin">Sign In</a>
+            <span class="navs-slider-bar"></span>
+        </div>
+	</div>
+	<form class="col-sm-offset-4 col-sm-4 form-horizontal" role="form" method="post" onsubmit="return false">
+		<fieldset>
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<p class="sign-in-tip">Login to our site</p>
+					<p>Enter your Username and Password to log on:</p>
+				</div>
+				<div class="panel-body m15">
+					<div class="form-group">
+						<div class="input-group">
+							<span class="input-group-addon">
+							<span class="glyphicon glyphicon-user"></span>
+							</span>
+							<input type="text" class="form-control" id="username" name="username" placeholder="Username" required>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="input-group">
+							<span class="input-group-addon">
+							<span class="glyphicon glyphicon-lock"></span>
+							</span>
+							<input type="text" class="form-control" id="password" name="password" placeholder="Password" required>
+						</div>
+					</div>
+					<div class="form-group">
+						<button type="submit" class="btn btn-primary btn-block" id="signIn">Sign In</button>
+					</div>
+				</div>
+			</div>
+		</fieldset>
+	</form>
+</div>
+
+<script type="text/javascript" src="/libraries/jquery/jquery.js"></script>   
+<script type="text/javascript" src="/libraries/bootstrap/js/bootstrap.js"></script>
+<script type="text/javascript">
+$(function(){ 
+	$("#signIn").click(function(){ 
+		var username = $("#username").val();
+		var password = $("#password").val();
+		var data = {"userName":username, "userPwd":password};
+		$.ajax({ 
+			url:'/login',
+			type:'post',
+			data: data,
+			success: function(data, status){ 
+				if(status == 'success'){ 
+					location.href = 'datasystem/upload';
+				}
+			},
+			error: function(data,status){ 
+				if(status == 'error'){ 
+					location.href = 'login';
+				}
+			}
+		});
+	});
+});
+</script>
+
+{% endblock %}

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Text Visual Analytics System</title>
+    <title>Document Facets Analytics System</title>
     {% block head %}  {% endblock %}
 
     <link href="/libraries/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -15,7 +15,7 @@
 
 <body>
     {% block header %}
-        {% include "header.html" %}
+
     {% endblock %}
 
     {% block content %}
@@ -23,17 +23,16 @@
     {% endblock %}
 
     {% block footer %}
-
+        <div class="footer">
+             <span>&copy; 2017 · Sara Han · Peking University</span>
+        </div>
     {% endblock %}
 
-    
-    <script type="text/javascript" src="/libraries/jquery/jquery.js"></script>
-    <script type="text/javascript" src="/libraries/jquery-ui/jquery-ui.js"></script>    
-    <script type="text/javascript" src="/libraries/bootstrap/js/bootstrap.js"></script>
-    <script type="text/javascript" src="/libraries/underscore/underscore.js"></script>
-
     {% block foot-include %}
-
+        <script type="text/javascript" src="/libraries/jquery/jquery.js"></script>
+        <script type="text/javascript" src="/libraries/jquery-ui/jquery-ui.js"></script>    
+        <script type="text/javascript" src="/libraries/bootstrap/js/bootstrap.js"></script>
+        <script type="text/javascript" src="/libraries/underscore/underscore.js"></script>       
     {% endblock %}
 </body>
 </html>

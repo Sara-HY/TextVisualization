@@ -13,14 +13,22 @@ var express = require('express'),
 var g = require("../global.js");
 var ObjectID = require('mongoskin').ObjectID;    
 
-router.get('/upload', function(req, res, next) {
-    var html = swig.renderFile( path.join(config.rootPath, "/views/datasystem/upload.html") );
+router.get('/upload', async function(req, res, next) {
+    if(!req.session.user){                  
+        req.session.error = "请先登录"
+        return res.redirect("/");              
+    } 
+    var html = swig.renderFile(path.join(config.rootPath, "/views/datasystem/upload.html"), {userName: req.session.user});
     res.write(html);
     res.write(fs.readFileSync( path.join(config.rootPath, "/views/datasystem/upload-template.html")) );
     res.end();
 });
 
 router.get('/process/:id', async function(req, res, next) {
+    if(!req.session.user){                  
+        req.session.error = "请先登录"
+        return res.redirect("/");              
+    }
     var datasetID = req.params.id;
     var data = await g.db.syncFindOne(g.datasetCollection, {"_id": ObjectID(datasetID)});
     if (data == null) {
@@ -35,9 +43,8 @@ router.get('/process/:id', async function(req, res, next) {
     if (fileName.endsWith("csv"))
         result = parseCSVFields(fileData);
     else if (fileName.endsWith("json"))
-        result = parseJSONFields(fileData)
-    console.log("result", result);
-    res.render('datasystem/process', { datasetID: datasetID, fileName: fileName, fields: result.fields, preview: result.preview });
+        result = parseJSONFields(fileData);
+    res.render('datasystem/process', {userName: req.session.user, datasetID: datasetID, fileName: fileName, fields: result.fields, preview: result.preview, webPath: g.webPath});
 });
 
 

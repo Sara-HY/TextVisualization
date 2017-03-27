@@ -7,6 +7,7 @@ var userCollection = db.getCollection("user");
 var datasetCollection = db.getCollection("dataset");
 
 exports.db = db;
+exports.webPath = config.webPath;
 exports.testCollection = testCollection;
 exports.userCollection = userCollection;
 exports.datasetCollection = datasetCollection;
