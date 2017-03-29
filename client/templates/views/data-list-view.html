@@ -3,6 +3,7 @@
 <% block view-content %>  
 	<div>
 		<input type="text" id="keyword" value=""/>
+        <span class="badge" id="data-length"></span>
         <span class="btn btn-default btn-xs" id="search-btn">search</span>
         <span class="btn btn-default btn-xs" id="filter-btn">Filter</span>
     	<span class="btn btn-default btn-xs" id="clear-btn">Clear</span>
@@ -10,5 +11,7 @@
     <div class="list-table">
     	<table id="data-table" class="display"></table>
     </div>
-    <div class="text-content" id="content"></div>
+    <div class="data-list-text" id="text-content">
+        
+    </div>
 <% endblock %>

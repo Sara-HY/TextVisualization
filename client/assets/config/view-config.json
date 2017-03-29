@@ -14,7 +14,7 @@
     {
         "Class": "DocumentGalaxyView",
         "id": "document-galaxy-view",
-        "title": "Document Graph View",
+        "title": "Document Galaxy View",
         "layout": {
             "position": "absolute",
             "top": "50px",
@@ -43,8 +43,20 @@
             "position": "absolute",
             "right": 0, 
             "width": "34%",
-            "bottom": "0",
+            "bottom": "30%",
             "top": "50px"
+        }
+    },
+    {
+        "Class": "GroupListView",
+        "id": "group-list-view",
+        "title": "Group List View",
+        "layout": {
+            "position": "absolute",
+            "width": "34%",
+            "right": "0%",
+            "bottom": "0",
+            "height": "30%"
         }
     },
     // {
@@ -57,18 +69,6 @@
     //         "right": 0,
     //         "width": "25%",
     //         "bottom": "50%"
-    //     }
-    // },
-    // {
-    //     "Class": "GroupListView",
-    //     "id": "group-list-view",
-    //     "title": "Group List View",
-    //     "layout": {
-    //         "position": "absolute",
-    //         "width": "25%",
-    //         "right": "0%",
-    //         "bottom": "0",
-    //         "height": "50%"
     //     }
     // },
     // {

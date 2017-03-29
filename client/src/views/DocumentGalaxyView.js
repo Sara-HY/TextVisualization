@@ -8,6 +8,9 @@ import viewTemplate from "../../templates/views/document-galaxy-view.html!text"
 
 import "d3-tip"
 import "d3-tip-css!css"
+import "jRange"
+import "jRange-css!css"
+import "scrollTo"
 import "scripts/doc-text-processor.js"
 
 class DocumentGalaxyView extends BaseView {
@@ -16,7 +19,7 @@ class DocumentGalaxyView extends BaseView {
         this._init();
     }
 
-    _init() {
+    async _init() {
         var _this = this;        
         window.DocumentGalaxyView = this;
         this.spinner.spin(this.getContainer());
@@ -32,14 +35,20 @@ class DocumentGalaxyView extends BaseView {
 
         var worker = new Worker("scripts/worker-tsne.js");  
         this.tsneWorker = worker;
-        this.disMatrix = this._getDocDistanceMatrixByTFIDF();
-        this.disMethod = "TFIDF";
+        //default distance is topic
+        this.disMatrix = await this._getDocDistanceMatrixByTopic();
+        this.disMethod = "topic";
+        //default distance is tfidf
+        // this.disMatrix = this._getDocDistanceMatrixByTFIDF();
+        // this.disMethod = "TFIDF";
+
         worker.postMessage({"cmd":"init", "distance": this.disMatrix});
 
         worker.onmessage = async function(event) {
             var data = event.data;
             if (data.message == "running") {
                 _this.dotPositions = data.positions;
+
                 _this.render();
             }
             if (data.message == "end") {
@@ -126,31 +135,73 @@ class DocumentGalaxyView extends BaseView {
         //     // _this.svg.selectAll(".doc-group.selected").classed("selected", false);
         //     PubSub.publish("DocumentGalaxyView.CreateGroup", selected);
         // })
+        $(_this.getContainer()).find("#topic-slider").jRange({
+            from: 0,
+            to: 10,
+            step: 1,
+            scale: [0,5,10],
+            format: '%s',
+            width: 500,
+            showLabels: true,
+            showScale: true
+        });
 
+        $(_this.getContainer()).find("#keywords-slider").jRange({
+            from: 0,
+            to: 10,
+            step: 1,
+            scale: [0,5,10],
+            format: '%s',
+            width: 500,
+            showLabels: true,
+            showScale: true
+        });
+
+        $(_this.getContainer()).find("#config-btn").click(function(){
+            $(_this.getContainer()).find("#topic-keywords-modal").modal();
+        })
+
+        $(this.getContainer()).on("click", "#topic-keywords-modal #config-ok-btn", function(){
+            var topicNum = $(_this.getContainer()).find("#topic-slider").val(),
+                keywordNum = $(_this.getContainer()).find("#keywords-slider").val();
+            console.log(topicNum, keywordNum);
+            $(_this.getContainer()).find("#topic-keywords-modal").modal("hide");
+        })
     }
 
     _initView() {
         var { width, height } = this.getViewSize();
-        this.graphSize = Math.min(width, height) * 0.8;
-        var x = (width - this.graphSize) / 2,
-            y = (height - this.graphSize) / 2;
-        this.svg = d3.select(this.getContainer()).append("svg")
+        var margin = {top: 30, right: 30, bottom: 30, left: 30};
+
+        this.graphWidth = width - margin.left - margin.right;
+        this.graphHeight = height - margin.top - margin.bottom;
+
+        // this.graphSize = Math.min(width, height) * 0.8;
+        // var x = (width - this.graphSize) / 2,
+        //     y = (height - this.graphSize) / 2;
+        this.svg = d3.select("#galaxy-svg").append("svg")
             .attr("width", width)
             .attr("height", height);         
         this.wordGroup = this.svg.append("g")
-            .attr("transform", "translate(" + x + "," + y + ")")
-            .attr("offset-x", x)
-            .attr("offset-y", y)              
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+            .attr("offset-x", margin.left)
+            .attr("offset-y", margin.top)              
         this.dotGroup = this.svg.append("g")
-            .attr("transform", "translate(" + x + "," + y + ")")
-            .attr("offset-x", x)
-            .attr("offset-y", y)
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+            .attr("offset-x", margin.left)
+            .attr("offset-y", margin.top)
            
-        this.tip = d3.tip().attr('class', 'd3-tip graph-tip');
+        this.tip = d3.tip().attr('class', 'd3-tip').offset([-10, 0]);
         this.svg.call(this.tip); 
 
-        var drag = this._initDragPolygon();        
-        this.svg.call(drag);
+        // var drag = this._initDragPolygon();        
+        // this.svg.call(drag);
+
+        // rect brush
+        var brush = this._initBrush();
+        this.svg.append("g")
+            .attr("class", "brush")
+            .call(brush);
     }
 
     _initControllerGUI() {
@@ -159,9 +210,9 @@ class DocumentGalaxyView extends BaseView {
         var folder = this.datGUI.addFolder(this.viewTitle);
         var options =  {
             // "distance_type": "Topic Model"
-            "Show Keywords": false,
+            "Show Keywords": true,
             "Color Coding": "Topic",
-            "Distance Type": "TF-IDF"
+            "Distance Type": "Topic Model"
         }
         this.showKeywordsController = folder.add(options, "Show Keywords");
 
@@ -175,7 +226,7 @@ class DocumentGalaxyView extends BaseView {
             _this.reRender();
         });        
         
-        this.DatGUIController = folder.add(options, 'Distance Type', [ "TF-IDF", "Topic Model" ] );
+        this.DatGUIController = folder.add(options, 'Distance Type', ["Topic Model", "TF-IDF"] );
 
         this.DatGUIController.onChange(function(data) {
             if (data == "TF-IDF")
@@ -188,7 +239,7 @@ class DocumentGalaxyView extends BaseView {
     changeDistanceWeight(type) {
         if (type == "tfidf") {
             this.disMatrix = this._getDocDistanceMatrixByTFIDF();
-            this.disMethod = "TFIdF";
+            this.disMethod = "TFIDF";
         }
         else if (type == "topic") {
             this.disMatrix = this._getDocDistanceMatrixByTopic();
@@ -207,11 +258,13 @@ class DocumentGalaxyView extends BaseView {
         var minY = _.minBy(this.dotPositions, function(d) {return d[1]})[1];
         var maxY = _.maxBy(this.dotPositions, function(d) {return d[1]})[1];
 
-        var width = this.graphSize, height = this.graphSize;
+        // var { width, height } = this.graphSize;
 
         this.dotPositions = _.map(this.dotPositions, function(d) {
-            return [Utils.scaling(d[0], minX, maxX, 0, width), 
-                    Utils.scaling(d[1], minY, maxY, 0, height)];
+            // return [Utils.scaling(d[0], minX, maxX, 0, width), 
+            //         Utils.scaling(d[1], minY, maxY, 0, height)];
+            return [Utils.scaling(d[0], minX, maxX, 0, _this.graphWidth), 
+                    Utils.scaling(d[1], minY, maxY, 0, _this.graphHeight)];
         })
 
         if (this.dotGroup.selectAll("g.doc-group").size() == 0) { 
@@ -255,7 +308,7 @@ class DocumentGalaxyView extends BaseView {
                     var x = d[0], y = d[1];
                     var tip = _this.tip;
                     var text = "[" + index + "] " + docs[index]["title"];
-                    var dir = Utils.getTipDirection(x, y, 300, 200, width, height);
+                    var dir = Utils.getTipDirection(x, y, 300, 200, _this.graphWidth, _this.graphHeight);
                     tip.html(text).direction("n")
                     var tipEle = d3.select(".graph-tip")
                     tipEle.classed("top", false).classed("bottom", false);
@@ -270,7 +323,6 @@ class DocumentGalaxyView extends BaseView {
                 })
         })
         this.reRender();        
-
     }
 
     reRender() {
@@ -293,13 +345,71 @@ class DocumentGalaxyView extends BaseView {
                 .classed("filtered-out", function() {
                     return !_this.filteredSet.has(_this.data[index]);
                 })
-                .classed("not-selected", function() {
-                    if (_this.selectedSet.size == 0) return false;
-                    return !_this.selectedSet.has(_this.data[index]);
-                })
+                // .classed("not-selected", function() {
+                //     if (_this.selectedSet.size == 0) return false;
+                //     return !_this.selectedSet.has(_this.data[index]);
+                // })
         })
     }
 
+    _initBrush() {
+        var _this = this;
+        var docs = DataCenter.data;
+        var { width, height } = this.getViewSize();
+
+        // var brush = _this.svg.append("g")
+        //     .attr("class", "brush")
+        //     .call(
+
+        var brush = d3.svg.brush()
+                .x(d3.scale.identity().domain([0, width]))
+                .y(d3.scale.identity().domain([0, height]))
+                .on("brush", function() {
+                    _this.selectedDocIDs = [];
+                    var extent = d3.event.target.extent();
+                    var offsetX = Number(_this.dotGroup.attr("offset-x")), offsetY = Number(_this.dotGroup.attr("offset-y"));
+                    _this.svg.selectAll(".doc-group").each(function(d, i){
+                        if((extent[0][0] - offsetX) < d[0] && d[0] < (extent[1][0] - offsetX) 
+                            && (extent[0][1] - offsetY) < d[1] && d[1] < (extent[1][1] - offsetY)){
+                            _this.selectedDocIDs.push(i);
+                        }
+                    })
+                    uncolorAll();
+                    color(_this.selectedDocIDs);
+                })
+                .on("brushend", function(){
+                    if(_this.selectedDocIDs.length)
+                        select(_this.selectedDocIDs);
+                    else
+                        unselectAll();
+                });
+
+            function unselectAll() {
+                FilterCenter.removeFilter(_this);
+            }
+
+            function select(docIDs) {
+                var selectedData = [];
+                for (var id of docIDs) {
+                    if (_this.filteredSet.has(docs[id]))
+                        selectedData.push(docs[id]);
+                }
+                FilterCenter.addFilter(_this, selectedData);
+            }
+
+            function color(dotsData) {
+                _this.svg.selectAll(".doc-group").filter(function(d, i){
+                    return dotsData.indexOf(i) >= 0;
+                })
+                .classed("selected", true);
+            }
+
+            function uncolorAll() {
+                _this.svg.selectAll(".doc-group").classed("selected", false);
+            }
+
+        return brush;
+    }
 
     _initDragPolygon() {
         var _this = this;
@@ -325,9 +435,12 @@ class DocumentGalaxyView extends BaseView {
                 var offsetX = Number(_this.dotGroup.attr("offset-x")), offsetY = Number(_this.dotGroup.attr("offset-y"));
                 _this.svg.selectAll(".doc-group").each(function(d, i) {
                     var point = [ +(d3.select(this).attr("cx")) + offsetX,  +(d3.select(this).attr("cy")) +  offsetY];
-                    if (Utils.isPointInPolygon(point, _this.dragCoords)) 
+                    if (Utils.isPointInPolygon(point, _this.dragCoords)){
+                        console.log(i);
                         _this.selectedDocIDs.push(i);
+                    }
                 });
+                console.log(_this.selectedDocIDs);
                 unhighlightAll();
                 highlight(_this.selectedDocIDs);
             })
@@ -391,8 +504,17 @@ class DocumentGalaxyView extends BaseView {
     renderWords() {
         var _this = this;
         var docs = DataCenter.data;
-        var groups = GroupCenter.groups;
         var topWords = [];
+        var groups = [];
+        if(_this.disMethod == "topic"){
+            groups = _.filter(GroupCenter.groups, function(group) {
+                return group.type == "Topic";
+            });
+        }else{
+            groups = _.filter(GroupCenter.groups, function(group) {
+                return group.type != "Topic";
+            });
+        }
 
         for (var group of groups) {
             if (group.data.length == 0) continue;
@@ -404,7 +526,7 @@ class DocumentGalaxyView extends BaseView {
             center[0] /= group.data.length;
             center[1] /= group.data.length;
             //extract top 3 words
-            var words = DataCenter.docTextProcessor.getTopKeywordsByTFIDF(group.data, 3, true)
+            var words = DataCenter.docTextProcessor.getTopKeywordsByTFIDF(group.data, 3, true);
             words = _.map(words, "word");
             topWords.push({ "words": words, "center": center, "groupID": group.id, "color": group.color});
         }
@@ -449,16 +571,29 @@ class DocumentGalaxyView extends BaseView {
         return matrix;
     }
 
-    _getDocDistanceMatrixByTopic() {
+    async _getDocDistanceMatrixByTopic() {
         var matrix = [];
         var docs = this.data;
-        var model = DataCenter.topicModel;
+        var _this = this;
+        var model;
+
+        // get topic-model
+        if(DataCenter.topicModel){
+            model = DataCenter.topicModel;
+        }
+        else{
+            model = await DataCenter.getTopicModel(5, 0, null, null);;
+            DataCenter.topicModel = model;
+            model.pullToGroups();
+            PubSub.publish("DataCenter.TopicModel.Update");
+        }
+        
+        // get distanceMatrix
         for (var i = 0; i < docs.length; i++) {
             matrix[i] = [];
             for (var j = 0; j < docs.length; j++)
                 matrix[i][j] = 0;
         }
-
         // KL散度距离
         for (var i = 0; i < docs.length; i++) {
             for (var j = i + 1; j < docs.length; j++) {

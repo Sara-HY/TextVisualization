@@ -20,6 +20,8 @@ class DataListView extends BaseView {
 
         this.data = DataCenter.data;
         this.filteredData = this.data;
+        this.keyword =  $(this.getContainer()).find("#keyword");
+        this.textContent = $(this.getContainer()).find("#text-content");
 
         PubSub.subscribe("FilterCenter.Changed", function(msg, data) {
             _this.filteredData = FilterCenter.getFilteredDataByView(_this);
@@ -41,9 +43,8 @@ class DataListView extends BaseView {
         })
 
         $(this.getContainer()).on("click", "#search-btn", function() {
-            var word = $(_this.getContainer()).find("#keyword").val();
+            var word = _this.keyword.val();
             _this.textSearch(word);
-            return false;
         });
     }
 
@@ -54,8 +55,7 @@ class DataListView extends BaseView {
         var mainTimeField = DataCenter.fields._MAINTIME;
         var mainTextField = DataCenter.fields._MAINTEXT;
 
-        console.log("data", this.data);
-
+        this.dataLength = $(this.getContainer()).find("#data-length").html(this.data.length);
         this.dataTable = table.DataTable({
             data: this.data,
             searching: false,
@@ -69,7 +69,7 @@ class DataListView extends BaseView {
                 // {data: mainTextField, title: mainTextField}
             ]
         });
-        $(this.getContainer()).find("#content").html(this.data[0]["text"]); 
+        this.textContent.html(this.data[0]["text"]); 
 
         $(this.getContainer()).on("mouseenter", "tr", function() {
             $(this).addClass("hover")
@@ -78,8 +78,8 @@ class DataListView extends BaseView {
             $(this).removeClass("hover")
         })   
         $(this.getContainer()).on("click", "tr", function() {
-            $(_this.getContainer()).find("#content").html(_this.dataTable.row(this).data()["text"]);
-            var word = $(_this.getContainer()).find("#keyword").val();
+            _this.textContent.html(_this.dataTable.row(this).data()["text"]);
+            var word = _this.keyword.val();
             if(word)
                 _this.textSearch(word);
 
@@ -93,8 +93,10 @@ class DataListView extends BaseView {
     reRender() {
         this.dataTable.clear();
         this.dataTable.rows.add(this.filteredData);
-        $(this.getContainer()).find("#content").html(this.filteredData[0]["text"]); 
+        this.dataLength.html(this.filteredData.length);
+        this.textContent.html(this.filteredData[0]["text"]); 
         this.dataTable.draw();
+
     }
 
     textSearch(str, options){
@@ -118,10 +120,9 @@ class DataListView extends BaseView {
         
         //对前一次高亮处理的文字还原     
         $("span[rel='mark']").each(function() {
-            var text = document.createTextNode($(_this.getContainer()).find("#content").text()); 
-            $(_this.getContainer()).find("#content").replaceWith($(text));
+            var text = document.createTextNode(_this.textContent.text()); 
+            _this.textContent.html(text);
         });
-        
         
         //字符串正则表达式关键字转化
         $.regTrim = function(s){
@@ -145,8 +146,9 @@ class DataListView extends BaseView {
             }); 
             return s;
         };
-        $(_this.getContainer()).find("#content").each(function(){
-            var t = $(_this.getContainer()).find("#content");
+
+        this.textContent.each(function(){
+            var t = _this.textContent;
             str = $.trim(str);
             if(str === ""){
                 alert("关键字为空"); 
@@ -185,13 +187,11 @@ class DataListView extends BaseView {
             });
             //将支离数组重新组成字符串
             var new_html = a.join("");
-            
-            $(_this.getContainer()).find("#content").html(new_html);
+            t.html(new_html);
             
             if(test === 0 && sets.nullReport){   
                 return false;
-            }
-            
+            }          
             //执行回调函数
             sets.callback();
         });

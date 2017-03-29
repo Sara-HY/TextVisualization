@@ -218,12 +218,15 @@ class EntityGraphView extends BaseView {
         });
 
         this.node.selectAll("circle").on("dblclick", function(d, i) {
-            if (_this.selectedNode.indexOf(d) >= 0)
-                _this.selectedNode = [];    
-            else
+            if (_this.selectedNode.indexOf(d) >= 0){
+                _this.selectedNode = []; 
+                FilterCenter.removeFilter(_this);   
+            }
+            else{
                 _this.selectedNode = [d];
+                FilterCenter.addFilter(_this, d.docs);
+            }
             
-            FilterCenter.addFilter(_this, d.docs);
         }) 
 
         this.reRender();       

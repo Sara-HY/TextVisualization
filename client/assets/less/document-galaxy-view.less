@@ -15,6 +15,11 @@
     // }
 }
 
+.graph-tip {
+    position: absolute;
+    top: 50px;
+}
+
 
 .document-galaxy-view {
     user-select: none;
@@ -23,14 +28,16 @@
     .filtered-out {
         display: none;
     }
+    
     .not-selected {
         opacity: 0.2;
     }
-    
-    .controller-btn-group {
-        position: absolute;
-        right: 10px;
-        top: 10px;
+
+    #config-btn {
+        position: absolute; 
+        right: 5px; 
+        top: 5px; 
+        z-index: 10;
     }
 
     .polygon-selection {
@@ -47,7 +54,7 @@
 
     .selected .doc-dot, .drag-highlight .doc-dot {
         opacity: 1;
-        stroke: red;
+        stroke: yellow;
         stroke-width: 2px;        
     }
 
@@ -79,4 +86,21 @@
             stroke-dashoffset: 1000;
         }
     }
+
+    .brush .extent {
+        fill-opacity: .1;
+        stroke: #fff;
+        shape-rendering: crispEdges;
+    }
+
+    .galaxy-slider{
+        width: 100%;
+        padding: 0px 0px 20px 30px;
+    }
+
+    .galaxy-slider-title{
+        width:100%; 
+        padding: 20px 0px 20px 0px;
+    }
+
 }
