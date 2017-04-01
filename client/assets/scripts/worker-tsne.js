@@ -14,7 +14,7 @@ onmessage = function(event) {
         start(distanceMatrix, 500);
     } else if (event.data.cmd == "update") {
         tSNE.setDataDist(distanceMatrix, false);
-        start(distanceMatrix, 1000);
+        start(distanceMatrix, 500);
     }
 };
 

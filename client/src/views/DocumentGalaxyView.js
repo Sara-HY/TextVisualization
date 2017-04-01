@@ -8,6 +8,7 @@ import viewTemplate from "../../templates/views/document-galaxy-view.html!text"
 
 import "d3-tip"
 import "d3-tip-css!css"
+import "jquery-ui"
 import "jRange"
 import "jRange-css!css"
 import "scrollTo"
@@ -31,7 +32,8 @@ class DocumentGalaxyView extends BaseView {
         _this._initView();         
 
         this.disMatrix = null;
-        this.currTopicModels = null;
+        this.topicNum = 5;
+        this.keywordNum = 3;
 
         var worker = new Worker("scripts/worker-tsne.js");  
         this.tsneWorker = worker;
@@ -43,12 +45,10 @@ class DocumentGalaxyView extends BaseView {
         // this.disMethod = "TFIDF";
 
         worker.postMessage({"cmd":"init", "distance": this.disMatrix});
-
         worker.onmessage = async function(event) {
             var data = event.data;
             if (data.message == "running") {
                 _this.dotPositions = data.positions;
-
                 _this.render();
             }
             if (data.message == "end") {
@@ -60,14 +60,6 @@ class DocumentGalaxyView extends BaseView {
             }
         }
 
-        // PubSub.subscribe("DataCenter.TopicModel.Update", function() {
-        //     var disMatrix = _this._getDocDistanceMatrixByTopic();
-        //     _this.disMatrix = disMatrix;
-            
-        //     _this.currTopicModels = DataCenter.topicModels;
-        //     worker.postMessage({"cmd":"update", "distance": disMatrix});    
-        // })
-
         PubSub.subscribe("DocumentGalaxyView.Layout.End", async function(msg, data) {
             _this.render();
             _this.renderWords();
@@ -78,6 +70,14 @@ class DocumentGalaxyView extends BaseView {
             _this.render();
             _this.renderWords();
         })
+
+        // PubSub.subscribe("DataCenter.TopicModel.Update", function() {
+        //     var disMatrix = _this._getDocDistanceMatrixByTopic();
+        //     _this.disMatrix = disMatrix;
+            
+        //     _this.currTopicModels = DataCenter.topicModels;
+        //     worker.postMessage({"cmd":"update", "distance": _this.disMatrix});
+        // })
 
         //Interaction of highlight        
         PubSub.subscribe("Interaction.Highlight.Doc", function(msg, data) {
@@ -141,6 +141,7 @@ class DocumentGalaxyView extends BaseView {
             step: 1,
             scale: [0,5,10],
             format: '%s',
+            theme: 'theme-blue',
             width: 500,
             showLabels: true,
             showScale: true
@@ -148,24 +149,55 @@ class DocumentGalaxyView extends BaseView {
 
         $(_this.getContainer()).find("#keywords-slider").jRange({
             from: 0,
-            to: 10,
+            to: 5,
             step: 1,
-            scale: [0,5,10],
+            scale: [0,1,2,3,4,5],
             format: '%s',
+            theme: 'theme-blue',
             width: 500,
+            value: _this.keywordNum,
             showLabels: true,
             showScale: true
         });
 
         $(_this.getContainer()).find("#config-btn").click(function(){
+            $(_this.getContainer()).find("#topic-slider").jRange('setValue',  _this.topicNum.toString());
+            $(_this.getContainer()).find("#keywords-slider").jRange('setValue', _this.keywordNum.toString());
             $(_this.getContainer()).find("#topic-keywords-modal").modal();
         })
 
-        $(this.getContainer()).on("click", "#topic-keywords-modal #config-ok-btn", function(){
+        $(_this.getContainer()).on("click", "#topic-keywords-modal #config-ok-btn", async function(){
             var topicNum = $(_this.getContainer()).find("#topic-slider").val(),
                 keywordNum = $(_this.getContainer()).find("#keywords-slider").val();
-            console.log(topicNum, keywordNum);
+
             $(_this.getContainer()).find("#topic-keywords-modal").modal("hide");
+
+            if(topicNum != _this.topicNum){
+                _this.topicNum = topicNum;
+                _this.keywordNum = keywordNum;
+                _this.disMatrix= await _this._getDocDistanceMatrixByTopic();
+
+                _this.spinner.spin(_this.getContainer());
+                _this.tsneWorker.postMessage({"cmd":"update", "distance": _this.disMatrix});
+                worker.onmessage = async function(event) {
+                    var data = event.data;
+                    if (data.message == "running") {
+                        _this.dotPositions = data.positions;
+                        _this.render();
+                    }
+                    if (data.message == "end") {
+                        _this.spinner.stop();
+                        PubSub.publish("DocumentGalaxyView.Layout.End", {
+                            "method": _this.disMethod,
+                            "positions": _this.dotPositions
+                        });
+                    }
+                }
+            }
+            else if(keywordNum != _this.keywordNum){
+                _this.keywordNum = keywordNum;
+                _this.renderWords();
+            }
         })
     }
 
@@ -204,50 +236,50 @@ class DocumentGalaxyView extends BaseView {
             .call(brush);
     }
 
-    _initControllerGUI() {
-        var _this = this;
-        var datGUI = DatGUI.gui;
-        var folder = this.datGUI.addFolder(this.viewTitle);
-        var options =  {
-            // "distance_type": "Topic Model"
-            "Show Keywords": true,
-            "Color Coding": "Topic",
-            "Distance Type": "Topic Model"
-        }
-        this.showKeywordsController = folder.add(options, "Show Keywords");
+    // _initControllerGUI() {
+    //     var _this = this;
+    //     var datGUI = DatGUI.gui;
+    //     var folder = this.datGUI.addFolder(this.viewTitle);
+    //     var options =  {
+    //         // "distance_type": "Topic Model"
+    //         "Show Keywords": true,
+    //         "Color Coding": "Topic",
+    //         "Distance Type": "Topic Model"
+    //     }
+    //     this.showKeywordsController = folder.add(options, "Show Keywords");
 
-        this.showKeywordsController.onChange(function(data) {
-            _this.renderWords();
-        });
+    //     this.showKeywordsController.onChange(function(data) {
+    //         _this.renderWords();
+    //     });
 
-        this.colorCodingController = folder.add(options, 'Color Coding', [ "Topic", "HCluster", "Group" ] );
+    //     this.colorCodingController = folder.add(options, 'Color Coding', [ "Topic", "HCluster", "Group" ] );
 
-        this.colorCodingController.onChange(function(data) {
-            _this.reRender();
-        });        
+    //     this.colorCodingController.onChange(function(data) {
+    //         _this.reRender();
+    //     });        
         
-        this.DatGUIController = folder.add(options, 'Distance Type', ["Topic Model", "TF-IDF"] );
+    //     this.DatGUIController = folder.add(options, 'Distance Type', ["Topic Model", "TF-IDF"] );
 
-        this.DatGUIController.onChange(function(data) {
-            if (data == "TF-IDF")
-                _this.changeDistanceWeight("tfidf");
-            if (data == "Topic Model")
-                _this.changeDistanceWeight("topic");
-        });        
-    }
+    //     this.DatGUIController.onChange(function(data) {
+    //         if (data == "TF-IDF")
+    //             _this.changeDistanceWeight("tfidf");
+    //         if (data == "Topic Model")
+    //             _this.changeDistanceWeight("topic");
+    //     });        
+    // }
 
-    changeDistanceWeight(type) {
-        if (type == "tfidf") {
-            this.disMatrix = this._getDocDistanceMatrixByTFIDF();
-            this.disMethod = "TFIDF";
-        }
-        else if (type == "topic") {
-            this.disMatrix = this._getDocDistanceMatrixByTopic();
-            this.disMethod = "topic";
-        }
-        this.tsneWorker.postMessage({"cmd":"update", "distance": this.disMatrix});
-        // this.tsneWorker.postMessage({"cmd":"init", "distance": this.disMatrix});
-    }
+    // changeDistanceWeight(type) {
+    //     if (type == "tfidf") {
+    //         this.disMatrix = this._getDocDistanceMatrixByTFIDF();
+    //         this.disMethod = "TFIDF";
+    //     }
+    //     else if (type == "topic") {
+    //         this.disMatrix = this._getDocDistanceMatrixByTopic();
+    //         this.disMethod = "topic";
+    //     }
+    //     this.tsneWorker.postMessage({"cmd":"update", "distance": this.disMatrix});
+    //     // this.tsneWorker.postMessage({"cmd":"init", "distance": this.disMatrix});
+    // }
 
     render () {
         var _this = this;
@@ -327,20 +359,9 @@ class DocumentGalaxyView extends BaseView {
 
     reRender() {
         var _this = this;
-        var colorCodingType = this.colorCodingController.getValue();
         this.dots.each(function(d, index) {
             d3.select(this)
-                .attr("fill", function() {
-                    var groups = GroupCenter.groups;
-                    for (var g of groups) {
-                        if (g.type != colorCodingType) continue;
-                        if (g.data.indexOf(index) >= 0) {
-                            var color = g.color;
-                            return color;
-                        }
-                    }
-                    return "transparent";
-                })
+                .attr("fill", "rgba(0, 0, 0, 0.3)")                    
                 .attr("stroke", "rgba(0, 0, 0, 0.3)")
                 .classed("filtered-out", function() {
                     return !_this.filteredSet.has(_this.data[index]);
@@ -356,10 +377,6 @@ class DocumentGalaxyView extends BaseView {
         var _this = this;
         var docs = DataCenter.data;
         var { width, height } = this.getViewSize();
-
-        // var brush = _this.svg.append("g")
-        //     .attr("class", "brush")
-        //     .call(
 
         var brush = d3.svg.brush()
                 .x(d3.scale.identity().domain([0, width]))
@@ -411,94 +428,94 @@ class DocumentGalaxyView extends BaseView {
         return brush;
     }
 
-    _initDragPolygon() {
-        var _this = this;
-        var docs = DataCenter.data;
-        this.dragCoords = [];
-        //reference from http://bl.ocks.org/bycoffe/5871227
-        var line = d3.svg.line(),
-        drag = d3.behavior.drag()
-            .on("dragstart", function() {
-                _this.dragCoords = [];  // Empty the coords array.
-                // If a selection line already exists, remove it, and then add a new selection line.
-                _this.svg.select(".polygon-selection").remove();
-                _this.svg.append("path").attr({"class": "polygon-selection"});
-            })
-            .on("drag", function() {
-                _this.dragCoords.push(d3.mouse(this));  // Store the mouse's current position
-                // Change the path of the selection line to represent the area where the mouse has been dragged.
-                _this.svg.select(".polygon-selection").attr({ d: line(_this.dragCoords) });
+    // _initDragPolygon() {
+    //     var _this = this;
+    //     var docs = DataCenter.data;
+    //     this.dragCoords = [];
+    //     //reference from http://bl.ocks.org/bycoffe/5871227
+    //     var line = d3.svg.line(),
+    //     drag = d3.behavior.drag()
+    //         .on("dragstart", function() {
+    //             _this.dragCoords = [];  // Empty the coords array.
+    //             // If a selection line already exists, remove it, and then add a new selection line.
+    //             _this.svg.select(".polygon-selection").remove();
+    //             _this.svg.append("path").attr({"class": "polygon-selection"});
+    //         })
+    //         .on("drag", function() {
+    //             _this.dragCoords.push(d3.mouse(this));  // Store the mouse's current position
+    //             // Change the path of the selection line to represent the area where the mouse has been dragged.
+    //             _this.svg.select(".polygon-selection").attr({ d: line(_this.dragCoords) });
 
-                // Figure out which dots are inside the drawn path and highlight them.
-                _this.selectedDocIDs = [];
-                //由于svgGroup做了居中处理，与svg的坐标系不一致，所以要纠正偏移
-                var offsetX = Number(_this.dotGroup.attr("offset-x")), offsetY = Number(_this.dotGroup.attr("offset-y"));
-                _this.svg.selectAll(".doc-group").each(function(d, i) {
-                    var point = [ +(d3.select(this).attr("cx")) + offsetX,  +(d3.select(this).attr("cy")) +  offsetY];
-                    if (Utils.isPointInPolygon(point, _this.dragCoords)){
-                        console.log(i);
-                        _this.selectedDocIDs.push(i);
-                    }
-                });
-                console.log(_this.selectedDocIDs);
-                unhighlightAll();
-                highlight(_this.selectedDocIDs);
-            })
-            .on("dragend", function() {
-                // If the user clicks without having drawn a path, remove any paths that were drawn previously.
-                if (_this.dragCoords.length === 0) {
-                    _this.svg.selectAll(".polygon-selection").remove();
-                    unselectAll();
-                    return;
-                }
-                // Draw a path between the first point and the last point, to close the path.
-                _this.svg.append("path").attr({
-                    class: "terminator",
-                    d: line([_this.dragCoords[0], _this.dragCoords[_this.dragCoords.length-1]])
-                });
-                _this.svg.selectAll(".polygon-selection").remove();
-                unhighlightAll();
-                select(_this.selectedDocIDs);
-            });
+    //             // Figure out which dots are inside the drawn path and highlight them.
+    //             _this.selectedDocIDs = [];
+    //             //由于svgGroup做了居中处理，与svg的坐标系不一致，所以要纠正偏移
+    //             var offsetX = Number(_this.dotGroup.attr("offset-x")), offsetY = Number(_this.dotGroup.attr("offset-y"));
+    //             _this.svg.selectAll(".doc-group").each(function(d, i) {
+    //                 var point = [ +(d3.select(this).attr("cx")) + offsetX,  +(d3.select(this).attr("cy")) +  offsetY];
+    //                 if (Utils.isPointInPolygon(point, _this.dragCoords)){
+    //                     console.log(i);
+    //                     _this.selectedDocIDs.push(i);
+    //                 }
+    //             });
+    //             console.log(_this.selectedDocIDs);
+    //             unhighlightAll();
+    //             highlight(_this.selectedDocIDs);
+    //         })
+    //         .on("dragend", function() {
+    //             // If the user clicks without having drawn a path, remove any paths that were drawn previously.
+    //             if (_this.dragCoords.length === 0) {
+    //                 _this.svg.selectAll(".polygon-selection").remove();
+    //                 unselectAll();
+    //                 return;
+    //             }
+    //             // Draw a path between the first point and the last point, to close the path.
+    //             _this.svg.append("path").attr({
+    //                 class: "terminator",
+    //                 d: line([_this.dragCoords[0], _this.dragCoords[_this.dragCoords.length-1]])
+    //             });
+    //             _this.svg.selectAll(".polygon-selection").remove();
+    //             unhighlightAll();
+    //             select(_this.selectedDocIDs);
+    //         });
 
-            // function unselectAll() {
-            //     PubSub.publish("Interaction.Select.Doc", { operation: "clear", view: _this });
-            // }
+    //         // function unselectAll() {
+    //         //     PubSub.publish("Interaction.Select.Doc", { operation: "clear", view: _this });
+    //         // }
 
-            // function select(docIDs) {
-            //     //取反，之前被选择的则取消选择。
-            //     var data = [];
-            //     for (var d of docIDs) {
-            //         data.push(d);
-            //     }
-            //     PubSub.publish("Interaction.Select.Doc", { operation: "add", data: data, view: _this })
-            // }
+    //         // function select(docIDs) {
+    //         //     //取反，之前被选择的则取消选择。
+    //         //     var data = [];
+    //         //     for (var d of docIDs) {
+    //         //         data.push(d);
+    //         //     }
+    //         //     PubSub.publish("Interaction.Select.Doc", { operation: "add", data: data, view: _this })
+    //         // }
             
-            function unselectAll() {
-                FilterCenter.removeFilter(_this);
-            }
+    //         function unselectAll() {
+    //             FilterCenter.removeFilter(_this);
+    //         }
 
-            function select(docIDs) {
-                var selectedData = [];
-                for (var id of docIDs) {
-                    if (_this.filteredSet.has(docs[id]))
-                        selectedData.push(docs[id]);
-                }
-                FilterCenter.addFilter(_this, selectedData);
-            }
+    //         function select(docIDs) {
+    //             var selectedData = [];
+    //             for (var id of docIDs) {
+    //                 if (_this.filteredSet.has(docs[id]))
+    //                     selectedData.push(docs[id]);
+    //             }
+    //             FilterCenter.addFilter(_this, selectedData);
+    //         }
 
-            function unhighlightAll() {
-                _this.svg.selectAll(".doc-group").classed("drag-highlight", false);
-            }
+    //         function unhighlightAll() {
+    //             _this.svg.selectAll(".doc-group").classed("drag-highlight", false);
+    //         }
 
-            function highlight(dotsData) {
-                _this.svg.selectAll(".doc-group").filter(function(d, i) {
-                    return dotsData.indexOf(i) >= 0;
-                })
-                .classed("drag-highlight", true);
-            }
-        return drag;
-    }
+    //         function highlight(dotsData) {
+    //             _this.svg.selectAll(".doc-group").filter(function(d, i) {
+    //                 return dotsData.indexOf(i) >= 0;
+    //             })
+    //             .classed("drag-highlight", true);
+    //         }
+    //     return drag;
+    // }
 
 
     renderWords() {
@@ -525,8 +542,9 @@ class DocumentGalaxyView extends BaseView {
             }
             center[0] /= group.data.length;
             center[1] /= group.data.length;
-            //extract top 3 words
-            var words = DataCenter.docTextProcessor.getTopKeywordsByTFIDF(group.data, 3, true);
+            //extract top words
+            console.log(group.data);
+            var words = DataCenter.docTextProcessor.getTopKeywordsByTFIDF(group.data, _this.keywordNum, true);
             words = _.map(words, "word");
             topWords.push({ "words": words, "center": center, "groupID": group.id, "color": group.color});
         }
@@ -538,37 +556,25 @@ class DocumentGalaxyView extends BaseView {
             .append("text")
             .attr("class", "cluster-text")
             .text(function(d) {
-                return _.join(d.words, ", ");
+                return _.join(d.words, " ");
             })
-            .attr("x", function(d) {return d.center[0]})
-            .attr("y", function(d) {return d.center[1]})
-            .attr("fill", function(d, index) {
-                return d.color;
+            .attr("x", function(d) {
+                if(d.center[0] + 45 * _this.keywordNum > _this.graphWidth)
+                    return _this.graphWidth - 45 * _this.keywordNum;
+                return d.center[0];
             })
+            .attr("y", function(d) {return d.center[1];}
+            );
+            // .attr("fill", function(d, index) {
+            //     return d.color;
+            // })
 
+        // this.wordGroup.selectAll(".cluster-text")
+        //     .style("display", function(d) {
+        //         return _this.showKeywordsController.getValue() ? "block" : "none";
+        //     })
         this.wordGroup.selectAll(".cluster-text")
-            .style("display", function(d) {
-                return _this.showKeywordsController.getValue() ? "block" : "none";
-            })
-    }
-
-
-    _getDocDistanceMatrixByTFIDF() {
-        var segmentedDocs = _.map(DataCenter.data, function(doc) {
-            return doc[DataCenter.fields._SEGMENTATION]
-        })
-        var processor = new DocTextProcessor();
-        processor.setDocs(segmentedDocs);
-        var matrix = processor.getCosineSimilarity();
-        for (var i = 0; i < matrix.length; i++) {
-            for (var j = 0; j < i; j++) {
-                if (i != j) {
-                    // matrix[i][j] = matrix[j][i] = 1 - Math.sqrt(Math.sqrt(matrix[i][j]));
-                    matrix[i][j] = matrix[j][i] = 1 - Math.sqrt(matrix[i][j]);
-                }
-            }
-        }
-        return matrix;
+            .style("display", "block");
     }
 
     async _getDocDistanceMatrixByTopic() {
@@ -578,15 +584,14 @@ class DocumentGalaxyView extends BaseView {
         var model;
 
         // get topic-model
-        if(DataCenter.topicModel){
-            model = DataCenter.topicModel;
-        }
-        else{
-            model = await DataCenter.getTopicModel(5, 0, null, null);;
-            DataCenter.topicModel = model;
-            model.pullToGroups();
-            PubSub.publish("DataCenter.TopicModel.Update");
-        }
+        // if(DataCenter.topicModel){
+        //     model = DataCenter.topicModel;
+        // }
+        // else{
+        model = await DataCenter.getTopicModel(_this.topicNum, 0, null, null);;
+        DataCenter.topicModel = model;
+        model.pullToGroups();
+        PubSub.publish("DataCenter.TopicModel.Update");
         
         // get distanceMatrix
         for (var i = 0; i < docs.length; i++) {
@@ -609,6 +614,24 @@ class DocumentGalaxyView extends BaseView {
         }
         return matrix;
     }
+
+    // _getDocDistanceMatrixByTFIDF() {
+    //     var segmentedDocs = _.map(DataCenter.data, function(doc) {
+    //         return doc[DataCenter.fields._SEGMENTATION]
+    //     })
+    //     var processor = new DocTextProcessor();
+    //     processor.setDocs(segmentedDocs);
+    //     var matrix = processor.getCosineSimilarity();
+    //     for (var i = 0; i < matrix.length; i++) {
+    //         for (var j = 0; j < i; j++) {
+    //             if (i != j) {
+    //                 // matrix[i][j] = matrix[j][i] = 1 - Math.sqrt(Math.sqrt(matrix[i][j]));
+    //                 matrix[i][j] = matrix[j][i] = 1 - Math.sqrt(matrix[i][j]);
+    //             }
+    //         }
+    //     }
+    //     return matrix;
+    // }
 
 }
 

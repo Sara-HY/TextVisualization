@@ -1,36 +1,36 @@
 <% extends "../includes/view.html" %>
-
-<% block view-content %>  
-    <div>
-    	<span class="btn btn-default btn-xs" id="config-btn">Config</span>
-    </div>
-    <div id="galaxy-svg"></div>
-   	<div class="modal fade" id="topic-keywords-modal">
-   		<div class="modal-dialog">
-   			<div class="modal-content">
-   				<div class="modal-header">
-   						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-   							<span aria-hidden="true">&times;</span>
-   						</button>
-   						<h4 class="modal-title">Config</h4>
-   				</div>
-   				<div class="modal-body text-center">
-   					<div class="galaxy-slider">
-   						<div class="galaxy-slider-title">
-   							<span>Topic Number</span>
-   						</div>
-   						<input type="hidden" class="single-slider" id="topic-slider" value="5">
-   					</div>
-   					<div class="galaxy-slider">
-   						<div class="galaxy-slider-title">
-   							<span>Keywords Number</span>
-   						</div>
-   						<input type="hidden" class="single-slider" id="keywords-slider" value="3">
-   					</div>
-   					<div>
-                        <span class="btn btn-default btn-primary" id="config-ok-btn">OK</span>
-                    </div> 
-   				</div>
-   			</div>
-   		</div></div>   
-<% endblock %>
+    <% block view-content %>
+        <div>
+            <span class="btn btn-default btn-xs" id="config-btn">Config</span>
+        </div>
+        <div id="galaxy-svg"></div>
+        <div class="modal fade" id="topic-keywords-modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">Config</h4>
+                    </div>
+                    <div class="modal-body text-center">
+                        <div class="galaxy-slider">
+                            <div class="galaxy-slider-title">
+                                <span>Topic Number</span>
+                            </div>
+                            <input type="hidden" class="single-slider" id="topic-slider" value="">
+                        </div>
+                        <div class="galaxy-slider">
+                            <div class="galaxy-slider-title">
+                                <span>Keywords Number</span>
+                            </div>
+                            <input type="hidden" class="single-slider" id="keywords-slider" value="">
+                        </div>
+                        <div>
+                            <span class="btn btn-default btn-primary" id="config-ok-btn">OK</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <% endblock %>

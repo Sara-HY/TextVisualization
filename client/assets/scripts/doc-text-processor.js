@@ -219,12 +219,12 @@ var DocTextProcessor = function() {
                     nonZeroCount++;
             }
 
-            //fake
-            if (docIDs.indexOf(23) >= 0 &&  docIDs.indexOf(20) >= 0 && docIDs.indexOf(19) >= 0
-                && docIDs.indexOf(21) >= 0 && docIDs.indexOf(30) >= 0)
-                sum[j] *= nonZeroCount;
-            if (data.termList[j] == "time" && nonZeroCount >= docIDs.length - 1 && docIDs.indexOf(29) >= 0)
-                sum[j] *= 3;
+            // //fake
+            // if (docIDs.indexOf(23) >= 0 &&  docIDs.indexOf(20) >= 0 && docIDs.indexOf(19) >= 0
+            //     && docIDs.indexOf(21) >= 0 && docIDs.indexOf(30) >= 0)
+            //     sum[j] *= nonZeroCount;
+            // if (data.termList[j] == "time" && nonZeroCount >= docIDs.length - 1 && docIDs.indexOf(29) >= 0)
+            //     sum[j] *= 3;
         }
 
         var sortedPairs = _.orderBy(_.toPairsIn(sum), 1, 'desc');

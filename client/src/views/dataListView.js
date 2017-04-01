@@ -64,7 +64,7 @@ class DataListView extends BaseView {
             paging: false,
             columns: [
                 // {data: "_id", title: "id"},
-                {data: "_MAINTIME", title: mainTimeField},
+                {data: "_MAINTIME", title: "time"},
                 {data: "title", title: "title"}
                 // {data: mainTextField, title: mainTextField}
             ]
