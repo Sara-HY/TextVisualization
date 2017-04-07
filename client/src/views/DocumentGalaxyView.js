@@ -34,6 +34,7 @@ class DocumentGalaxyView extends BaseView {
         this.disMatrix = null;
         this.topicNum = 5;
         this.keywordNum = 3;
+        this.colorType = "normal";
 
         var worker = new Worker("scripts/worker-tsne.js");  
         this.tsneWorker = worker;
@@ -149,9 +150,9 @@ class DocumentGalaxyView extends BaseView {
 
         $(_this.getContainer()).find("#keywords-slider").jRange({
             from: 0,
-            to: 5,
+            to: 10,
             step: 1,
-            scale: [0,1,2,3,4,5],
+            scale: [0,5,10],
             format: '%s',
             theme: 'theme-blue',
             width: 500,
@@ -164,6 +165,22 @@ class DocumentGalaxyView extends BaseView {
             $(_this.getContainer()).find("#topic-slider").jRange('setValue',  _this.topicNum.toString());
             $(_this.getContainer()).find("#keywords-slider").jRange('setValue', _this.keywordNum.toString());
             $(_this.getContainer()).find("#topic-keywords-modal").modal();
+        })
+
+        $(_this.getContainer()).find("#topic-btn").click(function(){
+            if(_this.colorType != "topic"){
+                _this.colorType = "topic"
+                _this.reRender();
+            }
+            PubSub.publish("ColorTypeChanged", "topic");
+        })
+
+        $(_this.getContainer()).find("#normal-btn").click(function(){
+            if(_this.colorType != "normal"){
+                _this.colorType = "normal"
+                _this.reRender();
+            }
+            PubSub.publish("ColorTypeChanged", "normal");
         })
 
         $(_this.getContainer()).on("click", "#topic-keywords-modal #config-ok-btn", async function(){
@@ -289,7 +306,6 @@ class DocumentGalaxyView extends BaseView {
         var maxX = _.maxBy(this.dotPositions, function(d) {return d[0]})[0];
         var minY = _.minBy(this.dotPositions, function(d) {return d[1]})[1];
         var maxY = _.maxBy(this.dotPositions, function(d) {return d[1]})[1];
-
         // var { width, height } = this.graphSize;
 
         this.dotPositions = _.map(this.dotPositions, function(d) {
@@ -361,7 +377,20 @@ class DocumentGalaxyView extends BaseView {
         var _this = this;
         this.dots.each(function(d, index) {
             d3.select(this)
-                .attr("fill", "rgba(0, 0, 0, 0.3)")                    
+                .attr("fill", function() {
+                    if(_this.colorType == "normal")
+                        return "rgba(0, 0, 0, 0.3)"
+                    var groups = GroupCenter.groups;
+                    for (var g of groups) {
+                        if(g.type != "Topic") continue;
+                        var list = g.data;
+                        if (list.indexOf(index) >= 0) {
+                            var color = g.color;
+                            return color;
+                        } 
+                    }
+                    return "transparent";
+                })                    
                 .attr("stroke", "rgba(0, 0, 0, 0.3)")
                 .classed("filtered-out", function() {
                     return !_this.filteredSet.has(_this.data[index]);
@@ -371,6 +400,13 @@ class DocumentGalaxyView extends BaseView {
                 //     return !_this.selectedSet.has(_this.data[index]);
                 // })
         })
+        
+        this.wordGroup.selectAll(".cluster-text")
+            .attr("fill", function(d){
+                if(_this.colorType == "normal")
+                    return "#050505";
+                return d.color;
+            })
     }
 
     _initBrush() {
@@ -543,13 +579,14 @@ class DocumentGalaxyView extends BaseView {
             center[0] /= group.data.length;
             center[1] /= group.data.length;
             //extract top words
-            console.log(group.data);
             var words = DataCenter.docTextProcessor.getTopKeywordsByTFIDF(group.data, _this.keywordNum, true);
+            console.log(words);
             words = _.map(words, "word");
             topWords.push({ "words": words, "center": center, "groupID": group.id, "color": group.color});
         }
 
         this.wordGroup.selectAll(".cluster-text").remove();
+        
         var wordEles = this.wordGroup.selectAll(".cluster-text")
             .data(topWords)
             .enter()
@@ -559,9 +596,7 @@ class DocumentGalaxyView extends BaseView {
                 return _.join(d.words, " ");
             })
             .attr("x", function(d) {
-                if(d.center[0] + 45 * _this.keywordNum > _this.graphWidth)
-                    return _this.graphWidth - 45 * _this.keywordNum;
-                return d.center[0];
+                return d.center[0] - (45 * _this.keywordNum) / 2;
             })
             .attr("y", function(d) {return d.center[1];}
             );

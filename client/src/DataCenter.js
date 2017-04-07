@@ -40,8 +40,9 @@ class DataCenter {
             if (DataCenter.fields._MAINTIME != null) {
                 var d = DataUtils.getDataByField(doc, DataCenter.fields._MAINTIME);
                 if (d != null) {
-                    var date = new Date(d);
-                    doc["_MAINTIME"] = date.toLocaleDateString().replace(/\//g, "-") + " " + date.toTimeString().substr(0, 8);
+                    // var date = new Date(d);
+                    // doc["_MAINTIME"] = date.toLocaleDateString().replace(/\//g, "-") + " " + date.toTimeString().substr(0, 8);
+                    doc["_MAINTIME"] = new Date(d);
                 }
             }
             if (DataCenter.fields._MAINTEXT != null) {

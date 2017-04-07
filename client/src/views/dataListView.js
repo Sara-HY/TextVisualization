@@ -1,6 +1,7 @@
 import {BaseView} from './BaseView.js';
 import {DataUtils} from "../DataUtils.js"
 import {DataCenter} from "../DataCenter.js"
+import {GroupCenter} from "../GroupCenter.js"
 import {Utils} from "../Utils.js"
 import viewTemplate from "../../templates/views/data-list-view.html!text"
 
@@ -20,13 +21,53 @@ class DataListView extends BaseView {
 
         this.data = DataCenter.data;
         this.filteredData = this.data;
+
+        for(var i=0; i < this.data.length; i++){
+            this.data[i]._topic = "<div class=\"topic-circle\" style=\"background: rgba(0, 0, 0, 0.3);\"></div>";
+            var d = DataUtils.getDataByField(this.data[i], DataCenter.fields._MAINTIME);
+            var date = new Date(d);
+            this.data[i]._MAINTIME = date.toLocaleDateString().replace(/\//g, "-") + " " + date.toTimeString().substr(0, 8);     
+        }
+        console.log(this.data);
+
+        // PubSub.subscribe("DataCenter.TopicModel.Update", function(){
+        //     for(var i=0; i<_this.data.length; i++){
+        //         var groups = GroupCenter.groups;
+        //         for(var g of groups){
+        //             if(g.type != "Topic") continue;
+        //             if(g.data.indexOf(i) >= 0){
+        //                 _this.data[i]._topic =  "<div class=\"topic-circle\" style=\"background:" + g.color + ";\"></div>"
+        //             }
+        //         }
+        //     }
+        //     _this.reRender();
+        // });
+
+        PubSub.subscribe("ColorTypeChanged", function(msg, data){
+            for(var i=0; i<_this.data.length; i++){
+                if(data == "normal")
+                    _this.data[i]._topic = "<div class=\"topic-circle\" style=\"background: rgba(0, 0, 0, 0.3);\"></div>"
+                else{
+                    var groups = GroupCenter.groups;
+                    for(var g of groups){
+                        if(g.type != "Topic") continue;
+                        if(g.data.indexOf(i) >= 0){
+                            _this.data[i]._topic =  "<div class=\"topic-circle\" style=\"background:" + g.color + ";\"></div>"
+                        }
+                    }
+                }
+            }
+            _this.reRender();
+        });
+
         this.keyword =  $(this.getContainer()).find("#keyword");
         this.textContent = $(this.getContainer()).find("#text-content");
 
         PubSub.subscribe("FilterCenter.Changed", function(msg, data) {
             _this.filteredData = FilterCenter.getFilteredDataByView(_this);
             _this.reRender();
-        })       
+        })   
+
 
         $(this.getContainer()).on("click", "#filter-btn", function() {
             var ids = _this.dataTable.rows({"filter":"applied"})[0];
@@ -56,6 +97,7 @@ class DataListView extends BaseView {
         var mainTextField = DataCenter.fields._MAINTEXT;
 
         this.dataLength = $(this.getContainer()).find("#data-length").html(this.data.length);
+
         this.dataTable = table.DataTable({
             data: this.data,
             searching: false,
@@ -63,7 +105,7 @@ class DataListView extends BaseView {
             lengthchange: false,
             paging: false,
             columns: [
-                // {data: "_id", title: "id"},
+                {data: "_topic", title: "topic"},
                 {data: "_MAINTIME", title: "time"},
                 {data: "title", title: "title"}
                 // {data: mainTextField, title: mainTextField}
@@ -96,7 +138,6 @@ class DataListView extends BaseView {
         this.dataLength.html(this.filteredData.length);
         this.textContent.html(this.filteredData[0]["text"]); 
         this.dataTable.draw();
-
     }
 
     textSearch(str, options){

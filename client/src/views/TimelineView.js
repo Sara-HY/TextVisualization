@@ -2,7 +2,6 @@ import {Utils} from "../Utils.js";
 import {DataUtils} from "../DataUtils.js"
 import {DataCenter} from "../DataCenter.js"
 import {FilterCenter} from "../FilterCenter.js"
-import {DatGUI} from "../DatGUI.js"
 import {BaseView} from './BaseView.js';
 import viewTemplate from "../../templates/views/timeline-view.html!text";
 
@@ -43,37 +42,37 @@ class TimelineView extends BaseView {
             .append("div")
             .attr("class", "focus-timeline")
             .attr("width", width)
-            .attr("height", height * 0.7);
+            .attr("height", height * 0.5);
 
         d3.select(this.getContainer())
             .append("div")
             .attr("class", "overview-timeline")
             .attr("width", width)
-            .attr("height", height * 0.3);
+            .attr("height", height * 0.5);
 
-        this.focusTimelineChart = dc.lineChart("#" + this.getContainerID() + " .focus-timeline");
-        this.overviewTimelineChart = dc.barChart("#" + this.getContainerID() + " .overview-timeline");            
+        this.overviewTimelineChart = dc.barChart("#" + this.getContainerID() + " .overview-timeline"); 
+        this.focusTimelineChart = dc.barChart("#" + this.getContainerID() + " .focus-timeline");           
     }
 
-    _initControllerGUI() {
-        var _this = this;
-        var datGUI = DatGUI.gui;
-        var folder = this.datGUI.addFolder(this.viewTitle);
-        var timeUnits = ["year", "month", "day", "hour", "minute", "second"];
-        var options =  {
-            overviewTimeUnit: timeUnits[1],
-            focusTimeUnit: timeUnits[2]
-        }
-        this.overviewTimeUnitController = folder.add(options, "overviewTimeUnit", timeUnits);
-        this.focusTimeUnitController = folder.add(options, "focusTimeUnit", timeUnits);
+    // _initControllerGUI() {
+    //     var _this = this;
+    //     var datGUI = DatGUI.gui;
+    //     var folder = this.datGUI.addFolder(this.viewTitle);
+    //     var timeUnits = ["year", "month", "day", "hour", "minute", "second"];
+    //     var options =  {
+    //         overviewTimeUnit: timeUnits[1],
+    //         focusTimeUnit: timeUnits[2]
+    //     }
+    //     this.overviewTimeUnitController = folder.add(options, "overviewTimeUnit", timeUnits);
+    //     this.focusTimeUnitController = folder.add(options, "focusTimeUnit", timeUnits);
 
-        this.overviewTimeUnitController.onChange(timeUnitChanged);
-        this.focusTimeUnitController.onChange(timeUnitChanged);
-        function timeUnitChanged() {
-            _this.setTimelineUnit(_this.overviewTimeUnitController.getValue(), _this.focusTimeUnitController.getValue());
-            _this.render();
-        }
-    }   
+    //     this.overviewTimeUnitController.onChange(timeUnitChanged);
+    //     this.focusTimeUnitController.onChange(timeUnitChanged);
+    //     function timeUnitChanged() {
+    //         _this.setTimelineUnit(_this.overviewTimeUnitController.getValue(), _this.focusTimeUnitController.getValue());
+    //         _this.render();
+    //     }
+    // }   
 
     setTimelineUnit(overviewUnit, focusUnit) {
         this.focusTimeInterval = d3.time[focusUnit];
@@ -106,8 +105,8 @@ class TimelineView extends BaseView {
         var focusCountGroup = countGroup.focusCountGroup;
         var overviewCountGroup = countGroup.overviewCountGroup;   
 
-        var startTime = new Date(timeDim.bottom(1)[0]["_MAINTIME"]), 
-            endTime = new Date(timeDim.top(1)[0]["_MAINTIME"]);
+        var startTime = timeDim.bottom(1)[0]["_MAINTIME"], 
+            endTime = timeDim.top(1)[0]["_MAINTIME"];
 
         var { width, height } = this.getViewSize();
         var focusX = d3.time.scale()
@@ -122,7 +121,7 @@ class TimelineView extends BaseView {
         this.focusTimelineChart
             .brushOn(true)
             .width(width)
-            .height(height * 0.65)
+            .height(height * 0.5)
             .xUnits(this.focusTimeUnits)
             .x(focusX)
             .dimension(timeDim)
@@ -133,13 +132,15 @@ class TimelineView extends BaseView {
         this.overviewTimelineChart
             .brushOn(true)
             .width(width)
-            .height(height * 0.35)
+            .height(height * 0.5)
             .xUnits(this.overviewTimeUnits)
             .x(overviewX)
             .dimension(timeDim)
-            .centerBar(true) 
             .group(overviewCountGroup)  
             .elasticY(true) 
+
+        this.focusTimelineChart.yAxis().ticks(2);
+        this.overviewTimelineChart.yAxis().ticks(2);
 
         this.reRender();
 

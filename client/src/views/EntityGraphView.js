@@ -3,7 +3,7 @@ import {DataUtils} from "../DataUtils.js"
 import {DataCenter} from "../DataCenter.js"
 import {FilterCenter} from "../FilterCenter.js"
 import {BaseView} from './BaseView.js';
-import viewTemplate from "../../templates/views/base-view.html!text"
+import viewTemplate from "../../templates/includes/view.html!text"
 
 class EntityGraphView extends BaseView {
     constructor(viewID, viewTitle, layout, config) {
@@ -84,9 +84,22 @@ class EntityGraphView extends BaseView {
 
         var nodeMap = {};
         for (var name in entityMap) {
-            if (entityMap[name]["docs"].length >= nodeWeightFilterThreshold)
+            // if (entityMap[name]["docs"].length >= nodeWeightFilterThreshold)
+            // if (entityMap[name]["docs"].length > 2)
+            if (entityMap[name]["docs"].length)
                 nodeMap[name] = entityMap[name];
         }
+        // console.log(nodeMap, Object.keys(nodeMap).length);
+        // for (var name1 in entityMap) {
+        //     if(nodeMap[name1])
+        //         continue;
+        //     for(var name2 in nodeMap){
+        //         if(nodeMap[name2].links[name1]){
+        //             nodeMap[name1] = entityMap[name1];
+        //         }
+        //     }
+        // }
+        // console.log(nodeMap, Object.keys(nodeMap).length);
         var nodes = _.values(nodeMap);
         console.log("nodes", nodes)
 
@@ -99,7 +112,7 @@ class EntityGraphView extends BaseView {
                     if (!(neighborEntityName in nodeMap))
                         continue;
                     var weight = neighbors[neighborEntityName].size;
-                    if (weight < edgeWeightFilterThreshold) continue;
+                    // if (weight < edgeWeightFilterThreshold) continue;
                     edges.push({
                         source: entityMap[entityName],
                         target: entityMap[neighborEntityName],
@@ -165,11 +178,11 @@ class EntityGraphView extends BaseView {
         var { width, height } = this.getViewSize();
 
         this.force = d3.layout.force()
-            .charge(-100)
-            .linkDistance(100)
-            .size([width, height])
             .nodes(this.nodes)
             .links(this.edges)
+            .size([width, height])
+            .charge(-100)
+            .linkDistance(20)
             .alpha(0.8)
 
         this.force.start();
@@ -182,7 +195,12 @@ class EntityGraphView extends BaseView {
             .data(this.edges)
             .enter().append("line")
             .attr("class", "link");
-            
+
+        // this.path = this.svg.selectAll(".link")
+        //     .data(this.edges)
+        //     .enter().append("path")
+        //     .attr("class", "link");
+
 
         this.node = this.svg.selectAll("g.node")
             .data(this.nodes)
@@ -201,20 +219,50 @@ class EntityGraphView extends BaseView {
             .call(drag)
 
         this.node.append("circle")
+
+        var maxWeightEle = _.maxBy(this.nodes, "weight");
+        var maxWeight = maxWeightEle.weight;
+
         this.node.append("svg:text")
             .text(function(d) {
-                return d.name;
+                if(d.weight >= 20)
+                    return d.name;
             })
-            .attr("x", "10px")
-            .attr("y", "10px");  
+            .attr("font-size", function(d) {
+                if (maxWeight == 0) return 0;
+                return Utils.scaling(d.weight, 20, maxWeight, 10, 15);
+            })
+            .attr("x", "-5px")
+            .attr("y", "0px");  
+
         this.force.on("tick", function() {
             _this.link.attr("x1", function(d) { return d.source.x; })
                 .attr("y1", function(d) { return d.source.y; })
                 .attr("x2", function(d) { return d.target.x; })
                 .attr("y2", function(d) { return d.target.y; });
+
+            // 弧线
+            // _this.path.attr("d", function(d) {
+            //     var dx = d.target.x - d.source.x,//增量
+            //         dy = d.target.y - d.source.y,
+            //         dr = Math.sqrt(dx * dx + dy * dy);
+            //     return "M" + d.source.x + "," + d.source.y + "A" + dr + ","
+            //         + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
+            // });
+
+            // 贝塞尔曲线M x0,y0 Q x2,y2 x1,y1
+            // _this.path.attr("d", function(d){
+            //     var x = (3 * d.source.x + d.target.x)/4,
+            //         y = (9 * d.source.x + 3 * d.target.x)/20 + d.source.y;
+
+            //     return "M " + d.source.x + "," + d.source.y + 
+            //         " Q " + x + "," + y + d.target.x + "," + d.target.y;
+            // })
+            
+
             _this.node.attr("transform", function(d) { 
-                    return "translate(" + d.x + "," + d.y + ")";
-                })
+                return "translate(" + d.x + "," + d.y + ")";
+            })
         });
 
         this.node.selectAll("circle").on("dblclick", function(d, i) {
@@ -227,8 +275,7 @@ class EntityGraphView extends BaseView {
                 FilterCenter.addFilter(_this, d.docs);
             }
             
-        }) 
-
+        })
         this.reRender();       
     }
 
@@ -255,6 +302,14 @@ class EntityGraphView extends BaseView {
                 if (_this.selectedNode.length == 0) return false;
                 return true;
             })
+
+        // this.path.style("stroke-width", function(d) { return Math.sqrt(d.weight); })
+        //     .style("display", function(d) {
+        //         return d.weight > 0 ? "block" : "none";
+        //     }).classed("not-selected", function(d) {
+        //         if (_this.selectedNode.length == 0) return false;
+        //         return true;
+        //     })
     }
 
 

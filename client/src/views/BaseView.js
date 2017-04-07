@@ -1,7 +1,7 @@
 import {Utils} from "../Utils.js"
 import {Config} from "../Config.js"
 import {DataCenter} from "../DataCenter.js"
-import {DatGUI} from "../DatGUI.js"
+// import {DatGUI} from "../DatGUI.js"
 
 class BaseView {
 
@@ -15,9 +15,9 @@ class BaseView {
 
         this.layout = JSON.parse(layout);
 
-        this.datGUI = DatGUI.gui;
+        // this.datGUI = DatGUI.gui;
         this._initViewFramework();
-        this._initControllerGUI();
+        // this._initControllerGUI();
 
     }
 
@@ -50,10 +50,6 @@ class BaseView {
         }));
         $("#" + this.viewID).css(this.layout);
         this._enableDraggable();
-    }
-
-    _initControllerGUI() {
-
     }
 
     _enableDraggable() {

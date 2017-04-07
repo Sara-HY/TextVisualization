@@ -93,7 +93,7 @@ var DocTextProcessor = function() {
         var v = [];
         var len = vector.length;
         var target = [];
-        var vectorLength = 0;
+        var vectorLength = 0.0;
         for (var i = 0; i < len; i++) {
             vectorLength += vector[i] * vector[i];
         }
@@ -210,15 +210,14 @@ var DocTextProcessor = function() {
         // console.log(vectors, size);
         var sum = [];
         for (var i = 0; i < vectors[0].length; i++)
-            sum[i] = 0;
+            sum[i] = 0.00000000;
         for (var j = 0; j < vectors[0].length; j++) {
             var nonZeroCount = 0;
-            for (var i = 0; i < vectors.length; i++) {
+            for (var i = 0; i < vectors.length; i++) { 
                 sum[j] += vectors[i][j];
                 if (vectors[i][j] > 0.00000001) 
                     nonZeroCount++;
             }
-
             // //fake
             // if (docIDs.indexOf(23) >= 0 &&  docIDs.indexOf(20) >= 0 && docIDs.indexOf(19) >= 0
             //     && docIDs.indexOf(21) >= 0 && docIDs.indexOf(30) >= 0)

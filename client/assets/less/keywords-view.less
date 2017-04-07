@@ -1,0 +1,28 @@
+.keywords-view {
+    .list-table {
+        height: 70%; 
+        width: 100%; 
+        overflow:scroll;
+    }
+
+    table.dataTable {
+        thead,tbody {
+            td {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            tr.hover td {
+                overflow: auto;
+                text-overflow: clip;
+                white-space: normal;
+            }
+
+            tr.active td {
+                overflow: auto;
+                text-overflow: clip;
+                white-space: normal;        
+            }
+        }        
+    }
+}

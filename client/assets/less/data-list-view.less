@@ -29,6 +29,7 @@
     }
 
     .data-list-text {
+        font-size: 15px; 
         height: 30%; 
         width: 100%; 
         overflow:scroll; 
@@ -37,29 +38,31 @@
     }
 
     table.dataTable {
-        td {
-            font-size: 12px;
-            max-width: 0;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
+        thead,tbody {
+            td {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            tr.hover td {
+                overflow: auto;
+                text-overflow: clip;
+                white-space: normal;
+            }
 
-        tr.hover td {
-            overflow: auto;
-            text-overflow: clip;
-            white-space: normal;
-        }
+            tr.active td {
+                overflow: auto;
+                text-overflow: clip;
+                white-space: normal;        
+            }
+        }        
+    }  
 
-        tr.active td {
-            overflow: auto;
-            text-overflow: clip;
-            white-space: normal;        
-        }
-        td.sorting_1{
-            width: 140px;
-        }
-    }
-
+    .topic-circle {
+        border-radius: 50%;  
+        height: 8px; 
+        width: 8px;
+        margin-left: 15px;
+    } 
 }
 

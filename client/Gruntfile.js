@@ -36,8 +36,8 @@ module.exports = function(grunt) {
                 files: {
                     './<%=target%>/css/style.css': ['./assets/less/*.less']
                 }
-            },   
-        },        
+            },
+        },
         "traceur": {
             options: {
                 experimental: true,
@@ -47,13 +47,13 @@ module.exports = function(grunt) {
                 files: [
                     { expand: true, cwd: ".", src: srcDir + "/**/*.js", dest: buildDir },
                 ]
-            }            
+            }
         },
 
         "babel": {
             options: {
                 presets: ["stage-3", "es2015"]
-            },            
+            },
             dev: {
                 files: [
                     { expand: true, cwd: "./src/", src: "**/*.js", dest: buildDir + srcDir},
@@ -78,7 +78,7 @@ module.exports = function(grunt) {
         "watch": {
             options: {
                 spawn: false
-            },            
+            },
             dev: {
                 files: [srcDir + '/**/*.js', "assets/scripts/**/*.js", "assets/less/**/*.less", "assets/css/**/*.css", "assets/config/**/*.*", "templates/**/*.*"],
                 tasks: [DEV]
@@ -91,7 +91,7 @@ module.exports = function(grunt) {
             compile: {
                 command: 'node src/make.js'
             }
-        },        
+        },
     });
 
     grunt.task.registerTask("clean", "clean", function() {
@@ -111,6 +111,7 @@ module.exports = function(grunt) {
     // grunt.registerTask("dev-simple", ["traceur:" + DEV, "less:" + DEV, "copy:" + DEV]);
     grunt.registerTask("dev-simple", ["shell:traceur", "less:" + DEV, "copy:" + DEV]);
     grunt.registerTask(DEV, ["initialize", "shell:traceur", "less:" + DEV, "shell:compile", "copy:" + DEV,  "clean"]);
+    // grunt.registerTask(DEV, ["initialize", "shell:traceur", "less:" + DEV, "copy:" + DEV,  "clean"]);
     // grunt.registerTask(DEV, ["initialize", "traceur:" + DEV, "less:" + DEV, "shell:compile", "copy:" + DEV,  "clean"]);
     // grunt.registerTask(DEV, ["initialize", "babel:" + DEV, "less:" + DEV, "shell:compile", "copy:" + DEV,  "clean"]);
 

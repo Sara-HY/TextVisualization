@@ -8,6 +8,6 @@ class DatGUI {
 DatGUI.gui = new dat.GUI();
 
 //For testing
-window.DatGUI = DatGUI;
+// window.DatGUI = DatGUI;
 
 export { DatGUI };
