@@ -1,6 +1,23 @@
 <% extends "../includes/view.html" %>
     <% block view-content %>
-        <div>
+        <div id="toolbar">
+<!--             <span class="button" id="zoom-in"><i class="xicon-tools-zoom-in"></i></span>
+            <span class="button" id="zoom-out"><i class="xicon-tools-zoom-out"></i></span>
+            <div class="button-group">
+                <span class="button" id="brush"><i class="xicon-tools-zooming"></i></span>
+                <span class="button" id="pan"><i class="xicon-tools-move"></i></span>
+            </div>
+            <div class="button-group">
+                <span class="button" id="topic-color"><i class="xicon-tools-topic"></i></span>
+                <span class="button" id="topic-color"><i class="xicon-tools-normal"></i></span>
+            </div>
+            <span class="button" id="config">Config</span> -->
+
+            <span class="btn btn-default btn-xs" id="zoom-in">+</span>
+            <span class="btn btn-default btn-xs" id="zoom-out">-</span>
+            <span class="badge" id="data-num"></span>
+            <span class="btn btn-default btn-xs" id="brush-btn">Brush</span>
+            <span class="btn btn-default btn-xs" id="drag-btn">Darg</span>
             <span class="btn btn-default btn-xs" id="topic-btn">TopicColor</span>
             <span class="btn btn-default btn-xs" id="normal-btn">NormalColor</span>
             <span class="btn btn-default btn-xs" id="config-btn">Config</span>

@@ -1,28 +1,45 @@
 .keywords-view {
-    .list-table {
-        height: 70%; 
-        width: 100%; 
-        overflow:scroll;
+    font-size: 12px; 
+
+    .bar{  
+        position: relative;
+        width: 100px;
+        border: 1px solid #cccccc; 
+        padding: 1px;
     }
 
+    .bar div{ 
+        position: relative;
+        background:#1f77b4;
+        height: 5px; 
+    } 
+    
     table.dataTable {
-        thead,tbody {
-            td {
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-            }
-            tr.hover td {
-                overflow: auto;
-                text-overflow: clip;
-                white-space: normal;
-            }
+        thead th {
+            padding-left: 5px !important;
+            padding-right: 5px !important;
+            text-align:center;
+        }
 
-            tr.active td {
-                overflow: auto;
-                text-overflow: clip;
-                white-space: normal;        
-            }
-        }        
+        td {
+            position: relative;
+            font-size: 12px;
+            max-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        tr.hover td {
+            overflow: auto;
+            text-overflow: clip;
+            white-space: normal;
+        }
+
+        tr.active td {
+            overflow: auto;
+            text-overflow: clip;
+            white-space: normal;        
+        }
     }
 }

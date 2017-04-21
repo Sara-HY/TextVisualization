@@ -1,15 +1,27 @@
 [
     {
-        "Class": "TimelineView",
-        "id": "timeline-view",
-        "title": "Timeline View",
+        "Class": "KeyWordsView",
+        "id": "keywords-view",
+        "title": "Keywords View",
         "layout": {
             "position": "absolute",
-            "left": 0,
-            "bottom": 0,
-            "height": "20%",
-            "width": "66%"
+            "left": "0%",
+            "top": "50px",
+            "width": "15%",
+            "bottom": "40%"
         }
+    },
+    {
+        "Class": "TopicEntityView",
+        "id": "topic-entity-view",
+        "title": "Topic Entity View",
+        "layout": {
+            "position": "absolute",
+            "left": "0",
+            "top": "60%",
+            "width": "15%",
+            "bottom": "0%"
+        } 
     },
     {
         "Class": "DocumentGalaxyView",
@@ -18,9 +30,33 @@
         "layout": {
             "position": "absolute",
             "top": "50px",
-            "left": 0,
+            "left": "15%",
             "width": "33%",
-            "bottom": "20%",
+            "bottom": "40%",
+        }
+    },
+    {
+        "Class": "TopicConfigView",
+        "id": "topic-config-view",
+        "title": "Topic Configuration",
+        "layout": {
+            "position": "absolute",
+            "top": "60%",
+            "left": "15%",
+            "width": "33%",
+            "bottom": "20%"
+        }
+    },
+    {
+        "Class": "TimelineView",
+        "id": "timeline-view",
+        "title": "Timeline View",
+        "layout": {
+            "position": "absolute",
+            "left": "15%",
+            "bottom": 0,
+            "height": "20%",
+            "width": "33%"
         }
     },
     {
@@ -30,10 +66,22 @@
         "layout": {
             "position": "absolute",
             "top": "50px",
-            "left": "33%",
+            "left": "48%",
             "width": "33%",
-            "bottom": "20%"
+            "bottom": "40%"
         }
+    },
+    {
+        "Class": "FacetsView",
+        "id": "facets-view",
+        "title": "Facets View",
+        "layout": {
+            "position": "absolute",
+            "left": "48%",
+            "bottom": "0",
+            "width": "33%",
+            "height": "40%"
+        } 
     },
     {
         "Class": "DataListView",
@@ -42,47 +90,23 @@
         "layout": {
             "position": "absolute",
             "right": 0, 
-            "width": "34%",
+            "width": "19%",
             "bottom": "20%",
             "top": "50px"
         }
     },
     {
-        "Class": "KeyWordsView",
-        "id": "keywords-view",
-        "title": "Keywords View",
+        "Class": "GroupListView",
+        "id": "group-list-view",
+        "title": "Group List View",
         "layout": {
             "position": "absolute",
-            "width": "34%",
+            "width": "19%",
             "right": "0%",
             "bottom": "0",
             "height": "20%"
         }
-    },
-    // {
-    //     "Class": "GroupListView",
-    //     "id": "group-list-view",
-    //     "title": "Group List View",
-    //     "layout": {
-    //         "position": "absolute",
-    //         "width": "34%",
-    //         "right": "0%",
-    //         "bottom": "0",
-    //         "height": "20%"
-    //     }
-    // }, 
-    // {
-    //     "Class": "TopicConfigView",
-    //     "id": "topic-config-view",
-    //     "title": "Topic Configuration",
-    //     "layout": {
-    //         "position": "absolute",
-    //         "top": "50px",
-    //         "right": 0,
-    //         "width": "25%",
-    //         "bottom": "50%"
-    //     }
-    // },
+    }, 
     // {
     //     "Class": "TopicListView",
     //     "id": "topic-list-view",
@@ -119,9 +143,6 @@
     //         "bottom": "200px"
     //     }
     // },
-
-
-
     // {
     //     "Class": "TopicSelectionView",
     //     "id": "topic-selection-view",
@@ -158,29 +179,5 @@
     //         "bottom": "50%"
     //     }
     // },
-    // {
-    //     "Class": "FacetsView",
-    //     "id": "facets-view",
-    //     "title": "Facets View",
-    //     "layout": {
-    //         "position": "absolute",
-    //         "left": "0%",
-    //         "width": "25%",
-    //         "top": "50px",
-    //         "bottom": "50%"
-    //     } 
-    // },
-    // {
-    //     "Class": "TopicEntityView",
-    //     "id": "topic-entity-view",
-    //     "title": "Topic Entity View",
-    //     "layout": {
-    //         "position": "absolute",
-    //         "left": "50%",
-    //         "width": "25%",
-    //         "top": "50px",
-    //         "bottom": "50%"
-    //     } 
-    // }
 
 ]

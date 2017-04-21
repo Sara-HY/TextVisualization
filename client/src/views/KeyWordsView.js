@@ -21,12 +21,14 @@ class KeyWordsView extends BaseView {
 
         this.data = DataCenter.data;
         this.dataID = [];
+        this.wordLength = 50;
 
         for(var i=0; i<this.data.length; i++){
             this.dataID.push(this.data[i]._index);
         }
-        this.words = DataCenter.docTextProcessor.getTopKeywordsByTFIDF(this.dataID, 20, false);
+        this.words = DataCenter.docTextProcessor.getTopKeywordsByTFIDF(this.dataID, this.wordLength, false);
         for (var i = 0; i < this.words.length; i++) {
+            this.words[i]._weight = "<div class=\"bar\"><div style=\"width:" + parseInt(this.words[i].weight * 100) + "%;\"></div> </div> "
             this.words[i].docs = parseInt(_this.data.length * this.words[i].weight);
         }
         this.filterWords = this.words;
@@ -39,11 +41,12 @@ class KeyWordsView extends BaseView {
             for(var i=0; i<_this.data.length; i++){
                 _this.dataID.push(_this.data[i]._index);
             }
-            _this.filterWords = DataCenter.docTextProcessor.getTopKeywordsByTFIDF(_this.dataID, 20, false);
+            _this.filterWords = DataCenter.docTextProcessor.getTopKeywordsByTFIDF(_this.dataID, _this.wordLength, false);
             for (var i = 0; i < _this.filterWords.length; i++) {
+                _this.filterWords[i]._weight = "<div class=\"bar\"><div style=\"width:" + parseInt(_this.filterWords[i].weight * 100) + "%;\"></div> </div> "
                 _this.filterWords[i].docs = parseInt(_this.data.length * _this.filterWords[i].weight);
             }
-            console.log(_this.filterWords);
+            // console.log(_this.filterWords);
             _this.reRender();
         })  
     }
@@ -55,13 +58,12 @@ class KeyWordsView extends BaseView {
 
         this.dataTable = table.DataTable({
             data: this.words,
-            searching: false,
             info: false,
             lengthchange: false,
             paging: false,
-            columns: [
+            aoColumns: [
                 {data: "word", title: "term"},
-                {data: "weight", title: "weight"},
+                {data: "_weight", title: "weight", sWidth: "100px"},
                 {data: "docs", title: "docs"}
             ]
         })

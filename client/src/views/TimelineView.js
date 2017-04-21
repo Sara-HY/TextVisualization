@@ -119,25 +119,31 @@ class TimelineView extends BaseView {
                     .nice(this.overviewTimeInterval);
 
         this.focusTimelineChart
-            .brushOn(true)
             .width(width)
             .height(height * 0.5)
-            .xUnits(this.focusTimeUnits)
-            .x(focusX)
             .dimension(timeDim)
             .group(focusCountGroup)
-            .rangeChart(this.overviewTimelineChart)
             .elasticY(true)
+            .gap(1)
+            .round(d3.time.day.round)
+            .alwaysUseRounding(true)
+            .xUnits(this.focusTimeUnits)
+            .x(focusX)
+            .rangeChart(this.overviewTimelineChart)
+            
 
         this.overviewTimelineChart
-            .brushOn(true)
             .width(width)
             .height(height * 0.5)
-            .xUnits(this.overviewTimeUnits)
-            .x(overviewX)
             .dimension(timeDim)
             .group(overviewCountGroup)  
             .elasticY(true) 
+            .gap(1)
+            .round(d3.time.month.round)
+            .alwaysUseRounding(true)
+            .x(overviewX)
+            .xUnits(this.overviewTimeUnits)
+
 
         this.focusTimelineChart.yAxis().ticks(2);
         this.overviewTimelineChart.yAxis().ticks(2);
@@ -161,10 +167,29 @@ class TimelineView extends BaseView {
     reRender() {
         var _this = this;
         var countGroup = this.getDataCountGroup(this.filteredData);
+        var timeDim = countGroup.timeDim;
         var focusCountGroup = countGroup.focusCountGroup;
-        var overviewCountGroup = countGroup.overviewCountGroup;  
+        var overviewCountGroup = countGroup.overviewCountGroup; 
+
+        var startTime = timeDim.bottom(1)[0]["_MAINTIME"], 
+            endTime = timeDim.top(1)[0]["_MAINTIME"];
+
+        var { width, height } = this.getViewSize();
+        var focusX = d3.time.scale()
+                    .domain([this.focusTimeInterval.floor(startTime), this.focusTimeInterval.ceil(endTime)])
+                    .range([0, width])
+                    .nice(this.focusTimeInterval);
+        var overviewX = d3.time.scale()
+                    .domain([this.overviewTimeInterval.floor(startTime), this.overviewTimeInterval.ceil(endTime)])
+                    .range([0, width])
+                    .nice(this.overviewTimeInterval);
+
         this.focusTimelineChart.group(focusCountGroup);
+        this.focusTimelineChart.dimension(timeDim);
+        this.focusTimelineChart.x(focusX);
         this.overviewTimelineChart.group(overviewCountGroup);
+        this.overviewTimelineChart.dimension(timeDim);
+        this.overviewTimelineChart.x(overviewX);
         this.focusTimelineChart.render();
         this.overviewTimelineChart.render();
 

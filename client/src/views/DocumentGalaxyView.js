@@ -29,8 +29,10 @@ class DocumentGalaxyView extends BaseView {
         this.filteredSet = new Set(this.data)
         this.selectedSet = new Set();
 
-        _this._initView();         
+        _this._initView();  
 
+        this.translateX = 0;
+        this.translateY = 0;
         this.disMatrix = null;
         this.topicNum = 5;
         this.keywordNum = 3;
@@ -118,6 +120,7 @@ class DocumentGalaxyView extends BaseView {
         PubSub.subscribe("FilterCenter.Changed", function(msg, data) {
             var filteredData = FilterCenter.getFilteredDataByView(_this);
             var selectedData = FilterCenter.getFilterByView(_this);
+            $(_this.getContainer()).find("#data-num").html(filteredData.length + " Out of " + _this.data.length);
             _this.filteredSet = new Set(filteredData);
             _this.selectedSet = new Set(selectedData);
             _this.reRender();
@@ -165,6 +168,16 @@ class DocumentGalaxyView extends BaseView {
             $(_this.getContainer()).find("#topic-slider").jRange('setValue',  _this.topicNum.toString());
             $(_this.getContainer()).find("#keywords-slider").jRange('setValue', _this.keywordNum.toString());
             $(_this.getContainer()).find("#topic-keywords-modal").modal();
+        })
+
+        $(_this.getContainer()).find("#brush-btn").click(function(){
+            _this.svg.on(".zoom", null);
+            _this.svg.attr("cursor", "crosshair").call(_this.brush);
+        })
+
+        $(_this.getContainer()).find("#drag-btn").click(function(){
+            _this.svg.on(".brush", null);
+            _this.svg.attr("cursor", "pointer").call(_this.drag);
         })
 
         $(_this.getContainer()).find("#topic-btn").click(function(){
@@ -219,8 +232,11 @@ class DocumentGalaxyView extends BaseView {
     }
 
     _initView() {
+        var _this = this;
         var { width, height } = this.getViewSize();
         var margin = {top: 30, right: 30, bottom: 30, left: 30};
+
+        $(this.getContainer()).find("#data-num").html("0 Out of " + this.data.length);
 
         this.graphWidth = width - margin.left - margin.right;
         this.graphHeight = height - margin.top - margin.bottom;
@@ -230,7 +246,8 @@ class DocumentGalaxyView extends BaseView {
         //     y = (height - this.graphSize) / 2;
         this.svg = d3.select("#galaxy-svg").append("svg")
             .attr("width", width)
-            .attr("height", height);         
+            .attr("height", height)
+
         this.wordGroup = this.svg.append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
             .attr("offset-x", margin.left)
@@ -247,10 +264,37 @@ class DocumentGalaxyView extends BaseView {
         // this.svg.call(drag);
 
         // rect brush
-        var brush = this._initBrush();
+        this.brush = this._initBrush();
         this.svg.append("g")
             .attr("class", "brush")
-            .call(brush);
+            .call(this.brush);
+
+        
+        this.drag = d3.behavior.zoom()
+            .on("zoom", function(){ 
+                _this.svg.attr("transform", "translate(" + d3.event.translate + ")")
+            })
+
+
+        $(_this.getContainer()).on("click", "#zoom-in", function(){
+            console.log("zoom-in");
+            var scale = ((_this.scale + 0.1) > 3) ? 3 : (_this.scale + 0.1);
+
+            _this.translateY = (height - (height * _this.scale))/ 2,
+            _this.translateX = (width - (width * _this.scale))/ 2; 
+            _this.svg.attr("transform", "translate(" + [_this.translateX, _this.translateY] + ")scale(" + scale + ")"); 
+            d3.select(".brush").select(".extent").attr("transform", "translate(" + [_this.translateX, _this.translateY] + ")");
+        })
+
+        $(_this.getContainer()).on("click", "#zoom-out", function(){
+            console.log("zoom-out");
+            var scale = ((_this.scale - 0.1) < 0.5) ? 0.5 : (_this.scale - 0.1);
+
+            _this.translateY = (height - (height * _this.scale))/ 2,
+            _this.translateX = (width - (width * _this.scale))/ 2; 
+            _this.svg.attr("transform", "translate(" + [_this.translateX, _this.translateY] + ")scale(" + scale + ")"); 
+            d3.select(".brush").select(".extent").attr("transform", "translate(" + [_this.translateX, _this.translateY] + ")");
+        })
     }
 
     // _initControllerGUI() {
@@ -419,18 +463,20 @@ class DocumentGalaxyView extends BaseView {
                 .y(d3.scale.identity().domain([0, height]))
                 .on("brush", function() {
                     _this.selectedDocIDs = [];
-                    var extent = d3.event.target.extent();
+
+                    var extent = d3.event.target.extent()
                     var offsetX = Number(_this.dotGroup.attr("offset-x")), offsetY = Number(_this.dotGroup.attr("offset-y"));
                     _this.svg.selectAll(".doc-group").each(function(d, i){
-                        if((extent[0][0] - offsetX) < d[0] && d[0] < (extent[1][0] - offsetX) 
-                            && (extent[0][1] - offsetY) < d[1] && d[1] < (extent[1][1] - offsetY)){
+                        if(((extent[0][0]-offsetX+_this.translateX)) <= d[0] && d[0] < ((extent[1][0]-offsetX+_this.translateX))
+                            && ((extent[0][1]-offsetY+_this.translateY))  <= d[1] && d[1] < ((extent[1][1]-offsetY+_this.translateY))){
                             _this.selectedDocIDs.push(i);
-                        }
+                        }                        
                     })
                     uncolorAll();
                     color(_this.selectedDocIDs);
                 })
                 .on("brushend", function(){
+                    $(_this.getContainer()).find("#data-num").html(_this.selectedDocIDs.length + " Out of " + _this.data.length);
                     if(_this.selectedDocIDs.length)
                         select(_this.selectedDocIDs);
                     else

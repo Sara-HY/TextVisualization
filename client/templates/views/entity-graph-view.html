@@ -1,0 +1,19 @@
+<% extends "../includes/view.html" %>
+
+<% block view-content %>  
+    <div style="height: 50px;">	
+    	<!-- <span style="margin-left: 5px;">LineType</span>
+		<select id="line-type" class="line-controll" >
+			<option value="straight">Straight</option>
+			<option value="curve">Curve</option>
+		</select> -->
+		<span class="btn btn-default btn-xs" id="straight">Straight</span>
+        <span class="btn btn-default btn-xs" id="curve">Curve</span>
+		<span class="btn btn-default btn-xs refresh" id="refresh">
+			<i class="fa fa-refresh"></i>
+		</span>
+		<div id="controller" class="controll"></div>
+		
+	</div>
+    <div id="entity-svg"></div>
+<% endblock %>

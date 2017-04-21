@@ -26,7 +26,7 @@ class DataListView extends BaseView {
             this.data[i]._topic = "<div class=\"topic-circle\" style=\"background: rgba(0, 0, 0, 0.3);\"></div>";
             var d = DataUtils.getDataByField(this.data[i], DataCenter.fields._MAINTIME);
             var date = new Date(d);
-            this.data[i]._MAINTIME = date.toLocaleDateString().replace(/\//g, "-") + " " + date.toTimeString().substr(0, 8);     
+            this.data[i]._time = date.toLocaleDateString().replace(/\//g, "-") + " " + date.toTimeString().substr(0, 8);     
         }
         console.log(this.data);
 
@@ -61,13 +61,25 @@ class DataListView extends BaseView {
         });
 
         this.keyword =  $(this.getContainer()).find("#keyword");
-        this.textContent = $(this.getContainer()).find("#text-content");
+        this.textTime = $(this.getContainer()).find("#data-list-time");
+        this.textTitle = $(this.getContainer()).find("#data-list-title");
+        this.textContent = $(this.getContainer()).find("#data-list-content");
 
         PubSub.subscribe("FilterCenter.Changed", function(msg, data) {
             _this.filteredData = FilterCenter.getFilteredDataByView(_this);
-            _this.reRender();
-        })   
-
+            // console.log(_this.filteredData);
+            if(_this.filteredData.length != _this.data.length){
+                _this.dataTable.$('tr').css('backgroundColor', '');
+                for(var i=0; i<_this.filteredData.length; i++){
+                    var index = _this.dataTable.column(0).data().indexOf(_this.filteredData[i]["_index"]);
+                    _this.dataTable.$('tr:eq(' + index + ')').css('backgroundColor', '#1f77b4');
+                }
+                // _this.reRender();
+            }
+            else{
+                _this.dataTable.$('tr').css('backgroundColor', '');
+            }
+        })
 
         $(this.getContainer()).on("click", "#filter-btn", function() {
             var ids = _this.dataTable.rows({"filter":"applied"})[0];
@@ -104,15 +116,18 @@ class DataListView extends BaseView {
             info: false,
             lengthchange: false,
             paging: false,
-            columns: [
-                {data: "_topic", title: "topic"},
-                {data: "_MAINTIME", title: "time"},
+            aoColumns:[
+                {data: "_index", visible: false},
+                {data: "_topic", title: "topic", sWidth: "1px"},
+                {data: "_time", title: "time"},
                 {data: "title", title: "title"}
                 // {data: mainTextField, title: mainTextField}
-            ]
+            ],
         });
-        this.textContent.html(this.data[0]["text"]); 
-
+        this.textTime.html(this.data[0]["_time"])
+        this.textTitle.html(this.data[0]["title"])
+        this.textContent.html(this.data[0][mainTextField]); 
+        
         $(this.getContainer()).on("mouseenter", "tr", function() {
             $(this).addClass("hover")
         })
@@ -120,7 +135,10 @@ class DataListView extends BaseView {
             $(this).removeClass("hover")
         })   
         $(this.getContainer()).on("click", "tr", function() {
-            _this.textContent.html(_this.dataTable.row(this).data()["text"]);
+            _this.textTime.html(_this.dataTable.row(this).data()["_MAINTIME"])
+            _this.textTitle.html(_this.dataTable.row(this).data()["title"])
+            _this.textContent.html(_this.dataTable.row(this).data()[mainTextField])
+
             var word = _this.keyword.val();
             if(word)
                 _this.textSearch(word);
@@ -133,11 +151,16 @@ class DataListView extends BaseView {
     }
 
     reRender() {
-        this.dataTable.clear();
-        this.dataTable.rows.add(this.filteredData);
         this.dataLength.html(this.filteredData.length);
-        this.textContent.html(this.filteredData[0]["text"]); 
+
+        // this.dataTable.clear();
+        // this.dataTable.rows.add(this.filteredData);
         this.dataTable.draw();
+
+        this.textTime.html(this.filteredData[0]["_time"]);
+        this.textTitle.html(this.filteredData[0]["title"]);
+        this.textContent.html(this.filteredData[0][DataCenter.fields._MAINTEXT]); 
+        
     }
 
     textSearch(str, options){
@@ -238,7 +261,5 @@ class DataListView extends BaseView {
         });
     }
 }
-
-
 
 export { DataListView };

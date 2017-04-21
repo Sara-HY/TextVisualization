@@ -26,11 +26,49 @@
     -webkit-user-select: none;
 
     .filtered-out {
-        display: none;
+        opacity: 0.3;
     }
     
     .not-selected {
-        opacity: 0.2;
+        opacity: 0.3;
+    }
+
+    #zoom-in {
+        position: absolute; 
+        left: 10px; 
+        top: 5px; 
+        width: 20px;
+        z-index: 10;
+    }
+    
+    #zoom-out {
+        position: absolute; 
+        left: 29px; 
+        top: 5px; 
+        width: 20px;
+        z-index: 10;
+    }
+
+    #data-num {
+        position: absolute; 
+        left: 55px; 
+        top: 7px; 
+        width: 100px;
+        z-index: 10;
+    }
+
+    #brush-btn {
+        position: absolute; 
+        right: 235px; 
+        top: 5px; 
+        z-index: 10;
+    }
+
+    #drag-btn {
+        position: absolute; 
+        right: 199px; 
+        top: 5px; 
+        z-index: 10;
     }
 
     #topic-btn {
@@ -54,16 +92,140 @@
         z-index: 10;
     }
 
-    .polygon-selection {
-        stroke: darkgray;
-        stroke-width: 1px;
-        stoke-opacity: 1;
-        fill: #888;
-        opacity: 0.2;
-    }
+    // #toolbar {
+    //     box-shadow: 0 0 3px #c8c8c8;
+    //     background-color: #fafafa;
+    //     -webkit-user-select: none;
+    //     -moz-user-select: none;
+    //     user-select: none;
+    //     position: absolute;
+    //     left: 0;
+    //     right: 0;
+    //     top: 0;
+    //     z-index: 10000;
+    //     padding-left: 5px;
+    // }
+
+    // #toolbar > .button {
+    //     vertical-align: top;
+    // }
+
+    // .button {
+    //     -webkit-user-select: none;
+    //     -moz-user-select: none;
+    //     user-select: none;
+    //     display: inline-block;
+    //     line-height: 20px;
+    //     height: 20px;
+    //     margin: 5px 2px;
+    //     font-family: Arial, "Microsoft YaHei", sans-serif;
+    //     font-size: 14px;
+    //     padding: 0 8px;
+    //     cursor: pointer;
+    //     color: black;
+    //     position: relative;
+    //     border-bottom: 2px solid #AAA;
+    //     margin-bottom: 2px;
+    // }
+    // .button:hover {
+    //     background: #2060d5;
+    //     color: white;
+    // }
+    // .button.inactive,.button.inactive:hover{
+    //     background: #e1e1e1;
+    //     color: #7d7d7d;
+    // }
+    // .button.active {
+    //     border-bottom: 2px solid #2060d5;
+    //     margin-bottom: 2px;
+    // }
+    // .button-group {
+    //     display: inline-block;
+    // }
+    // .button-group .button:not(.active) {
+    //     border-bottom: 2px solid #dcdcdc;
+    //     margin-bottom: 2px;
+    // }
+    // .button-group .button:first-child {
+    //     margin-left: 2px;
+    // }
+    // .button-group .button:last-child {
+    //     margin-right: 2px;
+    // }
+    // .button-group .button {
+    //     vertical-align: top;
+    //     margin-left: 0;
+    //     margin-right: 0;
+    // }
+    // .xicon-tools-zoom-in:before{
+    //     font-family:WeiboEventsIcons;
+    //     content:"\e00e";
+    //     font-style:normal;
+    //     font-weight:400;
+    //     text-decoration:inherit;
+    //     -webkit-font-smoothing:antialiased;
+    //     display:inline;
+    //     width:auto;
+    //     height:auto;
+    //     line-height:normal;
+    //     vertical-align:baseline;
+    //     margin-top:0
+    // }
+    // .xicon-tools-zoom-out:before{
+    //     font-family:WeiboEventsIcons;
+    //     content:"\e00f";
+    //     font-style:normal;
+    //     font-weight:400;
+    //     text-decoration:inherit;
+    //     -webkit-font-smoothing:antialiased;
+    //     display:inline;
+    //     width:auto;
+    //     height:auto;
+    //     line-height:normal;
+    //     vertical-align:baseline;
+    //     margin-top:0
+    // }
+    // .xicon-tools-zooming:before{
+    //     font-family:WeiboEventsIcons;
+    //     content:"\e010";
+    //     font-style:normal;
+    //     font-weight:400;
+    //     text-decoration:inherit;
+    //     -webkit-font-smoothing:antialiased;
+    //     display:inline;
+    //     width:auto;
+    //     height:auto;
+    //     line-height:normal;
+    //     vertical-align:baseline;
+    //     margin-top:0
+    // }
+    // .xicon-tools-move:before{
+    //     font-family:WeiboEventsIcons;
+    //     content:"\e007";
+    //     font-style:normal;
+    //     font-weight:400;
+    //     text-decoration:inherit;
+    //     -webkit-font-smoothing:antialiased;
+    //     display:inline;
+    //     width:auto;
+    //     height:auto;
+    //     line-height:normal;
+    //     vertical-align:baseline;
+    //     margin-top:0
+    // }
+
+
+
+    // .polygon-selection {
+    //     stroke: darkgray;
+    //     stroke-width: 1px;
+    //     stoke-opacity: 1;
+    //     fill: #888;
+    //     opacity: 0.2;
+    // }
 
     .doc-dot {
-        opacity: 0.7;
+        opacity: 1;
     }
 
     .selected .doc-dot, .drag-highlight .doc-dot {
