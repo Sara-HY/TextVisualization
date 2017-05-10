@@ -33,6 +33,7 @@ class DocumentGalaxyView extends BaseView {
 
         this.translateX = 0;
         this.translateY = 0;
+        this.scale = 1;
         this.disMatrix = null;
         this.topicNum = 5;
         this.keywordNum = 3;
@@ -120,7 +121,10 @@ class DocumentGalaxyView extends BaseView {
         PubSub.subscribe("FilterCenter.Changed", function(msg, data) {
             var filteredData = FilterCenter.getFilteredDataByView(_this);
             var selectedData = FilterCenter.getFilterByView(_this);
-            $(_this.getContainer()).find("#data-num").html(filteredData.length + " Out of " + _this.data.length);
+            if(filteredData.length != _this.data.length)
+                $(_this.getContainer()).find("#data-num").html(filteredData.length + " Out of " + _this.data.length);
+            else
+                $(_this.getContainer()).find("#data-num").html("0 Out of " + _this.data.length);
             _this.filteredSet = new Set(filteredData);
             _this.selectedSet = new Set(selectedData);
             _this.reRender();
@@ -171,13 +175,16 @@ class DocumentGalaxyView extends BaseView {
         })
 
         $(_this.getContainer()).find("#brush-btn").click(function(){
+            console.log("brush");
             _this.svg.on(".zoom", null);
             _this.svg.attr("cursor", "crosshair").call(_this.brush);
         })
 
         $(_this.getContainer()).find("#drag-btn").click(function(){
+            console.log("drag");
             _this.svg.on(".brush", null);
-            _this.svg.attr("cursor", "pointer").call(_this.drag);
+            $(_this.getContainer()).find(".brush").css("pointer-events", "none");
+            _this.svg.attr("cursor", "pointer").call(_this.drag).on('dblclick.zoom', null);
         })
 
         $(_this.getContainer()).find("#topic-btn").click(function(){
@@ -278,21 +285,19 @@ class DocumentGalaxyView extends BaseView {
 
         $(_this.getContainer()).on("click", "#zoom-in", function(){
             console.log("zoom-in");
-            var scale = ((_this.scale + 0.1) > 3) ? 3 : (_this.scale + 0.1);
-
+            _this.scale = ((_this.scale + 0.1) > 3) ? 3 : (_this.scale + 0.1);
             _this.translateY = (height - (height * _this.scale))/ 2,
             _this.translateX = (width - (width * _this.scale))/ 2; 
-            _this.svg.attr("transform", "translate(" + [_this.translateX, _this.translateY] + ")scale(" + scale + ")"); 
+            _this.svg.attr("transform", "translate(" + [_this.translateX, _this.translateY] + ")scale(" + _this.scale + ")"); 
             d3.select(".brush").select(".extent").attr("transform", "translate(" + [_this.translateX, _this.translateY] + ")");
         })
 
         $(_this.getContainer()).on("click", "#zoom-out", function(){
             console.log("zoom-out");
-            var scale = ((_this.scale - 0.1) < 0.5) ? 0.5 : (_this.scale - 0.1);
-
+            _this.scale = ((_this.scale - 0.1) < 0.5) ? 0.5 : (_this.scale - 0.1);
             _this.translateY = (height - (height * _this.scale))/ 2,
             _this.translateX = (width - (width * _this.scale))/ 2; 
-            _this.svg.attr("transform", "translate(" + [_this.translateX, _this.translateY] + ")scale(" + scale + ")"); 
+            _this.svg.attr("transform", "translate(" + [_this.translateX, _this.translateY] + ")scale(" + _this.scale + ")"); 
             d3.select(".brush").select(".extent").attr("transform", "translate(" + [_this.translateX, _this.translateY] + ")");
         })
     }
@@ -626,7 +631,7 @@ class DocumentGalaxyView extends BaseView {
             center[1] /= group.data.length;
             //extract top words
             var words = DataCenter.docTextProcessor.getTopKeywordsByTFIDF(group.data, _this.keywordNum, true);
-            console.log(words);
+            // console.log(words);
             words = _.map(words, "word");
             topWords.push({ "words": words, "center": center, "groupID": group.id, "color": group.color});
         }
@@ -642,7 +647,7 @@ class DocumentGalaxyView extends BaseView {
                 return _.join(d.words, " ");
             })
             .attr("x", function(d) {
-                return d.center[0] - (45 * _this.keywordNum) / 2;
+                return (d.center[0] - (45 * _this.keywordNum) / 2) < 0 ? 0: (d.center[0] - (45 * _this.keywordNum) / 2);
             })
             .attr("y", function(d) {return d.center[1];}
             );

@@ -32,10 +32,10 @@ class KeyWordsView extends BaseView {
             this.words[i].docs = parseInt(_this.data.length * this.words[i].weight);
         }
         this.filterWords = this.words;
-        console.log(this.words);
+        // console.log(this.words);
 
         PubSub.subscribe("FilterCenter.Changed", function(msg, data) {
-            console.log("FilterCenter.Changed");
+            // console.log("FilterCenter.Changed");
             _this.data = FilterCenter.getFilteredDataByView(_this);
             _this.dataID = [];
             for(var i=0; i<_this.data.length; i++){
@@ -61,6 +61,7 @@ class KeyWordsView extends BaseView {
             info: false,
             lengthchange: false,
             paging: false,
+            order: [[ 2, "desc" ]],
             aoColumns: [
                 {data: "word", title: "term"},
                 {data: "_weight", title: "weight", sWidth: "100px"},

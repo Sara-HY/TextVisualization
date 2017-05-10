@@ -28,7 +28,7 @@ class DataListView extends BaseView {
             var date = new Date(d);
             this.data[i]._time = date.toLocaleDateString().replace(/\//g, "-") + " " + date.toTimeString().substr(0, 8);     
         }
-        console.log(this.data);
+
 
         // PubSub.subscribe("DataCenter.TopicModel.Update", function(){
         //     for(var i=0; i<_this.data.length; i++){
@@ -44,6 +44,7 @@ class DataListView extends BaseView {
         // });
 
         PubSub.subscribe("ColorTypeChanged", function(msg, data){
+            console.log("changed")
             for(var i=0; i<_this.data.length; i++){
                 if(data == "normal")
                     _this.data[i]._topic = "<div class=\"topic-circle\" style=\"background: rgba(0, 0, 0, 0.3);\"></div>"
@@ -60,25 +61,31 @@ class DataListView extends BaseView {
             _this.reRender();
         });
 
-        this.keyword =  $(this.getContainer()).find("#keyword");
+        this.hightlightText =  $(this.getContainer()).find("#hightlight");
         this.textTime = $(this.getContainer()).find("#data-list-time");
         this.textTitle = $(this.getContainer()).find("#data-list-title");
         this.textContent = $(this.getContainer()).find("#data-list-content");
 
         PubSub.subscribe("FilterCenter.Changed", function(msg, data) {
             _this.filteredData = FilterCenter.getFilteredDataByView(_this);
-            // console.log(_this.filteredData);
-            if(_this.filteredData.length != _this.data.length){
-                _this.dataTable.$('tr').css('backgroundColor', '');
-                for(var i=0; i<_this.filteredData.length; i++){
-                    var index = _this.dataTable.column(0).data().indexOf(_this.filteredData[i]["_index"]);
-                    _this.dataTable.$('tr:eq(' + index + ')').css('backgroundColor', '#1f77b4');
-                }
-                // _this.reRender();
-            }
-            else{
-                _this.dataTable.$('tr').css('backgroundColor', '');
-            }
+            _this.reRender();
+            // if(_this.filteredData.length != _this.data.length){
+            //     setTimeout(function(){
+            //         console.log("selected");
+            //         _this.dataTable.$('tr').css('backgroundColor', '');
+            //         var start = new Date().getTime();//起始时间
+            //         for(var i=0; i<_this.filteredData.length; i++){
+            //             var index = _this.dataTable.column(0).data().indexOf(_this.filteredData[i]["_index"]);
+            //             _this.dataTable.$('tr:eq(' + index + ')').css('backgroundColor', '#1f77b4');
+            //             var end = new Date().getTime();//接受时间
+            //             console.log("all:",(end - start), "ms");//返回函数执行需要时间)
+            //         }
+            //     }, 1000)
+            // }
+            // else{
+            //     console.log("cancel selected");
+            //     _this.dataTable.$('tr').css('backgroundColor', '');
+            // }
         })
 
         $(this.getContainer()).on("click", "#filter-btn", function() {
@@ -95,10 +102,12 @@ class DataListView extends BaseView {
             FilterCenter.removeFilter(_this);
         })
 
-        $(this.getContainer()).on("click", "#search-btn", function() {
-            var word = _this.keyword.val();
+        this.hightlightText.change(function(){
+            console.log("text changed")
+            var word = _this.hightlightText.val();
             _this.textSearch(word);
-        });
+
+        })
     }
 
     render () {
@@ -112,7 +121,7 @@ class DataListView extends BaseView {
 
         this.dataTable = table.DataTable({
             data: this.data,
-            searching: false,
+            // searching: false,
             info: false,
             lengthchange: false,
             paging: false,
@@ -139,7 +148,7 @@ class DataListView extends BaseView {
             _this.textTitle.html(_this.dataTable.row(this).data()["title"])
             _this.textContent.html(_this.dataTable.row(this).data()[mainTextField])
 
-            var word = _this.keyword.val();
+            var word = _this.hightlightText.val();
             if(word)
                 _this.textSearch(word);
 
@@ -153,14 +162,12 @@ class DataListView extends BaseView {
     reRender() {
         this.dataLength.html(this.filteredData.length);
 
-        // this.dataTable.clear();
-        // this.dataTable.rows.add(this.filteredData);
+        this.dataTable.clear();
+        this.dataTable.rows.add(this.filteredData);
         this.dataTable.draw();
-
         this.textTime.html(this.filteredData[0]["_time"]);
         this.textTitle.html(this.filteredData[0]["title"]);
-        this.textContent.html(this.filteredData[0][DataCenter.fields._MAINTEXT]); 
-        
+        this.textContent.html(this.filteredData[0][DataCenter.fields._MAINTEXT]);     
     }
 
     textSearch(str, options){

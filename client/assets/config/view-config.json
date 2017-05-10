@@ -12,9 +12,9 @@
         }
     },
     {
-        "Class": "TopicEntityView",
-        "id": "topic-entity-view",
-        "title": "Topic Entity View",
+        "Class": "EntityView",
+        "id": "entity-view",
+        "title": "Entity View",
         "layout": {
             "position": "absolute",
             "left": "0",
@@ -36,18 +36,6 @@
         }
     },
     {
-        "Class": "TopicConfigView",
-        "id": "topic-config-view",
-        "title": "Topic Configuration",
-        "layout": {
-            "position": "absolute",
-            "top": "60%",
-            "left": "15%",
-            "width": "33%",
-            "bottom": "20%"
-        }
-    },
-    {
         "Class": "TimelineView",
         "id": "timeline-view",
         "title": "Timeline View",
@@ -55,7 +43,7 @@
             "position": "absolute",
             "left": "15%",
             "bottom": 0,
-            "height": "20%",
+            "height": "40%",
             "width": "33%"
         }
     },
@@ -107,6 +95,30 @@
             "height": "20%"
         }
     }, 
+    // {
+    //     "Class": "TopicEntityView",
+    //     "id": "topic-entity-view",
+    //     "title": "Topic Entity View",
+    //     "layout": {
+    //         "position": "absolute",
+    //         "top": "100%",
+    //         "left": "48%",
+    //         "width": "33%",
+    //         "height": "50%"
+    //     } 
+    // },
+    // {
+    //     "Class": "TopicConfigView",
+    //     "id": "topic-config-view",
+    //     "title": "Topic Configuration",
+    //     "layout": {
+    //         "position": "absolute",
+    //         "top": "100%",
+    //         "left": "15%",
+    //         "width": "33%",
+    //         "height": "20%"
+    //     }
+    // },
     // {
     //     "Class": "TopicListView",
     //     "id": "topic-list-view",

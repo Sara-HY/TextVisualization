@@ -18,6 +18,7 @@ import {TopicEntityView} from "./views/TopicEntityView.js"
 import {TopicMatrixView} from "./views/TopicMatrixView.js";
 import {TopicConfigView} from "./views/TopicConfigView.js";
 import {KeyWordsView} from "./views/KeyWordsView.js";
+import {EntityView} from "./views/EntityView.js";
 // import {TopicSelectionView} from "./views/TopicSelectionView.js";
 // import {SessionConfigView} from "./views/SessionConfigView.js";
 // import {SessionDetailView} from "./views/SessionDetailView.js";

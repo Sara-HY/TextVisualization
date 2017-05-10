@@ -25,7 +25,7 @@ class EntityGraphView extends BaseView {
         this._processData();
         this.render();
         PubSub.subscribe("FilterCenter.Changed", function(msg, data) {
-            console.log("FilterCenter.Changed");
+            // console.log("FilterCenter.Changed");
             _this.filteredData = FilterCenter.getFilteredDataByView(_this);
             _this.filteredSet = new Set(_this.filteredData);
             // _this._updateData();
@@ -232,7 +232,7 @@ class EntityGraphView extends BaseView {
             sizeList.push(entity["fullWeight"]);
         }        
         sizeList.sort(function(a, b) {return b - a});
-        console.log("sizeList", sizeList);
+        // console.log("sizeList", sizeList);
         var nodeWeightFilterThreshold = this._getSizeThreshold(sizeList);
 
         var nodeMap = {};
@@ -254,7 +254,7 @@ class EntityGraphView extends BaseView {
         // }
         // console.log(nodeMap, Object.keys(nodeMap).length);
         var nodes = _.values(nodeMap);
-        console.log("nodes", nodes)
+        // console.log("nodes", nodes)
 
         var edgeWeightFilterThreshold = 2;
         var edges = [];

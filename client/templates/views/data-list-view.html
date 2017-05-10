@@ -1,15 +1,12 @@
 <% extends "../includes/view.html" %>
 
 <% block view-content %>  
-	<div>
-		<input type="text" id="keyword" value=""/>
-        <span class="badge" id="data-length"></span>
-        <span class="btn btn-default btn-xs" id="search-btn">search</span>
-        <span class="btn btn-default btn-xs" id="filter-btn">Filter</span>
-    	<span class="btn btn-default btn-xs" id="clear-btn">Clear</span>
-    </div>
     <div class="list-table">
+        <!-- <span class="btn btn-default btn-xs" id="search-btn">search</span> -->
+        <!-- <span class="btn btn-default btn-xs" id="filter-btn">Filter</span>
+        <span class="btn btn-default btn-xs" id="clear-btn">Clear</span> -->
     	<table id="data-table" class="display" cellspacing="0" width="100%"></table>
+        <span class="badge" id="data-length"></span>
     </div>
     <div class="data-list-text">
         <strong>Time: </strong><div id="data-list-time" style="display: inline;"></div>
@@ -17,5 +14,8 @@
         <strong>Title: </strong><div id="data-list-title" style="display: inline;"></div>
         <br>
         <strong>Content: </strong><div id="data-list-content" style="display: inline;"></div>
+    </div>
+    <div class="hightlight-box">
+        <label>Hightlight: <input type="text" id="hightlight" value=""> </label>
     </div>
 <% endblock %>
