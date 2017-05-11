@@ -19,53 +19,57 @@ class EntityView extends BaseView {
         var _this = this;
 
         this.data = DataCenter.data;
+        this.index = -1;
         this._processData();
         this.render();
 
         PubSub.subscribe("FilterCenter.Changed", function(msg, data) {
-             // console.log("FilterCenter.Changed");
-            _this.data = FilterCenter.getFilteredDataByView(_this);
-            _this._processData();
-            // console.log(_this.filterEntity);
-            _this.reRender();
+            if(_this.data != FilterCenter.getFilteredDataByView(_this)){
+                _this.data = FilterCenter.getFilteredDataByView(_this);
+                _this._processData();
+                _this.reRender();
+            }
         })  
     }
 
     _processData(){
         var _this = this;
-        this.wordLength = 50;
-
-        var entityMap = {};
+        // this.wordLength = 50;
+        var docs = this.data;
+        this.entityMap = {};
         this.entity = [];
-        for(var doc of this.data) {
+        for(var doc of docs) {
             var ners = doc["_ner"];
             for(var entityType in ners) {
                 for(var name of ners[entityType]){
-                    if(!(name in entityMap)){
-                        entityMap[name] = {
+                    if(!(name in this.entityMap)){
+                        this.entityMap[name] = {
                             "name": name,
-                            "docs": 1
+                            "count": 1,
+                            "docs":[]
                         }
-                        this.entity.push(entityMap[name]);
+                        this.entityMap[name]["docs"].push(doc);
+                        this.entity.push(this.entityMap[name]);
                     }
                     else{
-                        entityMap[name]["docs"]++;
+                        this.entityMap[name]["count"]++;
+                        this.entityMap[name]["docs"].push(doc);
                     }
                 }
             }
         }
         this.entity.sort(function(a, b){
-            return b["docs"] - a["docs"];
+            return b["count"] - a["count"];
         })
 
         for(var i = 0; i < this.entity.length; i++) {
-            this.entity[i]._weight = "<div class=\"bar\"><div style=\"width:" + parseInt(this.entity[i].docs / this.entity.length * 100) + "%;\"></div> </div> "
+            this.entity[i]._index = i;
+            this.entity[i]._weight = "<div class=\"bar\"><div style=\"width:" + parseInt(this.entity[i].count / this.entity.length * 100) + "%;\"></div> </div> "
         }
         this.filterEntity = this.entity;
-        // console.log(this.filterEntity);
     }
 
-    render () {
+    render() {
         var _this = this;
         var table = $(this.getContainer()).find("#entity-table");
 
@@ -74,11 +78,13 @@ class EntityView extends BaseView {
             info: false,
             lengthchange: false,
             paging: false,
-            order: [[ 2, "desc" ]],
+            bSortClasses: false,
+            order: [[ 3, "desc" ]],
             aoColumns: [
+                {data: "_index", visible: false},
                 {data: "name", title: "entity"},
                 {data: "_weight", title: "weight", sWidth: "100px"},
-                {data: "docs", title: "docs"}
+                {data: "count", title: "docs"}
             ]
         })
 
@@ -88,11 +94,19 @@ class EntityView extends BaseView {
         $(this.getContainer()).on("mouseout", "tr", function() {
             $(this).removeClass("hover")
         })   
-        $(this.getContainer()).on("click", "tr", function() {
-            if ($(this).hasClass("active"))
+        $(this.getContainer()).on("dblclick", "tr", function() {
+            if($(this).hasClass("active")){
                 $(this).removeClass("active");
-            else
+                FilterCenter.removeFilter(_this);
+            }
+            else{
+                var name = $(this).children('td:nth-child(1)').html();
+                FilterCenter.addFilter(_this, _this.entityMap[name]["docs"]);
+                console.log(_this.entityMap[name]["docs"])
                 $(this).addClass("active");
+            }
+            _this.dataTable.$('tr:eq(' + _this.index + ')').removeClass("active");
+            _this.index = _this.dataTable.row(this).data()._index;
         })   
     }
 

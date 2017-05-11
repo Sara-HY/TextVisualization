@@ -120,7 +120,8 @@ class DocumentGalaxyView extends BaseView {
 
         PubSub.subscribe("FilterCenter.Changed", function(msg, data) {
             var filteredData = FilterCenter.getFilteredDataByView(_this);
-            var selectedData = FilterCenter.getFilterByView(_this);
+            var selectedData = filteredData;
+        
             if(filteredData.length != _this.data.length)
                 $(_this.getContainer()).find("#data-num").html(filteredData.length + " Out of " + _this.data.length);
             else
@@ -271,17 +272,16 @@ class DocumentGalaxyView extends BaseView {
         // this.svg.call(drag);
 
         // rect brush
-        this.brush = this._initBrush();
-        this.svg.append("g")
-            .attr("class", "brush")
-            .call(this.brush);
+        this.brush = this._initBrush()
 
-        
         this.drag = d3.behavior.zoom()
             .on("zoom", function(){ 
-                _this.svg.attr("transform", "translate(" + d3.event.translate + ")")
+                _this.svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + _this.scale + ")")
             })
 
+        this.svg.append("g")
+            .attr("class", "brush")
+            .call(this.brush)
 
         $(_this.getContainer()).on("click", "#zoom-in", function(){
             console.log("zoom-in");
@@ -443,6 +443,12 @@ class DocumentGalaxyView extends BaseView {
                 .attr("stroke", "rgba(0, 0, 0, 0.3)")
                 .classed("filtered-out", function() {
                     return !_this.filteredSet.has(_this.data[index]);
+                })
+                .classed("selected", function(){
+                    if(_this.selectedSet.size != _this.data.length && _this.selectedSet.size != 0)
+                        return _this.filteredSet.has(_this.data[index])
+                    else 
+                        return false;
                 })
                 // .classed("not-selected", function() {
                 //     if (_this.selectedSet.size == 0) return false;
@@ -631,8 +637,8 @@ class DocumentGalaxyView extends BaseView {
             center[1] /= group.data.length;
             //extract top words
             var words = DataCenter.docTextProcessor.getTopKeywordsByTFIDF(group.data, _this.keywordNum, true);
-            // console.log(words);
             words = _.map(words, "word");
+            // console.log(words);
             topWords.push({ "words": words, "center": center, "groupID": group.id, "color": group.color});
         }
 

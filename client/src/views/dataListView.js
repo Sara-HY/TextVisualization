@@ -67,8 +67,10 @@ class DataListView extends BaseView {
         this.textContent = $(this.getContainer()).find("#data-list-content");
 
         PubSub.subscribe("FilterCenter.Changed", function(msg, data) {
-            _this.filteredData = FilterCenter.getFilteredDataByView(_this);
-            _this.reRender();
+            if(_this.filteredData != FilterCenter.getFilteredDataByView(_this)){
+                _this.filteredData = FilterCenter.getFilteredDataByView(_this);
+                _this.reRender();
+            }
             // if(_this.filteredData.length != _this.data.length){
             //     setTimeout(function(){
             //         console.log("selected");
@@ -88,25 +90,26 @@ class DataListView extends BaseView {
             // }
         })
 
+
         $(this.getContainer()).on("click", "#filter-btn", function() {
             var ids = _this.dataTable.rows({"filter":"applied"})[0];
+            _this.dataLength.html(ids.length);
             var selectedData = [];
             for (var i = 0; i < ids.length; i++) {
                 selectedData.push(DataCenter.data[ids[i]]);
             }
-            FilterCenter.addFilter(_this, selectedData);           
+            FilterCenter.addFilter(_this, selectedData);      
         })
 
         $(this.getContainer()).on("click", "#clear-btn", function() {
             _this.dataTable.search("").draw();
+            _this.dataLength.html(_this.filteredData.length);
             FilterCenter.removeFilter(_this);
         })
 
         this.hightlightText.change(function(){
-            console.log("text changed")
             var word = _this.hightlightText.val();
             _this.textSearch(word);
-
         })
     }
 
@@ -129,8 +132,8 @@ class DataListView extends BaseView {
                 {data: "_index", visible: false},
                 {data: "_topic", title: "topic", sWidth: "1px"},
                 {data: "_time", title: "time"},
-                {data: "title", title: "title"}
-                // {data: mainTextField, title: mainTextField}
+                {data: "title", title: "title"},
+                // {data: mainTextField, title: "text"}
             ],
         });
         this.textTime.html(this.data[0]["_time"])
@@ -156,7 +159,7 @@ class DataListView extends BaseView {
                 $(this).removeClass("active");
             else
                 $(this).addClass("active");
-        })      
+        })     
     }
 
     reRender() {
@@ -222,7 +225,7 @@ class DataListView extends BaseView {
             var t = _this.textContent;
             str = $.trim(str);
             if(str === ""){
-                alert("关键字为空"); 
+                // alert("关键字为空"); 
                 return false;
             }else{
                 //将关键字push到数组之中

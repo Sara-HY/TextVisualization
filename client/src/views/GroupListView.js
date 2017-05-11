@@ -141,7 +141,6 @@ class GroupListView extends BaseView {
             }
             var vectors = [];
             var topWords = DataCenter.docTextProcessor.getTopKeywordsByTFIDF(group.data, 7, true);
-
             var html = tpl({group: group, topWords: topWords, docs: groupDocs});
             $(_this.getContainer()).find("#group-list").append(html);
         }

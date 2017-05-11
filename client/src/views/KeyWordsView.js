@@ -5,6 +5,8 @@ import {GroupCenter} from "../GroupCenter.js"
 import {Utils} from "../Utils.js"
 import viewTemplate from "../../templates/views/keywords-view.html!text"
 
+import "scripts/doc-text-processor.js"
+
 import "jquery-dataTables"
 import "jquery-dataTables-css!css"
 
@@ -18,41 +20,41 @@ class KeyWordsView extends BaseView {
 
     _init() {
         var _this = this;
-
         this.data = DataCenter.data;
+        this.index = -1;
+        this.wordLength = 500;
+        this._getKeywords();
+        
+        PubSub.subscribe("FilterCenter.Changed", function(msg, data) {
+            if(_this.data != FilterCenter.getFilteredDataByView(_this)){
+                _this.data = FilterCenter.getFilteredDataByView(_this);
+                _this._getKeywords();
+                _this.reRender();
+            }
+        })  
+    }
+
+    _getKeywords() {
         this.dataID = [];
-        this.wordLength = 50;
+
+        var segmentedDocs = _.map(this.data, function(doc) {
+            return doc[DataCenter.fields._SEGMENTATION]
+        })
+        var docTextProcessor = new DocTextProcessor();
+        docTextProcessor.setDocs(segmentedDocs);
 
         for(var i=0; i<this.data.length; i++){
             this.dataID.push(this.data[i]._index);
         }
-        this.words = DataCenter.docTextProcessor.getTopKeywordsByTFIDF(this.dataID, this.wordLength, false);
-        for (var i = 0; i < this.words.length; i++) {
-            this.words[i]._weight = "<div class=\"bar\"><div style=\"width:" + parseInt(this.words[i].weight * 100) + "%;\"></div> </div> "
-            this.words[i].docs = parseInt(_this.data.length * this.words[i].weight);
-        }
-        this.filterWords = this.words;
-        // console.log(this.words);
 
-        PubSub.subscribe("FilterCenter.Changed", function(msg, data) {
-            // console.log("FilterCenter.Changed");
-            _this.data = FilterCenter.getFilteredDataByView(_this);
-            _this.dataID = [];
-            for(var i=0; i<_this.data.length; i++){
-                _this.dataID.push(_this.data[i]._index);
-            }
-            _this.filterWords = DataCenter.docTextProcessor.getTopKeywordsByTFIDF(_this.dataID, _this.wordLength, false);
-            for (var i = 0; i < _this.filterWords.length; i++) {
-                _this.filterWords[i]._weight = "<div class=\"bar\"><div style=\"width:" + parseInt(_this.filterWords[i].weight * 100) + "%;\"></div> </div> "
-                _this.filterWords[i].docs = parseInt(_this.data.length * _this.filterWords[i].weight);
-            }
-            // console.log(_this.filterWords);
-            _this.reRender();
-        })  
+        this.words = docTextProcessor.getTopKeywordsByTFIDF(this.dataID, this.wordLength, true);
+        for (var i = 0; i < this.words.length; i++) {
+            this.words[i]._index = i;
+            this.words[i]._weight = "<div class=\"bar\"><div style=\"width:" + parseInt(this.words[i].weight * 100) + "%;\"></div> </div> "
+        }
     }
 
-
-    render () {    
+    render() {
         var _this = this;
         var table = $(this.getContainer()).find("#keywords-table");
 
@@ -61,11 +63,14 @@ class KeyWordsView extends BaseView {
             info: false,
             lengthchange: false,
             paging: false,
-            order: [[ 2, "desc" ]],
+            bSortClasses: false,
+            order: [[ 3, "desc" ]],
             aoColumns: [
+                {data: "_index", visible: false},
                 {data: "word", title: "term"},
                 {data: "_weight", title: "weight", sWidth: "100px"},
-                {data: "docs", title: "docs"}
+                {data: "weight", visible: false},
+                {data: "count", title: "docs"}
             ]
         })
 
@@ -75,20 +80,34 @@ class KeyWordsView extends BaseView {
         $(this.getContainer()).on("mouseout", "tr", function() {
             $(this).removeClass("hover")
         })   
-        $(this.getContainer()).on("click", "tr", function() {
-            if ($(this).hasClass("active"))
+        $(this.getContainer()).on("dblclick", "tr", function() {
+            if($(this).hasClass("active")){
                 $(this).removeClass("active");
-            else
+                FilterCenter.removeFilter(_this);
+            }
+            else{
+                var name = $(this).children('td:nth-child(1)').html();
+                var filteredData = [];
+                _this.words.forEach(function(s){
+                    if(s.word == name){
+                        for(var i=0; i<s.docs.length; i++){
+                            filteredData.push(_this.data[s.docs[i]])
+                        }
+                    }
+                })
+                FilterCenter.addFilter(_this, filteredData);
                 $(this).addClass("active");
+            }
+            _this.dataTable.$('tr:eq(' + _this.index + ')').removeClass("active");
+            _this.index = _this.dataTable.row(this).data()._index;
         })   
     }
 
     reRender(){
         this.dataTable.clear();
-        this.dataTable.rows.add(this.filterWords);
+        this.dataTable.rows.add(this.words);
         this.dataTable.draw();
     }
-
 }
 export { KeyWordsView };
 

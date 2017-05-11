@@ -15,10 +15,8 @@ var DocTextProcessor = function() {
         dted: {}, // Number of documents containing the term.
     };
 
-    var maxDims = 500;
-
+    // var maxDims = 500;
     Processor.data = data;
-    
     /**
      * set documents
      * @param docs: an array of string, each string is segmented words separated by spaces
@@ -42,34 +40,34 @@ var DocTextProcessor = function() {
         for (var term in data.terms) {
             data.termList.push(term);
         }
-        Processor.reduceDims();
+        // Processor.reduceDims();
     }
 
-    Processor.reduceDims = function() {
-        var freqs = [];
-        var countThreshold;
-        for (var term in data.terms) {
-            freqs.push(data.terms[term]);
-        }
-        freqs.sort(function(a, b) {return b - a});
-        if (freqs.length > maxDims) {
-            countThreshold = freqs[maxDims];
-        }
-        var newTermList = [];
-        for (var i = 0; i < data.termList.length; i++) {
-            var term = data.termList[i];
-            if (data.terms[term] > countThreshold)
-                newTermList.push(term);
-        }
-        data.termList = newTermList;
-    }
+    // Processor.reduceDims = function() {
+    //     var freqs = [];
+    //     var countThreshold;
+    //     for (var term in data.terms) {
+    //         freqs.push(data.terms[term]);
+    //     }
+    //     freqs.sort(function(a, b) {return b - a});
+    //     if (freqs.length > maxDims) {
+    //         countThreshold = freqs[maxDims];
+    //     }
+    //     var newTermList = [];
+    //     for (var i = 0; i < data.termList.length; i++) {
+    //         var term = data.termList[i];
+    //         if (data.terms[term] > countThreshold)
+    //             newTermList.push(term);
+    //     }
+    //     data.termList = newTermList;
+    // }
 
     /**
      * @return an array of vector, each vector is the tf-idf vector of a document.
      */
     Processor.getTFIDFVector = function() {
-        if (Processor.TFIDFVector != null)
-            return Processor.TFIDFVector;
+        // if (Processor.TFIDFVector != null)
+        //     return Processor.TFIDFVector;
         computeDocFreq();
         var vectors = [];
         for (var i = 0; i < data.docNum; i++) {
@@ -82,7 +80,7 @@ var DocTextProcessor = function() {
                 vec.push(tf * idf);
             }
         }
-        Processor.TFIDFVector = vectors;
+        // Processor.TFIDFVector = vectors;
         return vectors;
     }
 
@@ -108,14 +106,14 @@ var DocTextProcessor = function() {
      * @return an array of vector, each vector is the normalized tf-idf vector of a document.
      */
     Processor.getNormalizedTFIDFVector = function(vector) {
-        if (Processor.normalizedTFIDFVector != null)
-            return Processor.normalizedTFIDFVector;
+        // if (Processor.normalizedTFIDFVector != null)
+        //     return Processor.normalizedTFIDFVector;
         var vectors = this.getTFIDFVector();
         var target = [];
         for (var i = 0; i < vectors.length; i++) {
             target[i] = this.getNormalizdeVector(vectors[i]);
         }
-        Processor.normalizedTFIDFVector = target;
+        // Processor.normalizedTFIDFVector = target;
         return target;
     }      
 
@@ -124,69 +122,69 @@ var DocTextProcessor = function() {
      * @param an array of vectors (if not provided, will use tf-idf vectors)
      * @return similarity matrix, based on tf-idf
      */
-    Processor.getCosineSimilarity = function(vectors) {
-        var matrix = [];
-        for (var i = 0; i < data.docNum; i++) {
-            matrix[i] = [];
-            for (var j = 0; j < data.docNum; j++)
-                matrix[i][j] = 0;
-        }
+    // Processor.getCosineSimilarity = function(vectors) {
+    //     var matrix = [];
+    //     for (var i = 0; i < data.docNum; i++) {
+    //         matrix[i] = [];
+    //         for (var j = 0; j < data.docNum; j++)
+    //             matrix[i][j] = 0;
+    //     }
 
-        if (vectors == null)
-            vectors = this.getTFIDFVector();
-        for (var i = 0; i < data.docNum; i++) {
-            for (var j = 0; j < i; j++) {
-                var productSum = 0,
-                    squareSum1 = 0,
-                    squareSum2 = 0;
+    //     if (vectors == null)
+    //         vectors = this.getTFIDFVector();
+    //     for (var i = 0; i < data.docNum; i++) {
+    //         for (var j = 0; j < i; j++) {
+    //             var productSum = 0,
+    //                 squareSum1 = 0,
+    //                 squareSum2 = 0;
 
-                var vec1 = vectors[i],
-                    vec2 = vectors[j],
-                    termLen = vec1.length;
-                for (var k = 0; k < termLen; k++) {
-                    productSum += vec1[k] * vec2[k];
-                    squareSum1 += vec1[k] * vec1[k];
-                    squareSum2 += vec2[k] * vec2[k];
-                }
-                var sim = productSum / (Math.sqrt(squareSum1) * Math.sqrt(squareSum2));
-                if (isNaN(sim))
-                    sim = 0;
-                matrix[i][j] = matrix[j][i] = sim;
-            }
-        }
-        return matrix;
-    }
+    //             var vec1 = vectors[i],
+    //                 vec2 = vectors[j],
+    //                 termLen = vec1.length;
+    //             for (var k = 0; k < termLen; k++) {
+    //                 productSum += vec1[k] * vec2[k];
+    //                 squareSum1 += vec1[k] * vec1[k];
+    //                 squareSum2 += vec2[k] * vec2[k];
+    //             }
+    //             var sim = productSum / (Math.sqrt(squareSum1) * Math.sqrt(squareSum2));
+    //             if (isNaN(sim))
+    //                 sim = 0;
+    //             matrix[i][j] = matrix[j][i] = sim;
+    //         }
+    //     }
+    //     return matrix;
+    // }
 
     /**
      * @param an array of vectors (if not provided, will use tf-idf vectors)
      * @return Euler distance matrix, based on tf-idf
      */
-    Processor.getEulerDistancesMatrix = function(vectors) {
-        var matrix = [];
-        for (var i = 0; i < data.docNum; i++) {
-            matrix[i] = [];
-            for (var j = 0; j < data.docNum; j++)
-                matrix[i][j] = 0;
-        }
+    // Processor.getEulerDistancesMatrix = function(vectors) {
+    //     var matrix = [];
+    //     for (var i = 0; i < data.docNum; i++) {
+    //         matrix[i] = [];
+    //         for (var j = 0; j < data.docNum; j++)
+    //             matrix[i][j] = 0;
+    //     }
 
-        if (vectors == null)
-            vectors = this.getTFIDFVector();
-        for (var i = 0; i < data.docNum; i++) {
-            for (var j = 0; j < i; j++) {
-                var distance = 0;
-                var vec1 = vectors[i],
-                    vec2 = vectors[j],
-                    termLen = vec1.length;
-                for (var k = 0; k < termLen; k++) {
-                    distance += (vec1[k] - vec2[k]) * (vec1[k] - vec2[k]);
-                }
-                distance = Math.sqrt(distance);
-                matrix[i][j] = matrix[j][i] = distance;
-            }
-        }
-        // console.log(matrix)
-        return matrix;
-    }
+    //     if (vectors == null)
+    //         vectors = this.getTFIDFVector();
+    //     for (var i = 0; i < data.docNum; i++) {
+    //         for (var j = 0; j < i; j++) {
+    //             var distance = 0;
+    //             var vec1 = vectors[i],
+    //                 vec2 = vectors[j],
+    //                 termLen = vec1.length;
+    //             for (var k = 0; k < termLen; k++) {
+    //                 distance += (vec1[k] - vec2[k]) * (vec1[k] - vec2[k]);
+    //             }
+    //             distance = Math.sqrt(distance);
+    //             matrix[i][j] = matrix[j][i] = distance;
+    //         }
+    //     }
+    //     // console.log(matrix)
+    //     return matrix;
+    // }
 
     /**
      * @param an array of document IDs
@@ -200,11 +198,10 @@ var DocTextProcessor = function() {
             Processor.getTFIDFVector();
         var vectors = [];
         for (var i = 0; i < docIDs.length; i++) {
-            var docID = docIDs[i];
-            vectors.push(allVectors[docID]);
+            // var docID = docIDs[i];
+            vectors.push(allVectors[i]);
         }
         
-
         if (vectors.length == 0)
             return [];
         // console.log(vectors, size);
@@ -228,13 +225,17 @@ var DocTextProcessor = function() {
 
         var sortedPairs = _.orderBy(_.toPairsIn(sum), 1, 'desc');
         var topKeywords = [];
+
+        // computeDocFreq();
+
         for (var i = 0; i < Math.min(size, sortedPairs.length); i++) {
             topKeywords.push({
                 "word": data.termList[+sortedPairs[i][0]],
-                "weight": +sortedPairs[i][1] / vectors.length
+                "weight": +sortedPairs[i][1] / vectors.length,
+                "count": data.dted[data.termList[+sortedPairs[i][0]]]["count"],
+                "docs": data.dted[data.termList[+sortedPairs[i][0]]]["docs"]
             });
         }
-        // console.log("topKeywords", topKeywords);
         return topKeywords;
     }
 
@@ -257,9 +258,15 @@ var DocTextProcessor = function() {
         for (var i = 0; i < data.docNum; i++) {
             var terms = data.termFreqs[i];
             for (var term in terms) {
-                if (!(term in dted))
-                    dted[term] = 0;
-                dted[term]++;
+                if (!(term in dted)){
+                    dted[term] = {
+                        "term": term,
+                        "count": 0,
+                        "docs":[]
+                    }
+                }
+                dted[term]["count"]++;
+                dted[term]["docs"].push(i);
             }
         }
     }
@@ -270,7 +277,7 @@ var DocTextProcessor = function() {
      * @return idf
      */
     function getIDF(term) {
-        return Math.log(data.docNum / (1 + data.dted[term])) / Math.log(10);
+        return Math.log(data.docNum / (1 + data.dted[term]["count"])) / Math.log(10);
     }
 
     return Processor;

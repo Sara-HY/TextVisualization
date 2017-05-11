@@ -18,16 +18,19 @@ class EntityGraphView extends BaseView {
     _init() {
         var _this = this;
         this.data = DataCenter.data;
-        this.filteredSet = new Set(this.data);
+        this.filteredSet = new Set();
+        for(var i=0; i<this.data.length; i++)
+            this.filteredSet.add(this.data[i]._index)
         this.spinner.spin(this.getContainer());
         _this.selectedNode = [];
         this._initView();
         this._processData();
         this.render();
         PubSub.subscribe("FilterCenter.Changed", function(msg, data) {
-            // console.log("FilterCenter.Changed");
             _this.filteredData = FilterCenter.getFilteredDataByView(_this);
-            _this.filteredSet = new Set(_this.filteredData);
+            _this.filteredSet = new Set();
+            for(var i=0; i<_this.filteredData.length; i++)
+                _this.filteredSet.add(_this.filteredData[i]._index);
             // _this._updateData();
             _this.reRender();
         })  
@@ -254,7 +257,6 @@ class EntityGraphView extends BaseView {
         // }
         // console.log(nodeMap, Object.keys(nodeMap).length);
         var nodes = _.values(nodeMap);
-        // console.log("nodes", nodes)
 
         var edgeWeightFilterThreshold = 2;
         var edges = [];
@@ -359,7 +361,6 @@ class EntityGraphView extends BaseView {
             .attr("class", "link")
           
         if(this.lineType == "straight"){
-            console.log("straight");
             $(this.getContainer()).find("#curve-line").attr("class", "hide")
             $(this.getContainer()).find("#straight-line").attr("class", "show")
         }     
@@ -479,6 +480,11 @@ class EntityGraphView extends BaseView {
             _this.reRender();
         })
 
+        this.graph.on("click", function(d, i){
+            _this.selectedNode = [];
+            FilterCenter.removeFilter(_this); 
+        }) 
+
         this.node.selectAll("circle").on("dblclick", function(d, i) {
             if (_this.selectedNode.indexOf(d) >= 0){
                 _this.selectedNode = []; 
@@ -488,7 +494,7 @@ class EntityGraphView extends BaseView {
                 _this.selectedNode = [d];
                 FilterCenter.addFilter(_this, d.docs);
             }  
-        })           
+        })      
     }
 
     updateRender() {
@@ -559,7 +565,6 @@ class EntityGraphView extends BaseView {
                 return "translate(" + Utils.scaling(d.x, minX, maxX, 0, width) + "," + Utils.scaling(d.y, minY, maxY, 0, height) + ")";
             })
         });
-
     }
 
     reRender() {
@@ -579,7 +584,11 @@ class EntityGraphView extends BaseView {
                     return (d["docs"].length && d.weight > 0) ? "block" : "none";
                 })
                 .classed("filtered-out", function() {
-                    return !_this.filteredSet.has(_this.data[index]);
+                    for(var i=0; i < d.docs.length; i++){
+                        if(_this.filteredSet.has(d.docs[i]._index))
+                            return false;
+                    }
+                    return true;
                 })
                 .classed("not-selected", function() {
                     if (_this.selectedNode.length == 0) return false;
@@ -605,7 +614,11 @@ class EntityGraphView extends BaseView {
         this.link.each(function(d, index){
             d3.select(this).style("stroke-width", function(d) { return Math.sqrt(d.weight); })
                 .classed("filtered-out", function() {
-                    return !_this.filteredSet.has(_this.data[index]);
+                   for(var i=0; i < d.docs.length; i++){
+                        if(_this.filteredSet.has(d.docs[i]._index))
+                            return false;
+                    }
+                    return true;
                 })
                 .classed("not-selected", function() {
                     if (_this.selectedNode.length == 0) return false;
@@ -624,7 +637,11 @@ class EntityGraphView extends BaseView {
         this.path.each(function(d, index){
             d3.select(this).style("stroke-width", function(d) { return Math.sqrt(d.weight); })
                 .classed("filtered-out", function() {
-                    return !_this.filteredSet.has(_this.data[index]);
+                    for(var i=0; i < d.docs.length; i++){
+                        if(_this.filteredSet.has(d.docs[i]._index))
+                            return false;
+                    }
+                    return true;
                 })
                 .classed("not-selected", function() {
                     if (_this.selectedNode.length == 0) return false;

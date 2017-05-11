@@ -42,7 +42,7 @@ class FilterCenter {
     static getFilteredDataByView(view) {
         var data = null;
         for (var tmpView of FilterCenter._filters.keys()) {
-            console.log(tmpView, view)
+            // console.log(tmpView, view)
             if (tmpView == view && view.viewID != "document-galaxy-view") 
                 continue;
             if (data == null) {
