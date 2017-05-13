@@ -469,7 +469,7 @@ class TopicSelectionView extends BaseView {
                 d3.select(this).selectAll(".topic-keyword").remove();
                 // console.log(topic.words);
                 // var word = topic.words.keywords[0].word;
-                var words = DataCenter.docTextProcessor.getTopKeywordsByTFIDF(topic.belongs, 1, true);
+                var words = DataCenter.docTextProcessor.getTopKeywordsByTFIDF(_this, topic.belongs, 1, true);
                 var word = words[0].word;
                 d3.select(this)
                     .append("text")
@@ -612,7 +612,7 @@ class TopicSelectionView extends BaseView {
                 })
             
 
-            var topWords = DataCenter.docTextProcessor.getTopKeywordsByTFIDF(group.data, 2, true);
+            var topWords = DataCenter.docTextProcessor.getTopKeywordsByTFIDF(_this, group.data, 2, true);
             d3.select(element).selectAll("text.keyword").remove();
             var keywordEles = d3.select(element).selectAll("text.keyword")
                 .data(topWords)

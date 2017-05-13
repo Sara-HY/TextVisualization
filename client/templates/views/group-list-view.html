@@ -37,13 +37,17 @@
                 <div class="group-color-indicater" style="background-color: {{group.color}}"></div>
                 <div class="group-controller-group pull-right btn-group">
                     {% if group.type =="Filter" %}
-                        <a class="btn btn-default btn-xs confirm-btn" group-id={{group.id}}><i class="fa fa-check"></i></a>
+                        <a class="btn btn-default btn-xs confirm-btn" group-type={{group.type}} group-id={{group.id}}><i class="fa fa-check"></i></a>
                     {% elif group.type == "Group" %}
-                        <a class="btn btn-default btn-xs edit-btn" group-id={{group.id}}><i class="fa fa-edit"></i></a>
-                        <a class="btn btn-default btn-xs delete-btn" group-id={{group.id}}><i class="fa fa-times"></i></a>
+                        <a class="btn btn-default btn-xs edit-btn" group-type={{group.type}} group-id={{group.id}}><i class="fa fa-edit"></i></a>
+                        <a class="btn btn-default btn-xs delete-btn" group-type={{group.type}} group-id={{group.id}}><i class="fa fa-times"></i></a>
                     {% endif %}
                 </div>
-                <strong>{{group.name}}</strong> <span class="badge">{{group.data.length}}</span> 
+                {% if group.type =="Filter" %}
+                    <strong class="group-name" group-id={{group.id}} contenteditable="false" cursor="text">{{group.name}}</strong> <span class="badge">{{group.data.length}}</span> 
+                {% else %}
+                    <strong class="group-name" group-id={{group.id}} contenteditable="true" cursor="text">{{group.name}}</strong> <span class="badge">{{group.data.length}}</span> 
+                {% endif %}
             </div>
 <!--             <div class="group-docs" group-id={{group.id}}>
                 {% for doc in docs %}

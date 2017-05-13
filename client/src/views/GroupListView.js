@@ -23,29 +23,35 @@ class GroupListView extends BaseView {
         this.selectedGroupID = -1;
 
         this.filterGroup = GroupCenter.createGroup("Current Selection", "Filter", null);
-        var all = _.map(DataCenter.data, "_index");
-        this.filterGroup.updateData(all);
+        this.data = DataCenter.data;
+        this.filteredData = this.data;
+        this.filterGroup.updateData(_.map(this.filteredData, "_index"));
 
         PubSub.subscribe("GroupCenter.Groups.Update", function() {
             _this.render();
         })
 
         PubSub.subscribe("FilterCenter.Changed", function(msg, data) {
-            var filteredData = FilterCenter.getFilteredDataByView(_this);
-            _this.filterGroup.updateData(_.map(filteredData, "_index"));
-            _this.render();
+            if(_this.filteredData != FilterCenter.getFilteredDataByView(_this)){
+                console.log()
+                _this.filteredData = FilterCenter.getFilteredDataByView(_this);
+                _this.filterGroup.updateData(_.map(_this.filteredData , "_index"));
+                _this.render();
+            }
         })
 
         $(this.getContainer()).on("click", ".confirm-btn", function() {
             var groupID = +$(this).attr("group-id");
-            var group = GroupCenter.getGroupByID(groupID);
+            var groupType = $(this).attr("group-type");
+            var group = GroupCenter.getGroup(groupType, groupID);
             _this._createGroup(group.data);
             PubSub.publish("GroupCenter.Groups.Update");
         })
 
         $(this.getContainer()).on("click", ".delete-btn", function() {
             var groupID = +$(this).attr("group-id");
-            var group = GroupCenter.getGroupByID(groupID);
+            var groupType = $(this).attr("group-type");
+            var group = GroupCenter.getGroup(groupType, groupID);
             GroupCenter.removeGroups([group]);
             PubSub.publish("GroupCenter.Groups.Update");
         }) 
@@ -59,7 +65,7 @@ class GroupListView extends BaseView {
             modal.find("#group-a").find("option").remove();
             modal.find("#group-b").find("option").remove();
             for (var group of groups) {
-                var option = "<option group-id='" + group.id + "'>" 
+                var option = "<option group-id='" + group.id + "' group-type='" + group.type + "'>" 
                     + group.name + "(" + group.data.length + ")"
                     + "</option>"
                 modal.find("#group-a").append(option);
@@ -73,13 +79,14 @@ class GroupListView extends BaseView {
 
         //编辑Group
         $(this.getContainer()).on("click", "#group-edit-modal #group-edit-ok-btn", function() {
-            console.log("click");
             var modal = $(_this.getContainer()).find("#group-edit-modal").modal();
             var groupAID = +modal.find("#group-a").find("option:selected").attr("group-id");
             var groupBID = +modal.find("#group-b").find("option:selected").attr("group-id");
+            var groupAType = modal.find("#group-a").find("option:selected").attr("group-type");
+            var groupBType = modal.find("#group-b").find("option:selected").attr("group-type");
             var operation = modal.find("#opeartion").val();
-            var groupA = GroupCenter.getGroupByID(groupAID);
-            var groupB = GroupCenter.getGroupByID(groupBID);
+            var groupA = GroupCenter.getGroup(groupAType, groupAID);
+            var groupB = GroupCenter.getGroup(groupBType, groupBID);
             var data = [];
             if (operation == "∪")
                 data = _.union(groupA.data, groupB.data)
@@ -90,9 +97,7 @@ class GroupListView extends BaseView {
             _this._createGroup(data);
             PubSub.publish("GroupCenter.Groups.Update");
             modal.modal("hide");
-
         })       
-
 
         //选中Group
         $(this.getContainer()).on("click", ".group-wrapper", function() {
@@ -104,18 +109,36 @@ class GroupListView extends BaseView {
             if ($(this).hasClass("active")) {
                 _this.selectedGroupID = -1;
                 $(_this.getContainer()).find(".group-wrapper").removeClass("active");
+                _this.filteredData = _this.data;
                 FilterCenter.removeFilter(_this);
             } else {
                 $(_this.getContainer()).find(".group-wrapper").removeClass("active");
                 $(this).addClass("active");
                 _this.selectedGroupID = groupID;
-                var group = GroupCenter.getGroupByID(groupID);
-                var selectedData = [];
-                for (var id of group.data)
-                    selectedData.push(DataCenter.data[id]);
-                FilterCenter.addFilter(_this, selectedData);
+                var group = GroupCenter.getGroup("Group", groupID);
+                _this.filteredData  = [];
+                if(group.data.length){
+                    for (var id of group.data)
+                        _this.filteredData.push(DataCenter.data[id]);
+                }
+                FilterCenter.addFilter(_this, _this.filteredData);
             }
-        })    
+        }) 
+
+        $(_this.getContainer()).on("mousedown", ".group-name", function(event) {
+            if(event.which == 3){
+                var orginalName = $(this).text();
+                $(this).keyup(function(){
+                    var newName = $(this).text();
+                    if(newName != ""){
+                        $(this).text(newName)
+                        var groupID = +$(this).attr("group-id");
+                        var group = GroupCenter.getGroup("Group", groupID);
+                        group.name = newName;
+                    }
+                })
+            }  
+        })
     }
 
     _createGroup(data) {
@@ -140,7 +163,7 @@ class GroupListView extends BaseView {
                 groupDocs.push(docs[docID]);
             }
             var vectors = [];
-            var topWords = DataCenter.docTextProcessor.getTopKeywordsByTFIDF(group.data, 7, true);
+            var topWords = DataCenter.docTextProcessor.getTopKeywordsByTFIDF(_this, group.data, 7, true);
             var html = tpl({group: group, topWords: topWords, docs: groupDocs});
             $(_this.getContainer()).find("#group-list").append(html);
         }
@@ -178,6 +201,31 @@ class GroupListView extends BaseView {
         // })
     }
 
+    reRender () {    
+        var _this = this;
+        var docs = DataCenter.data;
+
+        var groups = _.filter(GroupCenter.groups, function(g) {
+            return g.type == "Filter" || g.type == "Group";
+        });
+
+        $(this.getContainer()).find("#group-list").html("");
+        var tpl = swig.compile($(_this.viewTemplate).find("#group-template").html());
+
+        for (var group of groups) {
+            var groupDocs = [];
+            for (var docID of group.data) {
+                groupDocs.push(docs[docID]);
+            }
+            var vectors = [];
+            var topWords = DataCenter.docTextProcessor.getTopKeywordsByTFIDF(_this, group.data, 7, true);
+            var html = tpl({group: group, topWords: topWords, docs: groupDocs});
+            $(_this.getContainer()).find("#group-list").append(html);
+        }
+
+        $(_this.getContainer()).find(".group-wrapper[group-id=" + this.selectedGroupID + "]")
+            .addClass("active");
+    }
 
 }
 

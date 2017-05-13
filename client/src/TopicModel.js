@@ -83,7 +83,7 @@ class TopicModel {
 
     getGroupByTopicID(topicID) {
         var groupID = this._topicGroupMap[topicID];
-        return GroupCenter.getGroupByID(groupID);
+        return GroupCenter.getGroup("Topic", groupID);
     }
 
     getTopicByGroupID(groupID) {
