@@ -192,14 +192,18 @@ var DocTextProcessor = function() {
      * @param normalized, boolean, whether use normalized TFIDF vectors
      * @return top keywords, each is formed as {"word": xxx, "weight": xxx}
      */    
-    Processor.getTopKeywordsByTFIDF = function(docIDs, size, normalized) {
+    Processor.getTopKeywordsByTFIDF = function(view, docIDs, size, normalized) {
         var allVectors = (normalized == true) ?
             Processor.getNormalizedTFIDFVector() :
             Processor.getTFIDFVector();
         var vectors = [];
         for (var i = 0; i < docIDs.length; i++) {
-            // var docID = docIDs[i];
-            vectors.push(allVectors[i]);
+            if(view.viewID == "keywords-view")
+                vectors.push(allVectors[i]);
+            else{
+                var docID = docIDs[i];
+                vectors.push(allVectors[docID]);
+            }
         }
         
         if (vectors.length == 0)
@@ -236,6 +240,10 @@ var DocTextProcessor = function() {
                 "docs": data.dted[data.termList[+sortedPairs[i][0]]]["docs"]
             });
         }
+        topKeywords.sort(function(a,b){  
+            return b.weight - a.weight;  
+        });
+
         return topKeywords;
     }
 

@@ -35,6 +35,7 @@ class KeyWordsView extends BaseView {
     }
 
     _getKeywords() {
+        var _this = this;
         this.dataID = [];
 
         var segmentedDocs = _.map(this.data, function(doc) {
@@ -47,7 +48,7 @@ class KeyWordsView extends BaseView {
             this.dataID.push(this.data[i]._index);
         }
 
-        this.words = docTextProcessor.getTopKeywordsByTFIDF(this.dataID, this.wordLength, true);
+        this.words = docTextProcessor.getTopKeywordsByTFIDF(_this, this.dataID, this.wordLength, true);
         for (var i = 0; i < this.words.length; i++) {
             this.words[i]._index = i;
             this.words[i]._weight = "<div class=\"bar\"><div style=\"width:" + parseInt(this.words[i].weight * 100) + "%;\"></div> </div> "

@@ -213,9 +213,12 @@ class DocumentGalaxyView extends BaseView {
             if(topicNum != _this.topicNum){
                 _this.topicNum = topicNum;
                 _this.keywordNum = keywordNum;
-                _this.disMatrix= await _this._getDocDistanceMatrixByTopic();
-
                 _this.spinner.spin(_this.getContainer());
+                _this.wordGroup.selectAll(".cluster-text")
+                    .style("display", "none");
+
+                _this.disMatrix= await _this._getDocDistanceMatrixByTopic();
+                
                 _this.tsneWorker.postMessage({"cmd":"update", "distance": _this.disMatrix});
                 worker.onmessage = async function(event) {
                     var data = event.data;
@@ -636,7 +639,7 @@ class DocumentGalaxyView extends BaseView {
             center[0] /= group.data.length;
             center[1] /= group.data.length;
             //extract top words
-            var words = DataCenter.docTextProcessor.getTopKeywordsByTFIDF(group.data, _this.keywordNum, true);
+            var words = DataCenter.docTextProcessor.getTopKeywordsByTFIDF(_this, group.data, _this.keywordNum, true);
             words = _.map(words, "word");
             // console.log(words);
             topWords.push({ "words": words, "center": center, "groupID": group.id, "color": group.color});

@@ -17,7 +17,9 @@ class FacetsView extends BaseView {
 	_init(){
 		var _this = this;
 		PubSub.subscribe("DataCenter.TopicModel.Update", function(){
+			console.log("topicModel");
 			_this.topicModel = DataCenter.topicModel;
+			_this.renderGroup();
 		})	
 		PubSub.subscribe("GroupCenter.Groups.Update", function(){
 			_this.renderGroup();
