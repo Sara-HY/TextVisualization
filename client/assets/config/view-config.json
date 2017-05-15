@@ -1,5 +1,17 @@
 [
     {
+        "Class": "FacetsView",
+        "id": "facets-view",
+        "title": "Facets View",
+        "layout": {
+            "position": "absolute",
+            "left": "48%",
+            "bottom": "0",
+            "width": "33%",
+            "height": "40%"
+        } 
+    },
+    {
         "Class": "KeyWordsView",
         "id": "keywords-view",
         "title": "Keywords View",
@@ -58,18 +70,6 @@
             "width": "33%",
             "bottom": "40%"
         }
-    },
-    {
-        "Class": "FacetsView",
-        "id": "facets-view",
-        "title": "Facets View",
-        "layout": {
-            "position": "absolute",
-            "left": "48%",
-            "bottom": "0",
-            "width": "33%",
-            "height": "40%"
-        } 
     },
     {
         "Class": "DataListView",

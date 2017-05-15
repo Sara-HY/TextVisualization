@@ -91,26 +91,32 @@ class DataListView extends BaseView {
         })
 
 
-        $(this.getContainer()).on("click", "#filter-btn", function() {
-            var ids = _this.dataTable.rows({"filter":"applied"})[0];
-            _this.dataLength.html(ids.length);
-            var selectedData = [];
-            for (var i = 0; i < ids.length; i++) {
-                selectedData.push(DataCenter.data[ids[i]]);
+        $(this.getContainer()).on("click", ".filter-btn", function() {
+            if($(this).hasClass("active")){
+                _this.dataTable.search("").draw();
+                _this.dataLength.html(_this.filteredData.length);
+                $(_this.getContainer()).find(".filter-btn").removeClass("active");
+                FilterCenter.removeFilter(_this);
             }
-            FilterCenter.addFilter(_this, selectedData);      
-        })
-
-        $(this.getContainer()).on("click", "#clear-btn", function() {
-            _this.dataTable.search("").draw();
-            _this.dataLength.html(_this.filteredData.length);
-            FilterCenter.removeFilter(_this);
+            else {
+                $(_this.getContainer()).find(".filter-btn").removeClass("active");
+                $(this).addClass("active");
+                var ids = _this.dataTable.rows({"filter":"applied"})[0];
+                _this.dataLength.html(ids.length);
+                var selectedData = [];
+                for (var i = 0; i < ids.length; i++) {
+                    selectedData.push(DataCenter.data[ids[i]]);
+                }
+                FilterCenter.addFilter(_this, selectedData);
+            }        
         })
 
         this.hightlightText.change(function(){
             var word = _this.hightlightText.val();
             _this.textSearch(word);
         })
+
+
     }
 
     render () {
@@ -119,8 +125,6 @@ class DataListView extends BaseView {
 
         var mainTimeField = DataCenter.fields._MAINTIME;
         var mainTextField = DataCenter.fields._MAINTEXT;
-
-        this.dataLength = $(this.getContainer()).find("#data-length").html(this.data.length);
 
         this.dataTable = table.DataTable({
             data: this.data,
@@ -136,6 +140,9 @@ class DataListView extends BaseView {
                 // {data: mainTextField, title: "text"}
             ],
         });
+        // this.dataLength = $(this.getContainer()).find("#data-length").html(this.data.length);
+        this.dataLength = $(this.getContainer()).find("#data-length");
+        this.dataLength.html(this.dataTable.rows()[0].length);
         this.textTime.html(this.data[0]["_time"])
         this.textTitle.html(this.data[0]["title"])
         this.textContent.html(this.data[0][mainTextField]); 
@@ -159,12 +166,19 @@ class DataListView extends BaseView {
                 $(this).removeClass("active");
             else
                 $(this).addClass("active");
+        })
+
+        this.searchText = $(this.getContainer()).find("input[type='search']");
+        this.searchText.change(function(){
+            _this.dataLength.html(_this.dataTable.rows({"filter":"applied"})[0].length);
+            var word = _this.searchText.val();
+            _this.hightlightText.val(word);
+            _this.textSearch(word);
         })     
     }
 
     reRender() {
         this.dataLength.html(this.filteredData.length);
-
         this.dataTable.clear();
         this.dataTable.rows.add(this.filteredData);
         this.dataTable.draw();

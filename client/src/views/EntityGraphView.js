@@ -39,16 +39,21 @@ class EntityGraphView extends BaseView {
             _this.updateRender();         
         })
 
-        $(_this.getContainer()).find("#straight").click(function(){
-            _this.lineType = "straight"        
-            $(_this.getContainer()).find("#curve-line").attr("class", "hide")
-            $(_this.getContainer()).find("#straight-line").attr("class", "show")        
-        })
-
-        $(_this.getContainer()).find("#curve").click(function(){
-            _this.lineType = "curve"        
-            $(_this.getContainer()).find("#curve-line").attr("class", "show")
-            $(_this.getContainer()).find("#straight-line").attr("class", "hide")      
+        $(_this.getContainer()).find("#line-type").click(function(){
+            if($(this).hasClass("active")){
+                $(this).removeClass("active");
+                $(this).text("Curve");
+                _this.lineType = "curve";    
+                $(_this.getContainer()).find("#curve-line").attr("class", "show");
+                $(_this.getContainer()).find("#straight-line").attr("class", "hide");    
+            }
+            else{
+                $(this).addClass("active");
+                $(this).text("Straight");
+                _this.lineType = "straight";
+                $(_this.getContainer()).find("#curve-line").attr("class", "hide");
+                $(_this.getContainer()).find("#straight-line").attr("class", "show");
+            }
         })
 
         $(_this.getContainer()).find("#refresh").click(function(){
@@ -70,10 +75,12 @@ class EntityGraphView extends BaseView {
             .attr("transform", "translate(" + (width-this.graphSize)/2 + ")");
 
         this.legend = this.graph.append("svg:g")
+            .attr("cursor", "pointer")
             .attr({width:100, height:50, x:this.graphSize-55, y:this.graphSize-5})
             
         this.legend.append("circle")
             .attr("r", 5)
+            .attr("entity-type", "entity-organization")
             .attr({width:105, height:4, cx:this.graphSize-90, cy:this.graphSize-10, fill: "#2ca02c"})
 
         this.legend.append("svg:text")
@@ -82,6 +89,7 @@ class EntityGraphView extends BaseView {
 
         this.legend.append("circle")
             .attr("r", 5)
+            .attr("entity-type", "entity-name")
             .attr({width:105, height:4, cx:this.graphSize-90, cy:this.graphSize-30, fill: "#ff7f0e"})
 
         this.legend.append("svg:text")
@@ -90,11 +98,24 @@ class EntityGraphView extends BaseView {
 
         this.legend.append("circle")
             .attr("r", 5)
+            .attr("entity-type", "entity-place")
             .attr({width:105, height:4, cx:this.graphSize-90, cy:this.graphSize-50, fill: "#1f77b4"})
 
         this.legend.append("svg:text")
             .text("Place")
             .attr({x:this.graphSize-80, y:this.graphSize-45})
+
+        this.legend.selectAll("circle").on("dblclick", function() {
+            _this.selectedNode = [];
+            var filterSet = new Set();
+            var entityType = '.' + $(this).attr("entity-type")
+            _this.svg.selectAll(entityType).each(function(d, index){
+                _this.selectedNode.push(d);
+                for(var i=0; i<d.docs.length; i++)
+                    filterSet.add(d.docs[i])
+            })
+            FilterCenter.addFilter(_this, Array.from(filterSet));
+        })  
 
         this.svg = this.graph.attr("pointer-events", "all")
                 .append('svg:g')
@@ -365,7 +386,6 @@ class EntityGraphView extends BaseView {
             $(this.getContainer()).find("#straight-line").attr("class", "show")
         }     
         else{
-            console.log("curve")
             $(this.getContainer()).find("#curve-line").attr("class", "show")
             $(this.getContainer()).find("#straight-line").attr("class", "hide")
         }
@@ -512,12 +532,10 @@ class EntityGraphView extends BaseView {
             .start();
           
         if(this.lineType == "straight"){
-            console.log("straight");
             $(this.getContainer()).find("#curve-line").attr("class", "hide")
             $(this.getContainer()).find("#straight-line").attr("class", "show")
         }     
         else{
-            console.log("curve")
             $(this.getContainer()).find("#curve-line").attr("class", "show")
             $(this.getContainer()).find("#straight-line").attr("class", "hide")
         } 

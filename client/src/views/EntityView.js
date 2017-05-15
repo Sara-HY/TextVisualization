@@ -29,7 +29,7 @@ class EntityView extends BaseView {
                 _this._processData();
                 _this.reRender();
             }
-        })  
+        }) 
     }
 
     _processData(){
@@ -102,11 +102,28 @@ class EntityView extends BaseView {
             else{
                 var name = $(this).children('td:nth-child(1)').html();
                 FilterCenter.addFilter(_this, _this.entityMap[name]["docs"]);
-                console.log(_this.entityMap[name]["docs"])
                 $(this).addClass("active");
             }
             _this.dataTable.$('tr:eq(' + _this.index + ')').removeClass("active");
             _this.index = _this.dataTable.row(this).data()._index;
+        })
+
+        $(this.getContainer()).on("click", ".filter-btn", function() {
+            if($(this).hasClass("active")){
+                _this.dataTable.search("").draw();
+                $(_this.getContainer()).find(".filter-btn").removeClass("active");
+                FilterCenter.removeFilter(_this);
+            }
+            else {
+                $(_this.getContainer()).find(".filter-btn").removeClass("active");
+                $(this).addClass("active");
+                var ids = _this.dataTable.rows({"filter":"applied"})[0];
+                var selectedData = [];
+                for (var i = 0; i < ids.length; i++) {
+                    selectedData = selectedData.concat(_this.entity[ids[i]]["docs"]);
+                }
+                FilterCenter.addFilter(_this, selectedData);
+            }        
         })   
     }
 

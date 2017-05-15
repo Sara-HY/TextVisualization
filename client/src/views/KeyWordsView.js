@@ -101,7 +101,30 @@ class KeyWordsView extends BaseView {
             }
             _this.dataTable.$('tr:eq(' + _this.index + ')').removeClass("active");
             _this.index = _this.dataTable.row(this).data()._index;
-        })   
+        }) 
+
+        $(this.getContainer()).on("click", ".filter-btn", function() {
+            if($(this).hasClass("active")){
+                _this.dataTable.search("").draw();
+                $(_this.getContainer()).find(".filter-btn").removeClass("active");
+                FilterCenter.removeFilter(_this);
+            }
+            else {
+                $(_this.getContainer()).find(".filter-btn").removeClass("active");
+                $(this).addClass("active");
+                var ids = _this.dataTable.rows({"filter":"applied"})[0];
+                var filteredData = [];
+                for (var i = 0; i < ids.length; i++) {
+                    var docs = _this.words[ids[i]]["docs"]
+                    for(var j=0; j<docs.length; j++){
+                        filteredData.push(_this.data[docs[j]]);
+                    }
+                }
+                console.log(ids, _this.words, filteredData);
+                FilterCenter.addFilter(_this, filteredData);
+            }   
+        }) 
+
     }
 
     reRender(){

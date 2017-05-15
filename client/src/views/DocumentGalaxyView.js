@@ -169,39 +169,47 @@ class DocumentGalaxyView extends BaseView {
             showScale: true
         });
 
-        $(_this.getContainer()).find("#config-btn").click(function(){
+        $(_this.getContainer()).on("click", ".config-btn", function(){
             $(_this.getContainer()).find("#topic-slider").jRange('setValue',  _this.topicNum.toString());
             $(_this.getContainer()).find("#keywords-slider").jRange('setValue', _this.keywordNum.toString());
             $(_this.getContainer()).find("#topic-keywords-modal").modal();
         })
 
-        $(_this.getContainer()).find("#brush-btn").click(function(){
-            console.log("brush");
-            _this.svg.on(".zoom", null);
-            _this.svg.attr("cursor", "crosshair").call(_this.brush);
+        $(_this.getContainer()).find("#mouse-btn").click(function(){
+            if($(this).hasClass("active")){
+                $(this).removeClass("active");
+                $(this).text("Drag");
+                console.log("drag");
+                _this.svg.on(".brush", null);
+                $(_this.getContainer()).find(".brush").css("pointer-events", "none");
+                _this.svg.attr("cursor", "pointer").call(_this.drag).on('dblclick.zoom', null);
+            }
+            else{
+                $(this).addClass("active");
+                $(this).text("Brush");
+                 console.log("brush");
+                _this.svg.on(".zoom", null);
+                _this.svg.attr("cursor", "crosshair").call(_this.brush);
+            }
         })
 
-        $(_this.getContainer()).find("#drag-btn").click(function(){
-            console.log("drag");
-            _this.svg.on(".brush", null);
-            $(_this.getContainer()).find(".brush").css("pointer-events", "none");
-            _this.svg.attr("cursor", "pointer").call(_this.drag).on('dblclick.zoom', null);
-        })
-
-        $(_this.getContainer()).find("#topic-btn").click(function(){
-            if(_this.colorType != "topic"){
+        $(_this.getContainer()).find("#color-btn").click(function(){
+            if($(this).hasClass("active")){
+                $(this).removeClass("active");
+                $(this).text("TopicColor");
+                console.log("TopicColor");
                 _this.colorType = "topic"
                 _this.reRender();
+                PubSub.publish("ColorTypeChanged", "topic");
             }
-            PubSub.publish("ColorTypeChanged", "topic");
-        })
-
-        $(_this.getContainer()).find("#normal-btn").click(function(){
-            if(_this.colorType != "normal"){
+            else{
+                $(this).addClass("active");
+                $(this).text("NormalColor");
+                console.log("NormalColor");
                 _this.colorType = "normal"
                 _this.reRender();
+                PubSub.publish("ColorTypeChanged", "normal");
             }
-            PubSub.publish("ColorTypeChanged", "normal");
         })
 
         $(_this.getContainer()).on("click", "#topic-keywords-modal #config-ok-btn", async function(){
@@ -641,7 +649,6 @@ class DocumentGalaxyView extends BaseView {
             //extract top words
             var words = DataCenter.docTextProcessor.getTopKeywordsByTFIDF(_this, group.data, _this.keywordNum, true);
             words = _.map(words, "word");
-            // console.log(words);
             topWords.push({ "words": words, "center": center, "groupID": group.id, "color": group.color});
         }
 

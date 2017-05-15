@@ -1,28 +1,42 @@
 <% extends "../includes/view.html" %>
 
+<% block view-content %>
+    <div id="facets-theme-part">
+        <span><strong>Theme</strong></span>
+        <div id="facets-theme"></div>
+    </div>
+    <div id="facets-name-part">
+        <span><strong>Name</strong></span>
+        <div id="facets-name"></div>
+    </div>
+    <div id="facets-place-part">
+        <span><strong>Place</strong></span>
+        <div id="facets-place"></div>
+    </div>
+    <div id="facets-organization-part">
+        <span><strong>Organization</strong></span>
+        <div id="facets-organization"></div>
+    </div>
+    
+<% endblock %>
+
 <% block templates %>
     <% raw %>
     <script type="text/template/lodash" id="facets-template">
-        <div class="topic-wrapper thumbnail" group-id=<%=group.id%> topic-id=<%=topic.id%>>
+        <div class="topic-wrapper thumbnail" id=<%=group.type%><%=group.id%> group-type=<%=group.type%> group-id=<%=group.id%>>
             <div class="group-title">
-                <div class="group-color-indicater" style="background-color: <%=group.color%>"></div>
-                <div class="group-controller-group pull-right btn-group">
-                    <a class="btn btn-default btn-xs active"><i class="fa fa-file-o"></i></a>
-                    <a class="btn btn-default btn-xs"><i class="fa fa-plus-square-o"></i></a>
-                    <a class="btn btn-default btn-xs"><i class="fa fa-minus-square-o"></i></a>
-                </div>
-                <div class="group-controller-group pull-right btn-group">
-                    <a class="btn btn-default btn-xs filter-btn" group-id=<%=group.id%>><i class="fa fa-filter"></i></a>
-                </div>                
-                <strong>#<%=topic.id%>: <%=group.name%></strong> <span class="badge"><%=group.data.length%></span>
-            </div>
-            <div class="group-sites" group-id=<%=group.id%>>
-                <% _.each(sites, function(site) { %>
-                <% var w = Math.min(15, site.count/2)%>
-                    <span class="site" style="font-size:<%=w%>px; margin: 5px;"> <%=site.site%></span>
-                <% }) %>
-                </ul>
-            </div>           
+                <span class="badge" style="left: 5px; position: absolute;"><%=group.data.length%></span>
+                 <div class="keywords">
+                    <% _.each(topWords, function(word) { %>
+                        <span class="word" style="font-size:10px; margin: 1px;"> <%=word.word%></span>
+                    <% }) %>
+                </div>   
+                <div class="group-controller-group pull-right btn-group" style="right: 6px">
+                    <a class="btn btn-default btn-xs filter-btn" group-type=<%=group.type%> group-id=<%=group.id%> ><i class="fa fa-filter"></i></a>
+                </div> 
+                           
+                
+            </div> 
         </div>
     </script>
     <% endraw %>

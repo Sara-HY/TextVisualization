@@ -51,7 +51,7 @@ class TimelineView extends BaseView {
             .attr("height", height * 0.5);
 
         this.overviewTimelineChart = dc.barChart("#" + this.getContainerID() + " .overview-timeline"); 
-        this.focusTimelineChart = dc.barChart("#" + this.getContainerID() + " .focus-timeline");           
+        this.focusTimelineChart = dc.barChart("#" + this.getContainerID() + " .focus-timeline");          
     }
 
     // _initControllerGUI() {

@@ -1,5 +1,10 @@
 <% extends "../includes/view.html" %>
 
-<% block view-content %>  
-    <table id="entity-table" class="display" cellspacing="0" width="100%"></table>
+<% block view-content %>
+	<div class="list-table">  
+	    <table id="entity-table" class="display" cellspacing="0" width="100%"></table>
+	    <div class="group-controller-group pull-right btn-group" style="position: absolute; left: 3px; top: 5px;">
+	        <a class="btn btn-default btn-xs filter-btn"><i class="fa fa-filter"></i></a>
+	    </div>
+	</div>
 <% endblock %>

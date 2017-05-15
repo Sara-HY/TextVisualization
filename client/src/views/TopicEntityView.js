@@ -18,33 +18,20 @@ class TopicEntityView extends BaseView {
 
     _init() {
         var _this = this;
+        
+        this.entitys.add("name");
+        this.entitys.add("place");
+        this.entitys.add("organization");
+        
+        console.log(_this.entitys);
+
+        this.render();
+        
         PubSub.subscribe("DataCenter.TopicModel.Update", function() {
             _this.topicModel = DataCenter.topicModel;
         })
         PubSub.subscribe("GroupCenter.Groups.Update", function() {
-            if($(_this.getContainer()).find("#name").is(':checked')){
-                _this.entitys.add("name");
-            }
-            else{
-                _this.entitys.delete("name");
-                $(_this.getContainer()).find("#entity-name-list").html("");
-            }
-            if($(_this.getContainer()).find("#place").is(':checked')) {
-                _this.entitys.add("place");
-            }
-            else{
-                _this.entitys.delete("place");
-                $(_this.getContainer()).find("#entity-place-list").html("");
-            }
-            if($(_this.getContainer()).find("#organization").is(':checked')) {
-                _this.entitys.add("organization");
-            }
-            else{
-                _this.entitys.delete("organization");
-                $(_this.getContainer()).find("#entity-organization-list").html("");
-            }
             console.log(_this.entitys);
-
            	_this.render();
         })
     }
