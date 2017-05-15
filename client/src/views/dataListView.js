@@ -44,7 +44,6 @@ class DataListView extends BaseView {
         // });
 
         PubSub.subscribe("ColorTypeChanged", function(msg, data){
-            console.log("changed")
             for(var i=0; i<_this.data.length; i++){
                 if(data == "normal")
                     _this.data[i]._topic = "<div class=\"topic-circle\" style=\"background: rgba(0, 0, 0, 0.3);\"></div>"

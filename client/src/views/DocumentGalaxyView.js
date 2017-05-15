@@ -267,11 +267,12 @@ class DocumentGalaxyView extends BaseView {
             .attr("width", width)
             .attr("height", height)
 
-        this.wordGroup = this.svg.append("g")
+        this.dotGroup = this.svg.append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
             .attr("offset-x", margin.left)
-            .attr("offset-y", margin.top)              
-        this.dotGroup = this.svg.append("g")
+            .attr("offset-y", margin.top)
+
+        this.wordGroup = this.svg.append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
             .attr("offset-x", margin.left)
             .attr("offset-y", margin.top)
@@ -468,11 +469,7 @@ class DocumentGalaxyView extends BaseView {
         })
         
         this.wordGroup.selectAll(".cluster-text")
-            .attr("fill", function(d){
-                if(_this.colorType == "normal")
-                    return "#050505";
-                return d.color;
-            })
+            .attr("fill", "#050505")
     }
 
     _initBrush() {
