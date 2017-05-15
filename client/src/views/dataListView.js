@@ -192,7 +192,7 @@ class DataListView extends BaseView {
             divFlag: true,
             divStr: " ",
             markClass: "",
-            markColor: "red",
+            markColor: "yellow",
             nullReport: true,
             callback: function(){
                 return false;   
@@ -202,7 +202,7 @@ class DataListView extends BaseView {
         if(sets.markClass){
             clStr = "class='"+sets.markClass+"'";   
         }else{
-            clStr = "style='color:"+sets.markColor+";'";
+            clStr = "style='background:"+sets.markColor+";'";
         }
         
         //对前一次高亮处理的文字还原     
