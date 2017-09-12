@@ -16,13 +16,22 @@
     "blueimp-file-upload": "~9.11.2",
     "blueimp-gallery": "~2.16.0",
     "underscore": "~1.8.3",
-    "particles.js": "^2.0.0"
+    "particles.js": "^2.0.0",
+    "d3": "~3.5.12",
+    "crossfilter": "~1.3.12",
+    "dcjs": "~2.0.0-beta.25",
+    "font-awesome": "fontawesome#~4.5.0",
+    "spin.js": "~2.3.2",
+    "wordcloud": "github:timdream/wordcloud2.js"
   },
   "exportsOverride": {
     "bootstrap": {
       "/": "dist"
     },
     "blueimp-file-upload": {
+      "/": "/"
+    },
+    "font-awesome": {
       "/": "/"
     }
   }

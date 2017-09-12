@@ -47,7 +47,6 @@ router.get('/process/:id', async function(req, res, next) {
     res.render('datasystem/process', {userName: req.session.user, datasetID: datasetID, fileName: fileName, fields: result.fields, preview: result.preview, webPath: g.webPath});
 });
 
-
 function parseJSONFields(fileData) {
     var jsonData = JSON.parse(fileData);
     var map = {};
@@ -106,7 +105,6 @@ function parseCSVFields(fileData) {
 }
 
 function getPreviewData(fileData) {
-
 }
 
 module.exports = router;

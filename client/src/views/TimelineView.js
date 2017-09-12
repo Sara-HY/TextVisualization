@@ -50,7 +50,7 @@ class TimelineView extends BaseView {
             .attr("width", width)
             .attr("height", height * 0.5);
 
-        this.overviewTimelineChart = dc.barChart("#" + this.getContainerID() + " .overview-timeline"); 
+        this.overviewTimelineChart = dc.lineChart("#" + this.getContainerID() + " .overview-timeline"); 
         this.focusTimelineChart = dc.barChart("#" + this.getContainerID() + " .focus-timeline");          
     }
 
@@ -136,13 +136,14 @@ class TimelineView extends BaseView {
             .width(width)
             .height(height * 0.5)
             .dimension(timeDim)
-            .group(overviewCountGroup)  
+            .group(overviewCountGroup)
             .elasticY(true) 
-            .gap(1)
             .round(d3.time.month.round)
-            .alwaysUseRounding(true)
             .x(overviewX)
             .xUnits(this.overviewTimeUnits)
+            .renderArea(true);
+            // .alwaysUseRounding(true)
+            // .gap(1)
 
 
         this.focusTimelineChart.yAxis().ticks(2);

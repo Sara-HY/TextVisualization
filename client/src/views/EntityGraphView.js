@@ -452,6 +452,7 @@ class EntityGraphView extends BaseView {
         this.force.on("tick", function() {
             console.log("tick");
         });
+
         this.force.on("end", function(){
             _this.spinner.stop();
             _this.update = 0;

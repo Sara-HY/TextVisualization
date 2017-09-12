@@ -10,9 +10,9 @@ var session = require('express-session');
 var index = require('./routes/index');
 var api = require('./routes/api/api');
 var users = require('./routes/users');
+var crawler = require('./routes/crawler');
 var dataSystem = require('./routes/dataSystem');
 var upload = require('./routes/upload');
-
 
 var app = express();
 app.use(session({ 
@@ -74,6 +74,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', index);
 app.use('/api', api);
 app.use('/users', users);
+app.use('/crawler', crawler);
 app.use('/datasystem', dataSystem);
 app.use('/upload', upload);
 

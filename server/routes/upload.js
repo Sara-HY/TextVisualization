@@ -31,7 +31,6 @@ var options = {
 
 };
 
-
 var uploader = require('uni-blueimp-file-upload-expressjs')(options);
 
 router.get('/', function(req, res) {
@@ -69,7 +68,6 @@ router.post('/', function(req, res) {
                             size: obj.files[i].size,
                             type: obj.files[i].type,
                             uploadTime: new Date().getTime(),
-                            user: null
                         },
                         processStatus: {
                             status: "unprocessed",
