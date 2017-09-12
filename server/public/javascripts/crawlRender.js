@@ -104,23 +104,23 @@ $("#save").click(function(){
     })
 })
 
-var options = eval({
-    "list": [['傻猎豹', 10], 
-        ['不如', 9], 
-        ['麻花疼', 7], 
-        ['麻云', 6],
-        ['李眼红', 4], 
-        ['雷布斯', 5],
-        ['周红衣', 4],
-        ['刘墙洞', 3],
-        ['李国情', 3]
-    ],
-    "gridSize": 4,
-    "weightFactor": 3,
-    "fontFamily": 'Hiragino Mincho Pro, serif',
-    // "color": 'random-dark',
-    // "backgroundColor": '#f0f0f0',
-    "rotateRatio": 0
-});
+// var options = eval({
+//     "list": [['傻猎豹', 10], 
+//         ['不如', 9], 
+//         ['麻花疼', 7], 
+//         ['麻云', 6],
+//         ['李眼红', 4], 
+//         ['雷布斯', 5],
+//         ['周红衣', 4],
+//         ['刘墙洞', 3],
+//         ['李国情', 3]
+//     ],
+//     "gridSize": 4,
+//     "weightFactor": 3,
+//     "fontFamily": 'Hiragino Mincho Pro, serif',
+//     // "color": 'random-dark',
+//     // "backgroundColor": '#f0f0f0',
+//     "rotateRatio": 0
+// });
 
-WordCloud($('#wordle')[0], options); 
+// WordCloud($('#wordle')[0], options); 
