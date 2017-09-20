@@ -44,9 +44,9 @@ router.get('/', function(req, res) {
             for (var i = 0; i < rlt.length; i++) {
                 var d = rlt[i];
                 d["name"] = d["fileName"];
-                d["url"] = "/uploaded/files/" + d["fileName"];
+                d["url"] = g.serverPath + "/uploaded/files/" + d["fileName"];
             }
-            var data = { files: rlt , Webpath: g.webPath};
+            var data = {files: rlt, Webpath: g.webPath, serverPath: g.serverPath};
             response.success(res, data);
         } catch (e) {
             response.error(res, e);
@@ -74,6 +74,7 @@ router.post('/', function(req, res) {
                             message: ""
                         }
                     };
+                    console.log("post", data);
                     var rlt = await g.db.syncInsert(g.datasetCollection, data);
                     var id = rlt.ops[0]._id;
                     obj.files[i]._id = id;
@@ -96,8 +97,14 @@ router.get('/delete/:id', async function(req, res) {
             var filePath = path.join(options.uploadDir, fileName);
             console.log("filepath", filePath);
             req.url = filePath;
-            fs.unlinkSync(filePath)
+            fs.unlinkSync(filePath);
             await g.db.syncDelete(g.datasetCollection, {_id: ObjectID(id)});
+
+            if(rlt[0].processStatus.status == "processed"){
+                var collectionName = "data_" + rlt[0]["_id"];
+                console.log("delete", collectionName);
+                g.db.getDB().dropCollection(collectionName);
+            }
             res.json({"status": "success"});     
         } else {
             response.error(res, "resource not found!");
@@ -105,7 +112,7 @@ router.get('/delete/:id', async function(req, res) {
     } catch (e) {
         response.error(res, e);
     }
-
 });
+
 
 module.exports = router;

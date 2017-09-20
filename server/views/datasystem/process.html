@@ -1,8 +1,8 @@
 {% extends "../includes/layout.html" %}
 
     {% block head-include %}
-        <link rel="stylesheet" href="/stylesheets/style.css">
-        <link rel="stylesheet" href="/stylesheets/process.css">
+        <link rel="stylesheet" href="{{serverPath}}/stylesheets/style.css">
+        <link rel="stylesheet" href="{{serverPath}}/stylesheets/process.css">
     {% endblock %}
 
     {% block header %}
@@ -97,8 +97,8 @@
 {% endblock %}
 
 {% block foot-include %} 
-    <script type="text/javascript" src="/libraries/jquery/jquery.js"></script> 
-    <script type="text/javascript" src="/libraries/jquery-ui/jquery-ui.js"></script>     
-    <script type="text/javascript" src="/libraries/bootstrap/js/bootstrap.js"></script>  
-    <script type="text/javascript" src="/javascripts/datasystem/process.js"></script>
+    <script type="text/javascript" src="{{serverPath}}/libraries/jquery/jquery.js"></script> 
+    <script type="text/javascript" src="{{serverPath}}/libraries/jquery-ui/jquery-ui.js"></script>     
+    <script type="text/javascript" src="{{serverPath}}/libraries/bootstrap/js/bootstrap.js"></script>  
+    <script type="text/javascript" src="{{serverPath}}/javascripts/datasystem/process.js"></script>
 {% endblock %}

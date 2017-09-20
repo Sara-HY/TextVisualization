@@ -13,8 +13,11 @@ var users = require('./routes/users');
 var crawler = require('./routes/crawler');
 var dataSystem = require('./routes/dataSystem');
 var upload = require('./routes/upload');
+var g = require("./global.js");
 
 var app = express();
+
+app.enable('trust proxy');
 app.use(session({ 
     resave: false,
     saveUninitialized: true,
@@ -24,7 +27,7 @@ app.use(session({
     }
 }));
 
-app.use(function(req,res,next){ 
+app.use(function(req, res, next){ 
     res.locals.user = req.session.user;
     var err = req.session.error;
     delete req.session.error;
@@ -54,6 +57,7 @@ swig.setDefaults({ cache: false });
 //设置跨域访问
 app.all('*', function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
+    res.setHeader('Access-Control-Allow-Credentials', true);
     res.header("Access-Control-Allow-Headers", "X-Requested-With");
     res.header("Access-Control-Allow-Methods","PUT,POST,GET,DELETE,OPTIONS");
     res.header("X-Powered-By",' 3.2.1')
@@ -70,6 +74,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
 
 app.use('/', index);
 app.use('/api', api);
@@ -110,6 +115,6 @@ app.use(function(err, req, res, next) {
     });
 });
 
-app.listen(5002);
+app.listen(8023);
 
 module.exports = app;

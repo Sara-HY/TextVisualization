@@ -26,7 +26,6 @@ router.put("/process/:id", async function(req, res, next) {
         attrs = JSON.parse(attrs);
         if (attrs != null) {
             for (var key in attrs) {
-
                 data[key] = attrs[key];
             }
         }

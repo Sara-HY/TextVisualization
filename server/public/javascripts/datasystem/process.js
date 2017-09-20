@@ -1,6 +1,6 @@
 function loadMetaInfo() {
     var datasetID = $("data").attr("dataset-id");
-    var url = "/api/data/" + datasetID + "/meta";
+    var url = $("#title").attr("serverPath") + "/api/data/" + datasetID + "/meta";
     $.get(url, function(data) {
         if (data && data.fields) {
             for (var key in data.fields) {
@@ -28,7 +28,7 @@ $(document).ready(function() {
             fields[name] = value;
         })
         var datasetID = $("data").attr("dataset-id");
-        var url = "/api/datasystem/process/" + datasetID;
+        var url =  $("#title").attr("serverPath") + "/api/datasystem/process/" + datasetID;
         console.log(url);
         var data = {fields: fields};
         $.ajax({
@@ -51,7 +51,7 @@ $(document).ready(function() {
 
         var data = {preprocess: preprocess};
         var datasetID = $("data").attr("dataset-id");
-        var url = "/api/datasystem/process/" + datasetID;
+        var url =  $("#title").attr("serverPath") + "/api/datasystem/process/" + datasetID;
         $.ajax({
             url: url,
             data: {"data": JSON.stringify(data)},
@@ -64,7 +64,7 @@ $(document).ready(function() {
 
     $("#start-process-btn").click(function() {
         var datasetID = $("data").attr("dataset-id");
-        var url = "/api/datasystem/process/start/" + datasetID;
+        var url =  $("#title").attr("serverPath") + "/api/datasystem/process/start/" + datasetID;
         $.ajax({
             url: url,
             type: "get"
@@ -84,7 +84,7 @@ $(document).ready(function() {
 
 function queryStatus() {
     var datasetID = $("data").attr("dataset-id");
-    $.get("/api/datasystem/process/status/" + datasetID, function(data) {
+    $.get( $("#title").attr("serverPath") + "/api/datasystem/process/status/" + datasetID, function(data) {
         console.log(data.data)
         changeStatus(data.data)
         if (data.data == null || data.data.status != "processing") {

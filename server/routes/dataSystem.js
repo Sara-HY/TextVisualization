@@ -14,22 +14,26 @@ var g = require("../global.js");
 var ObjectID = require('mongoskin').ObjectID;    
 
 router.get('/upload', async function(req, res, next) {
+    console.log(req.session.user);
     if(!req.session.user){                  
         req.session.error = "请先登录"
-        return res.redirect("/");              
+        return res.redirect(g.serverPath + "/");              
     } 
-    var html = swig.renderFile(path.join(config.rootPath, "/views/datasystem/upload.html"), {userName: req.session.user});
+    req.session.user = req.session.user;
+    var html = swig.renderFile(path.join(config.rootPath, "/views/datasystem/upload.html"), {serverPath: g.serverPath, userName: req.session.user});
+    res.writeHead(200, {"Content-type": "text/html"});
     res.write(html);
-    res.write(fs.readFileSync( path.join(config.rootPath, "/views/datasystem/upload-template.html")) );
+    res.write(fs.readFileSync( path.join(config.rootPath, "/views/datasystem/upload-template.html")));
     res.end();
 });
 
 router.get('/process/:id', async function(req, res, next) {
     if(!req.session.user){                  
         req.session.error = "请先登录"
-        return res.redirect("/");              
+        return res.redirect(g.serverPath + "/");              
     }
     var datasetID = req.params.id;
+    console.log("process", datasetID);
     var data = await g.db.syncFindOne(g.datasetCollection, {"_id": ObjectID(datasetID)});
     if (data == null) {
         res.send({"status": "error"});
@@ -44,7 +48,7 @@ router.get('/process/:id', async function(req, res, next) {
         result = parseCSVFields(fileData);
     else if (fileName.endsWith("json"))
         result = parseJSONFields(fileData);
-    res.render('datasystem/process', {userName: req.session.user, datasetID: datasetID, fileName: fileName, fields: result.fields, preview: result.preview, webPath: g.webPath});
+    res.render('datasystem/process', {userName: req.session.user, datasetID: datasetID, fileName: fileName, fields: result.fields, preview: result.preview, webPath: g.webPath, serverPath: g.serverPath});
 });
 
 function parseJSONFields(fileData) {

@@ -57,8 +57,7 @@
                 {%=bytesToSize(file.fileMeta.size)%}
             {% } else { %}
                 {% location.reload(); %}
-            {% } %}
-            
+            {% } %}            
         </td>
         <td>
             {% if ( (file.fileMeta != null) && (file.fileMeta.uploadTime != null)) { %}
@@ -69,7 +68,7 @@
             {% if (file.fileMeta != null && (file.fileMeta.name.endsWith(".json") || file.fileMeta.name.endsWith(".csv")) ) { %}
                 <a href="process/{%=file._id%}" class="btn btn-primary process-btn">Process</a>
             {% } %}
-            <span delete-url="/upload/delete/{%=file._id%}" class="btn btn-danger delete-btn">Delete</span>
+            <span delete-url="{%=o.options.redirectServer%}/upload/delete/{%=file._id%}" class="btn btn-danger delete-btn">Delete</span>
             {% if (file.processStatus != null && file.processStatus.status == "processed") { %}
             {% var href = o.options.redirect + file._id; %}
                 <a href={%=href%} class="btn btn-default analyze-btn">Analyze</span>
@@ -79,4 +78,3 @@
     </tr>
 {% } %}
 </script>
-    

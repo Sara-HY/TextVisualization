@@ -5,57 +5,108 @@ function renderData(fileInfo){
         size = fileInfo.size;
     console.log(url, size);
     $("#file").removeClass("hide");
-    $("#file-name").html(url.substring(9, url.length));
+    $("#file-name").html(url);
     $("#file-size").html(size);
 }
 
 function renderSparkline(url, site){
     console.log(url, site);
-    $.getJSON(url, function(data){
-        $.each(data, function(index, _data){
-            _data["time"] = new Date(_data["time"])
-        })
-        if(site == "163-com")
-            site = "netease-com"
-        var id = "#" + site + "-sparkline";
-        console.log(id);
-        spinner.spin($(id).get(0)); 
-        var timeLine = dc.lineChart(id);
-        var ndx = crossfilter(data),
-            timeDim = ndx.dimension(function(d) {return d["time"]});
-        var timeInterval = d3.time["day"];
-        var countGroup = timeDim.group(function(time) {
-            return timeInterval.floor(new Date(time))
-        }).reduceCount();
-        var startTime = timeDim.bottom(1)[0]["time"],
-            endTime = timeDim.top(1)[0]["time"];
+    $.ajax({ 
+        type: "get", 
+        url: url, 
+        dataType: "json", 
+        success:function(data){ 
+            $.each(data, function(index, _data){
+                _data["time"] = new Date(_data["time"])
+            })
+            if(site == "163-com")
+                site = "netease-com"
+            var id = "#" + site + "-sparkline";
+            console.log(id);
+            spinner.spin($(id).get(0)); 
+            var timeLine = dc.lineChart(id);
+            var ndx = crossfilter(data),
+                timeDim = ndx.dimension(function(d) {return d["time"]});
+            var timeInterval = d3.time["day"];
+            var countGroup = timeDim.group(function(time) {
+                return timeInterval.floor(new Date(time))
+            }).reduceCount();
+            var startTime = timeDim.bottom(1)[0]["time"],
+                endTime = timeDim.top(1)[0]["time"];
 
-        console.log(startTime)
+            console.log(startTime)
 
-        var x = d3.time.scale()
-                .domain([timeInterval.floor(startTime), timeInterval.ceil(endTime)])
-                .range([0, 800])
-                .nice(timeInterval);
+            var x = d3.time.scale()
+                    .domain([timeInterval.floor(startTime), timeInterval.ceil(endTime)])
+                    .range([0, 800])
+                    .nice(timeInterval);
 
-        timeLine.width("800")
-            .height("80")
-            .dimension(timeDim)
-            .group(countGroup)
-            .brushOn(false)
-            .elasticY(true)
-            .round(d3.time.day.round)
-            .xUnits(d3.time["days"])
-            .x(x)
-            .renderArea(true);
+            timeLine.width("800")
+                .height("80")
+                .dimension(timeDim)
+                .group(countGroup)
+                .brushOn(false)
+                .elasticY(true)
+                .round(d3.time.day.round)
+                .xUnits(d3.time["days"])
+                .x(x)
+                .renderArea(true);
 
-        timeLine.yAxis().ticks(0);
-        timeLine.xAxis().ticks(0);
-        spinner.spin(); 
-        timeLine.render();
+            timeLine.yAxis().ticks(0);
+            timeLine.xAxis().ticks(0);
+            spinner.spin(); 
+            timeLine.render();
 
-        timeLine.selectAll(".y").attr("display", "none");
-        timeLine.selectAll(".x").attr("display", "none");
-    })
+            timeLine.selectAll(".y").attr("display", "none");
+            timeLine.selectAll(".x").attr("display", "none");
+        } 
+    }); 
+
+    // $.getJSON(url, function(data){
+    //     $.each(data, function(index, _data){
+    //         _data["time"] = new Date(_data["time"])
+    //     })
+    //     if(site == "163-com")
+    //         site = "netease-com"
+    //     var id = "#" + site + "-sparkline";
+    //     console.log(id);
+    //     spinner.spin($(id).get(0)); 
+    //     var timeLine = dc.lineChart(id);
+    //     var ndx = crossfilter(data),
+    //         timeDim = ndx.dimension(function(d) {return d["time"]});
+    //     var timeInterval = d3.time["day"];
+    //     var countGroup = timeDim.group(function(time) {
+    //         return timeInterval.floor(new Date(time))
+    //     }).reduceCount();
+    //     var startTime = timeDim.bottom(1)[0]["time"],
+    //         endTime = timeDim.top(1)[0]["time"];
+
+    //     console.log(startTime)
+
+    //     var x = d3.time.scale()
+    //             .domain([timeInterval.floor(startTime), timeInterval.ceil(endTime)])
+    //             .range([0, 800])
+    //             .nice(timeInterval);
+
+    //     timeLine.width("800")
+    //         .height("80")
+    //         .dimension(timeDim)
+    //         .group(countGroup)
+    //         .brushOn(false)
+    //         .elasticY(true)
+    //         .round(d3.time.day.round)
+    //         .xUnits(d3.time["days"])
+    //         .x(x)
+    //         .renderArea(true);
+
+    //     timeLine.yAxis().ticks(0);
+    //     timeLine.xAxis().ticks(0);
+    //     spinner.spin(); 
+    //     timeLine.render();
+
+    //     timeLine.selectAll(".y").attr("display", "none");
+    //     timeLine.selectAll(".x").attr("display", "none");
+    // })
 }
 
 $("#search").click(function(){
@@ -73,11 +124,12 @@ $("#search").click(function(){
             var data = {"keywords":keywords, "site":site};
             $.ajax({ 
                 traditional: true,
-                url: '/crawler',
+                url: $("#title").attr("serverPath") + '/crawler',
                 type: 'post',
                 data: data
             }).done(function (data) {
                 spinner.spin();   
+                console.log(data);
                 renderData(data);
                 renderSparkline(data.url, site.replace(/\./g, '-'));
             })
@@ -96,7 +148,7 @@ $("#save").click(function(){
     $("#save").attr('disabled', true); 
     var data = {"filename": $("#file-name").text()};
     $.ajax({
-        url: '/crawler/file',
+        url: $("#title").attr("serverPath") + '/crawler/file',
         type: 'post',
         data: data
     }).done(function (result) {

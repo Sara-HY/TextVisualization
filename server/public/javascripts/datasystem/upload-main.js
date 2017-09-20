@@ -18,23 +18,27 @@ $(function () {
     $('#fileupload').fileupload({
         // Uncomment the following to send cross-domain cookies:
         //xhrFields: {withCredentials: true},
-        url: '/upload'
+        // url: 'http://vis.pku.edu.cn/docfacetserver/upload'
+        url: $("#title").attr("serverPath") + '/upload'
     });
+
+    console.log($('#fileupload').fileupload('option', 'url'));
 
     // Load existing files:
     $('#fileupload').addClass('fileupload-processing');
     $.ajax({
         // Uncomment the following to send cross-domain cookies:
-        //xhrFields: {withCredentials: true},
+        xhrFields: {withCredentials: true},
         url: $('#fileupload').fileupload('option', 'url'),
         dataType: 'json',
         context: $('#fileupload')[0]
     }).always(function () {
         $(this).removeClass('fileupload-processing');
     }).done(function (result) {
-        console.log(result);
+        console.log("done", result);
         result = result.data;
         $(this).fileupload('option','redirect', result.Webpath);
+        $(this).fileupload('option','redirectServer', result.serverPath);
         $(this).fileupload('option', 'done')
             .call(this, $.Event('done'), {result: result});
     });

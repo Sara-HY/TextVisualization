@@ -21,20 +21,24 @@ $(function(){
 	$("#signIn").click(function(){ 
 		var username = $("#in-username").val();
 		var password = $("#in-password").val();
+		console.log("sign.js", username, password);
 		var data = {"signType":"signin", "userName":username, "userPwd":password};
 		$.ajax({ 
-			url:'/',
+			// url: 'http://vis.pku.edu.cn/docfacetserver/',
+			url:  $("#title").attr("serverPath") + '/',
 			type:'post',
+			xhrFields:{withCredentials:true},
 			data: data,
 			success: function(data, status){ 
 				if(status == 'success'){ 
-					console.log("yes");
+					console.log("yes sign");
 					location.href = 'datasystem/upload';
 				}
 			},
 			error: function(data, status){ 
-				if(status == 'error'){ 
-					location.href = '/';
+				if(status == 'error'){
+					console.log("no sign"); 
+					location.href = $("#title").attr("serverPath") + '/';
 				}
 			}
 		});
@@ -52,16 +56,16 @@ $(function(){
 		}else if(password === retypePassword){
 			var data = {"signType":"signup", "userName":username, "userPwd":password};
 			$.ajax({ 
-				url: '/',
+				url: $("#title").attr("serverPath") + '/',
 				type: 'post',
 				data: data,
 				success: function(data,status){ 
 					if(status == 'success'){ 
-						location.href = '/';
+						location.href = $("#title").attr("serverPath") + '/';
 					}
 				},
 				error: function(data,err){ 
-					location.href = '/';
+					location.href = $("#title").attr("serverPath") + '/';
 					$("#sign-up").click();
 				}
 			}); 

@@ -1,9 +1,9 @@
 {% extends "../includes/layout.html" %}
 
 {% block head-include %}
-<link rel="stylesheet" href="/libraries/blueimp-file-upload/css/jquery.fileupload.css">
-<link rel="stylesheet" href="/libraries/blueimp-file-upload/css/jquery.fileupload-ui.css">
-<link rel="stylesheet" href="/stylesheets/style.css">
+<link rel="stylesheet" href="{{serverPath}}/libraries/blueimp-file-upload/css/jquery.fileupload.css">
+<link rel="stylesheet" href="{{serverPath}}/libraries/blueimp-file-upload/css/jquery.fileupload-ui.css">
+<link rel="stylesheet" href="{{serverPath}}/stylesheets/style.css">
 {% endblock %}
 
 {% block header %}
@@ -73,18 +73,18 @@
 {% endblock %}
 
 {% block foot-include %}
-    <script type="text/javascript" src="/libraries/jquery/jquery.js"></script> 
-    <script type="text/javascript" src="/libraries/jquery-ui/jquery-ui.js"></script>     
-    <script type="text/javascript" src="/libraries/bootstrap/js/bootstrap.js"></script>
-    <script src="/libraries/blueimp-tmpl/js/tmpl.js"></script>
-    <script src="/libraries/blueimp-load-image/js/load-image.js"></script>
-    <script src="/libraries/blueimp-canvas-to-blob/js/canvas-to-blob.js"></script>
-    <script src="/libraries/blueimp-file-upload/js/jquery.fileupload.js"></script>
-    <script src="/libraries/blueimp-file-upload/js/jquery.fileupload-process.js"></script>
-    <script src="/libraries/blueimp-file-upload/js/jquery.fileupload-ui.js"></script>
+    <script type="text/javascript" src="{{serverPath}}/libraries/jquery/jquery.js"></script> 
+    <script type="text/javascript" src="{{serverPath}}/libraries/jquery-ui/jquery-ui.js"></script>     
+    <script type="text/javascript" src="{{serverPath}}/libraries/bootstrap/js/bootstrap.js"></script>
+    <script src="{{serverPath}}/libraries/blueimp-tmpl/js/tmpl.js"></script>
+    <script src="{{serverPath}}/libraries/blueimp-load-image/js/load-image.js"></script>
+    <script src="{{serverPath}}/libraries/blueimp-canvas-to-blob/js/canvas-to-blob.js"></script>
+    <script src="{{serverPath}}/libraries/blueimp-file-upload/js/jquery.fileupload.js"></script>
+    <script src="{{serverPath}}/libraries/blueimp-file-upload/js/jquery.fileupload-process.js"></script>
+    <script src="{{serverPath}}/libraries/blueimp-file-upload/js/jquery.fileupload-ui.js"></script>
 
     <!-- The main application script -->
-    <script src="/javascripts/datasystem/upload-main.js"></script>
+    <script src="{{serverPath}}/javascripts/datasystem/upload-main.js"></script>
 
 <!-- The XDomainRequest Transport is included for cross-domain file deletion for IE 8 and IE 9 -->
 <!--[if (gte IE 8)&(lt IE 10)]>

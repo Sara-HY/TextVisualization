@@ -1,10 +1,10 @@
 {% extends "includes/layout.html" %}
 
     {% block head-include %}
-        <link rel="stylesheet" href="/stylesheets/style.css">
-        <link rel="stylesheet" href="/libraries/dcjs/dc.css">
-        <link rel="stylesheet" href="/libraries/font-awesome/css/font-awesome.min.css">
-        <link rel="stylesheet" href="/stylesheets/crawler.css">
+        <link rel="stylesheet" href="{{serverPath}}/stylesheets/style.css">
+        <link rel="stylesheet" href="{{serverPath}}/libraries/dcjs/dc.css">
+        <link rel="stylesheet" href="{{serverPath}}/libraries/font-awesome/css/font-awesome.min.css">
+        <link rel="stylesheet" href="{{serverPath}}/stylesheets/crawler.css">
     {% endblock %}
 
     {% block header %}
@@ -52,13 +52,13 @@
 {% endblock %}
 
 {% block foot-include %} 
-    <script type="text/javascript" src="/libraries/jquery/jquery.js"></script>
-    <script type="text/javascript" src="/libraries/jquery-ui/jquery-ui.js"></script>
-    <script type="text/javascript" src="/libraries/bootstrap/js/bootstrap.js"></script>
-    <script type="text/javascript" src="/libraries/d3/d3.js"></script>
-    <script type="text/javascript" src="/libraries/crossfilter/crossfilter.js"></script>
-    <script type="text/javascript" src="/libraries/dcjs/dc.js"></script>
-    <script type="text/javascript" src="/libraries/spin.js/spin.js"></script>
-    <script type="text/javascript" src="/libraries/wordcloud/src/wordcloud2.js"></script>
-    <script type="text/javascript" src="/javascripts/crawlRender.js"></script>
+    <script type="text/javascript" src="{{serverPath}}/libraries/jquery/jquery.js"></script>
+    <script type="text/javascript" src="{{serverPath}}/libraries/jquery-ui/jquery-ui.js"></script>
+    <script type="text/javascript" src="{{serverPath}}/libraries/bootstrap/js/bootstrap.js"></script>
+    <script type="text/javascript" src="{{serverPath}}/libraries/d3/d3.js"></script>
+    <script type="text/javascript" src="{{serverPath}}/libraries/crossfilter/crossfilter.js"></script>
+    <script type="text/javascript" src="{{serverPath}}/libraries/dcjs/dc.js"></script>
+    <script type="text/javascript" src="{{serverPath}}/libraries/spin.js/spin.js"></script>
+    <script type="text/javascript" src="{{serverPath}}/libraries/wordcloud/src/wordcloud2.js"></script>
+    <script type="text/javascript" src="{{serverPath}}/javascripts/crawlRender.js"></script>
 {% endblock %}

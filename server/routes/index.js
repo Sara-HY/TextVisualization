@@ -2,14 +2,13 @@ var express = require('express');
 var config = require('../config.js');
 var router = express.Router();
 
-
 var g = require.main.require("./global.js");
 
 var response = require.main.require("./utils/response.js");
 
 
 router.get('/', function(req, res, next) {
-	res.render('index');
+	res.render('index', {serverPath: g.serverPath});
 })
 
 router.post('/', async function(req, res) {
@@ -21,7 +20,6 @@ router.post('/', async function(req, res) {
 				res.send(404);
 			}
 			else{
-				console.log(req.body.userName, req.body.userPwd);
 				if(req.body.userPwd != rlt.userPwd){ 	//查询到匹配用户名的信息，但相应的password属性不匹配
 					req.session.error = "密码错误";
 					res.send(404);
@@ -31,6 +29,7 @@ router.post('/', async function(req, res) {
 					res.send(200);
 					// res.redirect("/datasystem/upload");
 				}
+				console.log(req.session.error);
 			}
 		}
 		else{
@@ -39,7 +38,6 @@ router.post('/', async function(req, res) {
 					userName: req.body.userName,
 					userPwd: req.body.userPwd
 				};
-				console.log(data);
 				await g.db.syncInsert(g.userCollection, data);
 				req.session.error = '用户名创建成功！';
 	            res.send(200);
@@ -57,7 +55,7 @@ router.post('/', async function(req, res) {
 router.get("/signout", function(req, res, next) {    
 	req.session.user = null;
 	req.session.error = null;
-	return res.redirect("/");
+	return res.redirect(g.serverPath + "/");
 });
 
 

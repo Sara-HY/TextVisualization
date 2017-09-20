@@ -8,6 +8,8 @@ var datasetCollection = db.getCollection("dataset");
 
 exports.db = db;
 exports.webPath = config.webPath;
+exports.serverPath = config.serverPath;
+exports.fileCrawlerPath = config.fileCrawlerPath;
 exports.testCollection = testCollection;
 exports.userCollection = userCollection;
 exports.datasetCollection = datasetCollection;

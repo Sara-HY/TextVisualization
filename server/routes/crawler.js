@@ -14,9 +14,9 @@ var saveDir = path.join(config.rootPath, "/public/uploaded/files/");
 router.get('/', async function(req, res, next) {
     if(!req.session.user){                  
         req.session.error = "请先登录"
-        return res.redirect("/");              
+        return res.redirect(g.serverPath + "/");              
     }
-    res.render('crawler', {userName:req.session.user});
+    res.render('crawler', {serverPath: g.serverPath, userName:req.session.user});
 });
 
 router.post('/', async function(req, res, next){
@@ -34,7 +34,8 @@ router.post('/', async function(req, res, next){
             response.error(res, err);
         }
         var stat = fs.statSync(filePath); 
-        var result = {"url": path.join("/crawler", filename), "size": stat.size}
+
+        var result = {"url": filename, "size": stat.size}
         res.send(result);
     })
 })
