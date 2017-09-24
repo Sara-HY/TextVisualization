@@ -13,38 +13,44 @@
 
     {% block content %}
     <div id="content">
-        <!-- <div class="word-cloud">
+       <!--  <div class="word-cloud">
             <div id="wordle" class="wordle"></div>
         </div> -->
         <div class="search bar">
             <input type="text" id="keywords" autocomplete="off" placeholder="  Please input the keywords...">
             <button type="submit" id="search"></button>
         </div>
+        <div id="sites-checkbox" class="check-box">
+            <label style="display: inline-block; width: 100px;"><input type="checkbox" name="sites" value="sina.com.cn" /> Sina </label>
+            <label style="display: inline-block; width: 100px;"><input type="checkbox" name="sites" value="163.com" /> Netease </label>
+            <label style="display: inline-block; width: 100px;"><input type="checkbox" name="sites" value="sohu.com" /> Sohu </label>
+            <label style="display: inline-block; width: 100px;"><input type="checkbox" name="sites" value="cctv.com" /> CCTV </label>
+        </div>
         <div class="file hide" id="file">
             <div>
                 <font> <b>File name :</b></font>
-                <font id="file-name"></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                 <font id="file-name"></font>&nbsp;&nbsp;
                 <font> <b>Size: </b></font>
                 <font id="file-size"></font>
             </div>
             <button type="submit" id="save"></button>
-            <b style="position:absolute; right:6%; top:63%; font-size: 16px; font-family: Arial, sans-serif;">Save File</b>
+            <b style="position:absolute; right:10%; top:101%; font-size: 16px; font-family: Arial, sans-serif;">Save File</b>
         </div>
-        <div id="sites-checkbox" class="sites">
-            <div class="site">
-                <label><input type="checkbox" name="sites" value="sina.com.cn" /> Sina </label>
-                 <div class="sparkline" id="sina-com-cn-sparkline"></div>
+        <div class="sites">
+            <div class="site hide" id="sina-com-cn">
+                <label> Sina </label>
+                <div class="sparkline" id="sina-com-cn-sparkline"></div>
             </div>
-            <div class="site">
-                <label><input type="checkbox" name="sites" value="163.com" /> Netease </label>
+            <div class="site hide" id="netease-com">
+                <label> Netease </label>
                 <div class="sparkline" id="netease-com-sparkline"></div>  
             </div>
-            <div class="site">
-                <label><input type="checkbox" name="sites" value="sohu.com" /> Sohu </label>
+            <div class="site hide" id="sohu-com">
+                <label> Sohu </label>
                 <div class="sparkline" id="sohu-com-sparkline"></div>
             </div>
-            <div class="site">
-                <label><input type="checkbox" name="sites" value="cctv.com" /> CCTV </label>
+            <div class="site hide" id="cctv-com">
+                <label> CCTV </label>
                 <div class="sparkline" id="cctv-com-sparkline"></div>
             </div>
         </div>

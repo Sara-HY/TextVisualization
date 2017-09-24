@@ -109,7 +109,7 @@ def crawl(word, sites):
         
         query = "site:" + site + " title:" + word
         start = 0
-        while start < 10:
+        while start < 100:
             url = "http://news.baidu.com/ns?tn=news&ie=utf-8&clk=sortbytime&rn=50&word=" + query + "&pn=" + str(start)
             print("url", url)
             dataList = queryBaiduPage(site, url)
