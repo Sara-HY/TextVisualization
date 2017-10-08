@@ -1,4 +1,5 @@
 var spinner = new Spinner();
+var length;
 
 function bytesToSize(bytes) {
     if (bytes === 0) return '0 B';
@@ -10,7 +11,7 @@ function bytesToSize(bytes) {
 
 function renderName(keywords){
     var d = new Date();
-    var filename = keywords + '-' + d.toLocaleDateString().replace(/\//g, "-") + '-' +  d.toTimeString().substr(0, 8) + ".json";
+    var filename = keywords + '-' + d.toLocaleDateString().replace(/\//g, "-") + '+' +  d.toTimeString().substr(0, 8) + ".json";
     console.log(d, filename)
     $("#file").removeClass("hide");
     $("#file-name").html(filename);
@@ -18,6 +19,10 @@ function renderName(keywords){
 
 function renderSize(size){
     $("#file-size").html(size);
+}
+
+function renderLength(){
+    $("#data-length").html(length);
 }
 
 function renderSparkline(filename, site){
@@ -33,6 +38,10 @@ function renderSparkline(filename, site){
             $.each(data, function(index, _data){
                 _data["time"] = new Date(_data["time"])
             })
+
+            length = length + data.length;
+            console.log("json length", length);
+            renderLength();
             
             var id = "#" + site + "-sparkline";
             var timeLine = dc.lineChart(id);
@@ -61,40 +70,49 @@ function renderSparkline(filename, site){
                 .x(x)
                 .renderArea(true);
 
-            timeLine.yAxis().ticks(0);
-            timeLine.xAxis().ticks(0);
+            timeLine.yAxis().ticks(2);
+            // timeLine.xAxis().ticks(0);
             timeLine.render();
-            timeLine.selectAll(".y").attr("display", "none");
-            timeLine.selectAll(".x").attr("display", "none");
+            // timeLine.selectAll(".y").attr("display", "none");
+            // timeLine.selectAll(".x").attr("display", "none");
         } 
     }); 
 }
 
 $("#search").click(function(){
     $("#save").attr('disabled', false); 
+    pageNum = $("#page-num").val();
     var keywords = $("#keywords").val();
     var sites = new Array();
     var size = 0;
+    var length = 0;
     $('#sites-checkbox input:checkbox').each(function(){
         if($(this).prop('checked') == true) 
             sites.push($(this).val())
     })
     if(sites.length > 0 && keywords != ""){
         renderName(keywords);
-
-        $.each(sites, function(index, site){
-            spinner.spin($("#content").get(0));
-            var data = {"keywords":keywords, "site":site};
-            $.ajax({ 
-                traditional: true,
-                url: $("#title").attr("serverPath") + '/crawler',
-                type: 'post',
-                data: data
-            }).done(function (data) {
-                spinner.spin();
-                size = size + data.size;
-                renderSize(bytesToSize(size));
-                renderSparkline(data.filename, site.replace(/\./g, '-'));
+        var data = {"keywords": keywords, "site":"", "pageNum":0};
+        $.ajax({ 
+            traditional: true,
+            url: $("#title").attr("serverPath") + '/crawler',
+            type: 'post',
+            data: data
+        }).done(function(){
+            $.each(sites, function(index, site){
+                spinner.spin($("#content").get(0));
+                var data = {"keywords":keywords, "site":site, "pageNum":pageNum};
+                $.ajax({ 
+                    traditional: true,
+                    url: $("#title").attr("serverPath") + '/crawler',
+                    type: 'post',
+                    data: data
+                }).done(function (data) {
+                    spinner.spin();
+                    size = size + data.size;
+                    renderSize(bytesToSize(size));
+                    renderSparkline(data.filename, site.replace(/\./g, '-'));
+                })
             })
         })
     }
@@ -116,7 +134,7 @@ $("#save").click(function(){
         type: 'post',
         data: data
     }).done(function (result) {
-        console.log("Save finished");
+        alert("Save finished");
     })
 })
 

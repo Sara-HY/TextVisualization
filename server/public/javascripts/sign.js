@@ -21,7 +21,6 @@ $(function(){
 	$("#signIn").click(function(){ 
 		var username = $("#in-username").val();
 		var password = $("#in-password").val();
-		console.log("sign.js", username, password);
 		var data = {"signType":"signin", "userName":username, "userPwd":password};
 		$.ajax({ 
 			// url: 'http://vis.pku.edu.cn/docfacetserver/',
@@ -31,13 +30,12 @@ $(function(){
 			data: data,
 			success: function(data, status){ 
 				if(status == 'success'){ 
-					console.log("yes sign");
 					location.href = 'datasystem/upload';
 				}
 			},
 			error: function(data, status){ 
 				if(status == 'error'){
-					console.log("no sign"); 
+					alert("Sign in Failed!"); 
 					location.href = $("#title").attr("serverPath") + '/';
 				}
 			}
@@ -53,6 +51,7 @@ $(function(){
 		if(password !== retypePassword){ 
 			$("#password").css("border","1px solid red");
 			$("#retype-password").css("border","1px solid red");
+			alert("Passwords are not the same!");
 		}else if(password === retypePassword){
 			var data = {"signType":"signup", "userName":username, "userPwd":password};
 			$.ajax({ 
@@ -64,7 +63,8 @@ $(function(){
 						location.href = $("#title").attr("serverPath") + '/';
 					}
 				},
-				error: function(data,err){ 
+				error: function(data,err){
+					alert("Sign up failed!") 
 					location.href = $("#title").attr("serverPath") + '/';
 					$("#sign-up").click();
 				}

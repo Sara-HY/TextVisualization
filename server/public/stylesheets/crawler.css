@@ -55,7 +55,7 @@ input[type="checkbox"] {
 .file {    
     position: relative;
     margin: 0 auto;
-    width: 600px;
+    width: 700px;
     height: 100px;
 }
 .file div {
@@ -68,7 +68,7 @@ input[type="checkbox"] {
 .file button {
     position: absolute;
     background: none;
-    right: 22%;
+    right: 17%;
     top: 94%;
     border: none;
     font-size: x-large;
@@ -113,4 +113,17 @@ input[type="checkbox"] {
     height: 100px;
     width: 200px;
     padding: 5px;
+}
+.page-selector{
+    position: absolute;
+    right: 25%;
+    top: 18.5%;
+    width: 150px;
+    height: 30px;
+    display: inline;
+}
+.page-selector select {
+    z-index: 10;
+    width: 150px;
+    height: 25px;
 }

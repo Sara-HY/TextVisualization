@@ -29,7 +29,7 @@ router.post('/', async function(req, res) {
 					res.send(200);
 					// res.redirect("/datasystem/upload");
 				}
-				console.log(req.session.error);
+				
 			}
 		}
 		else{
@@ -42,8 +42,8 @@ router.post('/', async function(req, res) {
 				req.session.error = '用户名创建成功！';
 	            res.send(200);
 			} else {
-				// req.session.error = '用户名已存在！';
-				// res.send(500);
+				req.session.error = '用户名已存在！';
+				res.send(500);
 				response.error(res, "Username has been used!");
 			}	
 		}	

@@ -17,6 +17,7 @@ router.get('/upload', async function(req, res, next) {
     console.log(req.session.user);
     if(!req.session.user){                  
         req.session.error = "请先登录"
+        
         return res.redirect(g.serverPath + "/");              
     } 
     req.session.user = req.session.user;

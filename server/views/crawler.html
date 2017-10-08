@@ -16,6 +16,16 @@
        <!--  <div class="word-cloud">
             <div id="wordle" class="wordle"></div>
         </div> -->
+        <div class="page-selector">
+            <select id="page-num"> 
+                <option value="50">Crawl page (50)</option>
+                <option value="100">Crawl page (100)</option> 
+                <option value="200">Crawl page (200)</option>
+                <option value="300">Crawl page (300)</option>
+                <option value="400">Crawl page (400)</option>
+                <option value="500">Crawl page (500)</option>
+            </select> 
+        </div>
         <div class="search bar">
             <input type="text" id="keywords" autocomplete="off" placeholder="  Please input the keywords...">
             <button type="submit" id="search"></button>
@@ -31,10 +41,12 @@
                 <font> <b>File name :</b></font>
                  <font id="file-name"></font>&nbsp;&nbsp;
                 <font> <b>Size: </b></font>
-                <font id="file-size"></font>
+                <font id="file-size"></font>&nbsp;&nbsp;
+                 <font><b>News: </b></font>
+                <font id="data-length"></font>
             </div>
             <button type="submit" id="save"></button>
-            <b style="position:absolute; right:10%; top:101%; font-size: 16px; font-family: Arial, sans-serif;">Save File</b>
+            <b style="position:absolute; right:7%; top:101%; font-size: 16px; font-family: Arial, sans-serif;">Save File</b>
         </div>
         <div class="sites">
             <div class="site hide" id="sina-com-cn">

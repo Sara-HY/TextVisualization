@@ -22,21 +22,34 @@ router.get('/', async function(req, res, next) {
 router.post('/', async function(req, res, next){
 	var keywords = req.body.keywords;
 	var site = req.body.site;
+	var pageNum = req.body.pageNum;
 	var date = new Date();
 	var filename = keywords + "-" + site.replace(/\./g, '-') + ".json";
 	var filePath = path.join(dir, filename);
-
-	var cmd = "python3 externals/crawlerNews.py " + filePath + " " + keywords + " " + site; 
-	console.log(cmd);
-	exec(cmd, {maxBuffer: 1024 * 10000}, function(err, stdout, stderr) {
-        if (err != null) {
-            console.log(err);
-            response.error(res, err);
-        }
-        var stat = fs.statSync(filePath); 
-        var result = {"filename": filename, "size": stat.size}
-        res.send(result);
-    })
+	if(pageNum != 0){
+		var cmd = "python3 externals/crawlerNews.py " + filePath + " " + keywords + " " + pageNum + " " + site; 
+		console.log(cmd);
+		exec(cmd, {maxBuffer: 1024 * 10000}, function(err, stdout, stderr) {
+	        if (err != null) {
+	            console.log(err);
+	            response.error(res, err);
+	        }
+	        var stat = fs.statSync(filePath); 
+	        var result = {"filename": filename, "size": stat.size}
+	        res.send(result);
+	    })
+	}
+	else{
+		var cmd = "rm -rf " + dir + "; mkdir " + dir;
+		console.log(cmd);
+		exec(cmd, function(err, stdout, stderr) {
+	        if (err != null) {
+	            console.log(err);
+	            response.error(res, err);
+	        }
+	        res.send("delete");
+	    })
+	}
 })
 
 router.post('/file', function(req, res, next){
@@ -61,7 +74,7 @@ router.post('/file', function(req, res, next){
 				            name: filename,
 				            size: stat.size,
 				            type: "application/json",
-				            uploadTime: parseInt(filename.substring(filename.indexOf('-') + 1, filename.length - 5))
+				            uploadTime: Date.parse(new Date(filename.substring(filename.indexOf('-') + 1, filename.length - 5).replace('+', ' ')))
 				        },
 				        processStatus: {
 				            status: "unprocessed",
