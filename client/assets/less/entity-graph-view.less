@@ -22,22 +22,34 @@
         cursor: pointer;
     }
 
+    #entity-svg {
+        position: absolute;
+        bottom: 0px;
+    }
+
     .link {
         fill: none;
         stroke: #999;
         stroke-with: 1;
+        stroke-opacity: 0.6;
     }
 
     .node.entity-place circle {
         fill: #1f77b4;
+        stroke: #fff;
+        stroke-width: 1.5px;
     }
 
     .node.entity-name circle {
         fill: #ff7f0e;
+        stroke: #fff;
+        stroke-width: 1.5px;
     }
 
     .node.entity-organization circle {
         fill: #2ca02c;
+        stroke: #fff;
+        stroke-width: 1.5px;
     }
 
     .node.not-selected, .link.not-selected {
@@ -50,7 +62,6 @@
     .node text {
         color: #050505;
         font-family: Arial;
-        font-weight: bold;
     }
 
     .line-controll {

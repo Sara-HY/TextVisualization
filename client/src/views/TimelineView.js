@@ -33,7 +33,6 @@ class TimelineView extends BaseView {
             _this.filteredData = FilterCenter.getFilteredDataByView(_this);
             _this.reRender();
         })
-
     }
 
     _initView() {
@@ -44,13 +43,13 @@ class TimelineView extends BaseView {
             .attr("width", width)
             .attr("height", height * 0.5);
 
-        d3.select(this.getContainer())
-            .append("div")
-            .attr("class", "overview-timeline")
-            .attr("width", width)
-            .attr("height", height * 0.5);
+        // d3.select(this.getContainer())
+        //     .append("div")
+        //     .attr("class", "overview-timeline")
+        //     .attr("width", width)
+        //     .attr("height", height * 0.5);
 
-        this.overviewTimelineChart = dc.lineChart("#" + this.getContainerID() + " .overview-timeline"); 
+        // this.overviewTimelineChart = dc.lineChart("#" + this.getContainerID() + " .overview-timeline"); 
         this.focusTimelineChart = dc.barChart("#" + this.getContainerID() + " .focus-timeline");          
     }
 
@@ -77,8 +76,8 @@ class TimelineView extends BaseView {
     setTimelineUnit(overviewUnit, focusUnit) {
         this.focusTimeInterval = d3.time[focusUnit];
         this.focusTimeUnits = d3.time[focusUnit + "s"];
-        this.overviewTimeInterval = d3.time[overviewUnit];
-        this.overviewTimeUnits = d3.time[overviewUnit + "s"];
+        // this.overviewTimeInterval = d3.time[overviewUnit];
+        // this.overviewTimeUnits = d3.time[overviewUnit + "s"];
     } 
 
     getDataCountGroup(data) {
@@ -88,12 +87,12 @@ class TimelineView extends BaseView {
         var focusCountGroup = timeDim.group(function(time) {
                 return _this.focusTimeInterval.floor(new Date(time))
             }).reduceCount();
-        var overviewCountGroup = timeDim.group(function(time) {
-                return _this.overviewTimeInterval.floor(new Date(time))
-            }).reduceCount();
+        // var overviewCountGroup = timeDim.group(function(time) {
+        //         return _this.overviewTimeInterval.floor(new Date(time))
+        //     }).reduceCount();
         return {
             "focusCountGroup": focusCountGroup,
-            "overviewCountGroup": overviewCountGroup,
+            // "overviewCountGroup": overviewCountGroup,
             "timeDim": timeDim
         }
     }
@@ -103,7 +102,7 @@ class TimelineView extends BaseView {
         var countGroup = this.getDataCountGroup(this.data);
         var timeDim = countGroup.timeDim;
         var focusCountGroup = countGroup.focusCountGroup;
-        var overviewCountGroup = countGroup.overviewCountGroup;   
+        // var overviewCountGroup = countGroup.overviewCountGroup;   
 
         var startTime = timeDim.bottom(1)[0]["_MAINTIME"], 
             endTime = timeDim.top(1)[0]["_MAINTIME"];
@@ -113,14 +112,14 @@ class TimelineView extends BaseView {
                     .domain([this.focusTimeInterval.floor(startTime), this.focusTimeInterval.ceil(endTime)])
                     .range([0, width])
                     .nice(this.focusTimeInterval);
-        var overviewX = d3.time.scale()
-                    .domain([this.overviewTimeInterval.floor(startTime), this.overviewTimeInterval.ceil(endTime)])
-                    .range([0, width])
-                    .nice(this.overviewTimeInterval);
+        // var overviewX = d3.time.scale()
+        //             .domain([this.overviewTimeInterval.floor(startTime), this.overviewTimeInterval.ceil(endTime)])
+        //             .range([0, width])
+        //             .nice(this.overviewTimeInterval);
 
         this.focusTimelineChart
             .width(width)
-            .height(height * 0.5)
+            .height(height * 0.8)
             .dimension(timeDim)
             .group(focusCountGroup)
             .elasticY(true)
@@ -129,25 +128,25 @@ class TimelineView extends BaseView {
             .alwaysUseRounding(true)
             .xUnits(this.focusTimeUnits)
             .x(focusX)
-            .rangeChart(this.overviewTimelineChart)
+            // .rangeChart(this.overviewTimelineChart)
             
 
-        this.overviewTimelineChart
-            .width(width)
-            .height(height * 0.5)
-            .dimension(timeDim)
-            .group(overviewCountGroup)
-            .elasticY(true) 
-            .round(d3.time.month.round)
-            .x(overviewX)
-            .xUnits(this.overviewTimeUnits)
-            .renderArea(true);
+        // this.overviewTimelineChart
+        //     .width(width)
+        //     .height(height * 0.5)
+        //     .dimension(timeDim)
+        //     .group(overviewCountGroup)
+        //     .elasticY(true) 
+        //     .round(d3.time.month.round)
+        //     .x(overviewX)
+        //     .xUnits(this.overviewTimeUnits)
+        //     .renderArea(true);
             // .alwaysUseRounding(true)
             // .gap(1)
 
 
-        this.focusTimelineChart.yAxis().ticks(2);
-        this.overviewTimelineChart.yAxis().ticks(2);
+        this.focusTimelineChart.yAxis();
+        // this.overviewTimelineChart.yAxis().ticks(2);
 
         this.reRender();
 
@@ -180,20 +179,19 @@ class TimelineView extends BaseView {
                     .domain([this.focusTimeInterval.floor(startTime), this.focusTimeInterval.ceil(endTime)])
                     .range([0, width])
                     .nice(this.focusTimeInterval);
-        var overviewX = d3.time.scale()
-                    .domain([this.overviewTimeInterval.floor(startTime), this.overviewTimeInterval.ceil(endTime)])
-                    .range([0, width])
-                    .nice(this.overviewTimeInterval);
+        // var overviewX = d3.time.scale()
+        //             .domain([this.overviewTimeInterval.floor(startTime), this.overviewTimeInterval.ceil(endTime)])
+        //             .range([0, width])
+        //             .nice(this.overviewTimeInterval);
 
         this.focusTimelineChart.group(focusCountGroup);
         this.focusTimelineChart.dimension(timeDim);
         this.focusTimelineChart.x(focusX);
-        this.overviewTimelineChart.group(overviewCountGroup);
-        this.overviewTimelineChart.dimension(timeDim);
-        this.overviewTimelineChart.x(overviewX);
+        // this.overviewTimelineChart.group(overviewCountGroup);
+        // this.overviewTimelineChart.dimension(timeDim);
+        // this.overviewTimelineChart.x(overviewX);
         this.focusTimelineChart.render();
-        this.overviewTimelineChart.render();
-
+        // this.overviewTimelineChart.render();
     }
 
 }

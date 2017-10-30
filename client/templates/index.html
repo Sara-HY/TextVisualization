@@ -25,7 +25,7 @@
     <% block footer %> <% endblock %>
 
     <script type="text/javascript" src="libs/traceur-runtime/traceur-runtime.js"></script>
-    <script type="text/javascript" src="libs/jquery/jquery.js"></script>
+    <!-- <script type="text/javascript" src="libs/jquery/jquery.js"></script> -->
     <script src="libs/system.js/system.js"></script>
     <script>
         System.config({
@@ -49,7 +49,7 @@
                 "spin": "libs/spin.js/spin.js",
                 "dat-gui": "libs/dat-gui/dat.gui.js",
                 "dat-gui-css": "css/dat.gui.css",
-                "pubsub": "libs/PubSubJS/pubsub.js",
+                "pubsub": "libs/PubSubJS/src/pubsub.js",
                 "bootstrap": "libs/bootstrap/js/bootstrap.js",
                 "jquery-dataTables": "libs/datatables/jquery.dataTables.js",
                 "jquery-dataTables-css": "libs/datatables/jquery.dataTables.css",
@@ -63,11 +63,14 @@
                 'crossfilter': {format: 'global'},
                 'dc': {format: 'global'},
                 'd3-tip': { format: 'global'},
-                'd3-slider': { format: 'global'}
+                'd3-slider': { format: 'global'},
+                'bootstrap': {
+                    deps:['jquery']
+                }
             },
             depCache: {
                 bootstrap: ['jquery'] // bootstrap depends on jquery
-            }            
+            } 
         });
 
         

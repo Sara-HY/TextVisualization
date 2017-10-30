@@ -91,9 +91,31 @@ class FacetsView extends BaseView {
             return b["count"] - a["count"];
         })
 
+        var sizeList = [];
+        for (var name in this.entityMap) {
+            sizeList.push(this.entityMap[name]["count"]);
+        }        
+        sizeList.sort(function(a, b) {return b - a});
+
+        var nodeWeightFilterThreshold = this._getSizeThreshold(sizeList);
+
         this.filterEntity = _.filter(this.entity, function(entity){
-        	return entity.count >= 0;
+        	return entity.count >= nodeWeightFilterThreshold;
         });
+    }
+
+    _getSizeThreshold(sizeList) {
+        var sizeThreshold = 50, sizeTolerant = 10;
+        var filterThreshold = 0;
+        if (sizeList.length > sizeThreshold) {
+            if (sizeList.length <= sizeThreshold + sizeThreshold)
+                filterThreshold = sizeList[sizeThreshold];
+            else if (sizeList[sizeThreshold] == sizeList[sizeThreshold + sizeTolerant]) {
+                filterThreshold = sizeList[sizeThreshold] + 1;
+            } else 
+                filterThreshold = sizeList[sizeThreshold];
+        } 
+        return filterThreshold;       
     }
 
 	renderTheme() {
@@ -121,11 +143,11 @@ class FacetsView extends BaseView {
             if(group.data && group.data.length){
                 for (var id of group.data)
                     data.push(DataCenter.data[id]);
-            }  
+            }
           
             var ndx = crossfilter(data),
             	timeDim = ndx.dimension(function(d) {return d["_MAINTIME"]});
-            var timeInterval = d3.time["month"];
+            var timeInterval = d3.time["day"];
             var countGroup = timeDim.group(function(time) {
             	return timeInterval.floor(new Date(time))
             }).reduceCount();
@@ -144,8 +166,8 @@ class FacetsView extends BaseView {
 	            .group(countGroup)
 	            .brushOn(false)
 	            .elasticY(true)
-	            .round(d3.time.month.round)
-	            .xUnits(d3.time["months"])
+	            .round(d3.time.day.round)
+	            .xUnits(d3.time["days"])
 	            .x(x)
 	            .renderArea(true);
 
@@ -170,6 +192,7 @@ class FacetsView extends BaseView {
         var entitys = _.filter(this.filterEntity, function(entity){
         	return entity.type == facet;
         });
+    
         for(var i=0; i<entitys.length; i++){
         	entitys[i]["id"] = i;
         }
@@ -209,7 +232,7 @@ class FacetsView extends BaseView {
 	            .group(countGroup)
 	            .brushOn(false)
 	            .elasticY(true)
-	            .round(d3.time.month.round)
+	            .round(d3.time.day.round)
 	            .xUnits(d3.time["days"])
 	            .x(x)
 	            .renderArea(true);

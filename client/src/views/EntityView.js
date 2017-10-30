@@ -62,9 +62,13 @@ class EntityView extends BaseView {
             return b["count"] - a["count"];
         })
 
+        this.entity = _.filter(this.entity, function(entity) {
+            return entity.count >= 5;
+        });
+
         for(var i = 0; i < this.entity.length; i++) {
             this.entity[i]._index = i;
-            this.entity[i]._weight = "<div class=\"bar\"><div style=\"width:" + parseInt(this.entity[i].count / this.entity.length * 100) + "%;\"></div> </div> "
+            this.entity[i]._weight = "<div class=\"bar\"><div style=\"width:" + parseInt(this.entity[i].count / this.data.length * 100) + "%;\"></div> </div> "
         }
         this.filterEntity = this.entity;
     }

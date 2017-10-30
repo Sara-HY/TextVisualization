@@ -22,7 +22,7 @@ class KeyWordsView extends BaseView {
         var _this = this;
         this.data = DataCenter.data;
         this.index = -1;
-        this.wordLength = 500;
+        this.wordLength = 200;
         this._getKeywords();
         
         PubSub.subscribe("FilterCenter.Changed", function(msg, data) {
@@ -49,9 +49,14 @@ class KeyWordsView extends BaseView {
         }
 
         this.words = docTextProcessor.getTopKeywordsByTFIDF(_this, this.dataID, this.wordLength, true);
+
+        this.words = _.filter(this.words, function(word) {
+            return word.count >= 5;
+        });
+
         for (var i = 0; i < this.words.length; i++) {
             this.words[i]._index = i;
-            this.words[i]._weight = "<div class=\"bar\"><div style=\"width:" + parseInt(this.words[i].weight * 100) + "%;\"></div> </div> "
+            this.words[i]._weight = "<div class=\"bar\"><div style=\"width:" + parseInt(this.words[i].count /this.data.length * 100) + "%;\"></div> </div> "
         }
     }
 
@@ -65,7 +70,7 @@ class KeyWordsView extends BaseView {
             lengthchange: false,
             paging: false,
             bSortClasses: false,
-            order: [[ 3, "desc" ]],
+            order: [[ 4, "desc" ]],
             aoColumns: [
                 {data: "_index", visible: false},
                 {data: "word", title: "term"},
@@ -124,7 +129,6 @@ class KeyWordsView extends BaseView {
                 FilterCenter.addFilter(_this, filteredData);
             }   
         }) 
-
     }
 
     reRender(){

@@ -26,11 +26,11 @@
     -webkit-user-select: none;
 
     .filtered-out {
-        opacity: 0.3;
+        opacity: 0.2;
     }
     
     .not-selected {
-        opacity: 0.3;
+        opacity: 0.2;
     }
 
     #zoom-in {
@@ -57,9 +57,17 @@
         z-index: 10;
     }
 
+    //#mouse-btn {
+    //    position: absolute; 
+    //    right: 107px;
+    //    width: 40px; 
+    //    top: 5px; 
+    //    z-index: 10;
+    //}
+
     #mouse-btn {
         position: absolute; 
-        right: 107px;
+        right: 27px;
         width: 40px; 
         top: 5px; 
         z-index: 10;
@@ -214,12 +222,15 @@
 
     .doc-dot {
         opacity: 1;
+        stroke: #fff;
+        stroke-width: 1px;
+        stroke-opacity: 0.5;
     }
 
     .selected .doc-dot, .drag-highlight .doc-dot {
         opacity: 1;
-        fill: #63B8FF;
-        stroke-width: 2px;        
+        // fill: #63B8FF;
+        stroke-width: 1px;        
     }
 
     .bubble.droppable {

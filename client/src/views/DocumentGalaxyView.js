@@ -37,7 +37,7 @@ class DocumentGalaxyView extends BaseView {
         this.disMatrix = null;
         this.topicNum = 5;
         this.keywordNum = 3;
-        this.colorType = "normal";
+        this.colorType = "topic";
 
         var worker = new Worker("scripts/worker-tsne.js");  
         this.tsneWorker = worker;
@@ -56,7 +56,7 @@ class DocumentGalaxyView extends BaseView {
                 _this.render();
             }
             if (data.message == "end") {
-                _this.spinner.stop();
+                // _this.spinner.stop();
                 PubSub.publish("DocumentGalaxyView.Layout.End", {
                     "method": _this.disMethod,
                     "positions": _this.dotPositions
@@ -193,24 +193,26 @@ class DocumentGalaxyView extends BaseView {
             }
         })
 
-        $(_this.getContainer()).find("#color-btn").click(function(){
-            if($(this).hasClass("active")){
-                $(this).removeClass("active");
-                $(this).text("TopicColor");
-                console.log("TopicColor");
-                _this.colorType = "topic"
-                _this.reRender();
-                PubSub.publish("ColorTypeChanged", "topic");
-            }
-            else{
-                $(this).addClass("active");
-                $(this).text("NormalColor");
-                console.log("NormalColor");
-                _this.colorType = "normal"
-                _this.reRender();
-                PubSub.publish("ColorTypeChanged", "normal");
-            }
-        })
+        PubSub.publish("ColorTypeChanged", "topic");
+        
+        // $(_this.getContainer()).find("#color-btn").click(function(){
+        //     if($(this).hasClass("active")){
+        //         $(this).removeClass("active");
+        //         $(this).text("TopicColor");
+        //         console.log("TopicColor");
+        //         _this.colorType = "topic"
+        //         _this.reRender();
+        //         PubSub.publish("ColorTypeChanged", "topic");
+        //     }
+        //     else{
+        //         $(this).addClass("active");
+        //         $(this).text("NormalColor");
+        //         console.log("NormalColor");
+        //         _this.colorType = "normal"
+        //         _this.reRender();
+        //         PubSub.publish("ColorTypeChanged", "normal");
+        //     }
+        // })
 
         $(_this.getContainer()).on("click", "#topic-keywords-modal #config-ok-btn", async function(){
             var topicNum = $(_this.getContainer()).find("#topic-slider").val(),
@@ -235,7 +237,7 @@ class DocumentGalaxyView extends BaseView {
                         _this.render();
                     }
                     if (data.message == "end") {
-                        _this.spinner.stop();
+                        // _this.spinner.stop();
                         PubSub.publish("DocumentGalaxyView.Layout.End", {
                             "method": _this.disMethod,
                             "positions": _this.dotPositions
@@ -408,7 +410,7 @@ class DocumentGalaxyView extends BaseView {
                 .html("")
                 .append("circle")
                 .attr("class", "doc-dot")
-                .attr("r", 4)
+                .attr("r", 5)
                 .on('mouseover', function() {
                     PubSub.publish("Interaction.Highlight.Doc", { operation: "add", view: _this, data: [index] });
                     if (d3.event.buttons > 0) return;
@@ -618,7 +620,6 @@ class DocumentGalaxyView extends BaseView {
     //     return drag;
     // }
 
-
     renderWords() {
         var _this = this;
         var docs = DataCenter.data;
@@ -674,6 +675,8 @@ class DocumentGalaxyView extends BaseView {
         //     })
         this.wordGroup.selectAll(".cluster-text")
             .style("display", "block");
+
+        this.spinner.stop();
     }
 
     async _getDocDistanceMatrixByTopic() {
