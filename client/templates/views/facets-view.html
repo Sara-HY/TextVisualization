@@ -3,19 +3,19 @@
 <% block view-content %>
     <div id="facets-theme-part">
         <span><strong>Theme</strong></span>
-        <div id="facets-theme"></div>
+        <div id="facets-theme" class="content"></div>
     </div>
     <div id="facets-name-part">
         <span><strong>Name</strong></span>
-        <div id="facets-name"></div>
+        <div id="facets-name" class="content"></div>
     </div>
     <div id="facets-place-part">
         <span><strong>Place</strong></span>
-        <div id="facets-place"></div>
+        <div id="facets-place" class="content"></div>
     </div>
     <div id="facets-organization-part">
         <span><strong>Organization</strong></span>
-        <div id="facets-organization"></div>
+        <div id="facets-organization" class="content"></div>
     </div>
     
 <% endblock %>
@@ -25,11 +25,9 @@
     <script type="text/template/lodash" id="facets-template">
         <div class="topic-wrapper thumbnail" id=<%=group.type%><%=group.id%> group-type=<%=group.type%> group-id=<%=group.id%>>
             <div class="group-title">
-                <span class="badge" style="left: 5px; position: absolute;"><%=group.data.length%></span>
-                 <div class="keywords">
-                    <% _.each(topWords, function(word) { %>
-                        <span class="word" style="font-size:10px; margin: 1px;"> <%=word.word%></span>
-                    <% }) %>
+                <span class="badge"><%=group.data.length%></span>
+                 <div class="keywords">    
+                    <span class="word"> <%=topWords%></span>
                 </div>   
                 <div class="group-controller-group pull-right btn-group" style="right: 6px">
                     <a class="btn btn-default btn-xs filter-btn" group-type=<%=group.type%> group-id=<%=group.id%> ><i class="fa fa-filter"></i></a>

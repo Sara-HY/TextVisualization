@@ -50,13 +50,18 @@ class KeyWordsView extends BaseView {
 
         this.words = docTextProcessor.getTopKeywordsByTFIDF(_this, this.dataID, this.wordLength, true);
 
+        // console.log(this.words);
+
         this.words = _.filter(this.words, function(word) {
             return word.count >= 5;
         });
 
+        var maxWeightEle = _.maxBy(this.words, "count");
+        var maxWeight = maxWeightEle.count;
+
         for (var i = 0; i < this.words.length; i++) {
             this.words[i]._index = i;
-            this.words[i]._weight = "<div class=\"bar\"><div style=\"width:" + parseInt(this.words[i].count /this.data.length * 100) + "%;\"></div> </div> "
+            this.words[i]._weight = "<div class=\"bar\"><div style=\"width:" + parseInt(this.words[i].count / (maxWeight + 30) * 100) + "%;\"></div> </div> "
         }
     }
 

@@ -9,13 +9,11 @@ class FilterCenter {
     }
 
     static addFilter(view, data) {
-        console.log("addFilter");
         FilterCenter._filters.set(view, data);
         this._filterChanged(view);
     }
 
     static removeFilter(view) {
-        console.log("removeFilter")
         if (FilterCenter._filters.has(view) != false) {
             FilterCenter._filters.delete(view);    
             this._filterChanged(view);
@@ -28,7 +26,7 @@ class FilterCenter {
         if (!this._filterChangedDebounce) {
             this._filterChangedDebounce = _.debounce(function() {
                 PubSub.publish("FilterCenter.Changed", {view: _this.lastFilterChangedView});
-            }, 300, {"maxWait": 1000});
+            }, 100, {"maxWait": 300});
         }
         FilterCenter._filteredData = new Map();
         this._filterChangedDebounce();
@@ -43,8 +41,8 @@ class FilterCenter {
         var data = null;
         for (var tmpView of FilterCenter._filters.keys()) {
             // console.log(tmpView, view)
-            if (tmpView == view && view.viewID != "document-galaxy-view") 
-                continue;
+            // if (tmpView == view && view.viewID != "document-galaxy-view") 
+            //     continue;
             if (data == null) {
                 data = FilterCenter._filters.get(tmpView);
                 continue;

@@ -31,6 +31,7 @@ class FacetsView extends BaseView {
 		// 		_this.filterData = FilterCenter.getFilteredDataByView(_this);
   //               _this.reRender();
   //       })
+
   		$(this.getContainer()).on("click", ".filter-btn", function() {
             var groupID = +$(this).attr("group-id");
             if ($(this).hasClass("active")) {  //取消filter
@@ -128,7 +129,8 @@ class FacetsView extends BaseView {
         $(this.getContainer()).find("#facets-theme").html("");
         for (var i = 0; i < groups.length; i++) {
             var group = groups[i];
-            var topWords = DataCenter.docTextProcessor.getTopKeywordsByTFIDF(_this, group.data, 2, true);
+            var words = DataCenter.docTextProcessor.getTopKeywordsByTFIDF(_this, group.data, 2, true);
+            var topWords = words[0].word + '  ' + words[1].word;
             var html = tpl({facet: "theme", group: group, topWords: topWords});
             $(_this.getContainer()).find("#facets-theme").append(html);
         }
@@ -154,13 +156,15 @@ class FacetsView extends BaseView {
             var startTime = timeDim.bottom(1)[0]["_MAINTIME"], 
             	endTime = timeDim.top(1)[0]["_MAINTIME"]; 
 
-            var { width, height } = this.getViewSize(); 
+            var width = $(_this.viewTemplate).find(thumbnail).width(),
+                height = $(_this.viewTemplate).find(thumbnail).height();
+
             var x = d3.time.scale()
                     .domain([timeInterval.floor(startTime), timeInterval.ceil(endTime)])
-                    .range([0, width/4 * 3])
+                    .range([0, width])
                     .nice(timeInterval);
 
-            timeLine.width(width/4)
+            timeLine.width(width)
 	            .height("50")
 	            .dimension(timeDim)
 	            .group(countGroup)
@@ -178,7 +182,7 @@ class FacetsView extends BaseView {
 	    	timeLine.selectAll(".y").attr("display", "none");
 	    	timeLine.selectAll(".x").attr("display", "none");
 	    	timeLine.selectAll(".chart-body").attr("transform", "translate(0, 0)")
-	    	$(this.getContainer()).find(thumbnail + " svg").children("g").attr("transform", "translate(5, 0)scale(3, 1.5)");
+	    	$(this.getContainer()).find(thumbnail + " svg").children("g").attr("transform", "translate(5, 5)scale(1.5, 1)");
 	    }
 	}
 
@@ -199,9 +203,7 @@ class FacetsView extends BaseView {
 
         for (var i = 0; i < entitys.length; i++) {
             var entity = entitys[i];
-            var topWords = []
-       		topWords.push(entity);
-            var html = tpl({facet: facet, group: entity, topWords: topWords});
+            var html = tpl({facet: facet, group: entity, topWords: entity.word});
             $(_this.getContainer()).find(id).append(html);
         }
 
@@ -220,13 +222,17 @@ class FacetsView extends BaseView {
             var startTime = timeDim.bottom(1)[0]["_MAINTIME"], 
             	endTime = timeDim.top(1)[0]["_MAINTIME"]; 
 
-            var { width, height } = this.getViewSize(); 
+            // var { width, height } = this.getViewSize(); 
+
+            var width = $(_this.viewTemplate).find(thumbnail).width(),
+                height = $(_this.viewTemplate).find(thumbnail).height();
+
             var x = d3.time.scale()
                     .domain([timeInterval.floor(startTime), timeInterval.ceil(endTime)])
-                    .range([0, width/4])
+                    .range([0, width])
                     .nice(timeInterval);
 
-            timeLine.width(width/4)
+            timeLine.width(width)
 	            .height("50")
 	            .dimension(timeDim)
 	            .group(countGroup)
@@ -237,7 +243,6 @@ class FacetsView extends BaseView {
 	            .x(x)
 	            .renderArea(true);
 
-
 	        timeLine.yAxis().ticks(0);
 	        timeLine.xAxis().ticks(0);
 	        timeLine.render();
@@ -245,7 +250,7 @@ class FacetsView extends BaseView {
 	    	timeLine.selectAll(".y").attr("display", "none");
 	    	timeLine.selectAll(".x").attr("display", "none");
 	    	timeLine.selectAll(".chart-body").attr("transform", "translate(0, 0)")
-	    	$(this.getContainer()).find(thumbnail + " svg").children("g").attr("transform", "translate(2, 0)scale(3, 1)");
+	    	$(this.getContainer()).find(thumbnail + " svg").children("g").attr("transform", "translate(5, 5)scale(1.5, 1)");
 	    }
 	}
 
@@ -256,67 +261,64 @@ class FacetsView extends BaseView {
 		this.renderGroup("organization");
 	}
 
-	// reRender() {
-	// 	var _this = this;
-	// 	var groups = _.filter(GroupCenter.groups, function(group) {
- //                return group.type == "Topic";
- //            });
-	// 	for (var i = 0; i < groups.length; i++) {
- //        	var group = groups[i];
+	reRender() {
+		var _this = this;
+		var groups = _.filter(GroupCenter.groups, function(group) {
+                return group.type == "Topic";
+            });
+		for (var i = 0; i < groups.length; i++) {
+        	var group = groups[i];
 
- //        	var thumbnail = "#Topic"+group.id;
- //        	$(this.getContainer()).find(thumbnail + " svg").innerHTML = '';
- //            var timeLine = dc.lineChart(thumbnail);
+        	var thumbnail = "#Topic"+group.id;
+        	$(this.getContainer()).find(thumbnail + " svg").innerHTML = '';
+            var timeLine = dc.lineChart(thumbnail);
 
- //        	var data = [];
- //            if(group.data && group.data.length){
- //                for (var id of group.data)
- //                    data.push(DataCenter.data[id]);
- //            }
- //            console.log(_this.filterData.length, _this.filterData, data);
- //            for(var j=0; j< data.length; j++){
- //            	if(_this.filterData.indexOf(data[j]) < 0)
- //            		data[j]._filter = 0;
- //            	else
- //            		data[j]._filter = 1;
- //            }
+        	var data = [];
+            if(group.data && group.data.length){
+                for (var id of group.data)
+                    data.push(DataCenter.data[id]);
+            }
+            for(var j=0; j< data.length; j++){
+            	if(_this.filterData.indexOf(data[j]) < 0)
+            		data[j]._filter = 0;
+            	else
+            		data[j]._filter = 1;
+            }
 
- //          	var filterData = _.filter(data, function(data){
-	//         	return data._filter == 1;
-	//         })
-	//         console.log(filterData, filterData.length)
+          	var filterData = _.filter(data, function(data){
+	        	return data._filter == 1;
+	        })
 
- //            var ndx = crossfilter(filterData),
- //            	timeDim = ndx.dimension(function(d) {return d["_MAINTIME"]});
- //            var timeInterval = d3.time["month"];
- //            var countGroup = timeDim.group(function(time) {
- //            	return timeInterval.floor(new Date(time))
- //            }).reduceCount();
+            var ndx = crossfilter(filterData),
+            	timeDim = ndx.dimension(function(d) {return d["_MAINTIME"]});
+            var timeInterval = d3.time["month"];
+            var countGroup = timeDim.group(function(time) {
+            	return timeInterval.floor(new Date(time))
+            }).reduceCount();
 
- //            var startTime = timeDim.bottom(1)[0]["_MAINTIME"], 
- //            	endTime = timeDim.top(1)[0]["_MAINTIME"]; 
+            var startTime = timeDim.bottom(1)[0]["_MAINTIME"], 
+            	endTime = timeDim.top(1)[0]["_MAINTIME"]; 
 
- //            var { width, height } = this.getViewSize(); 
- //            var x = d3.time.scale()
- //                    .domain([timeInterval.floor(startTime), timeInterval.ceil(endTime)])
- //                    .range([0, width/4 * 3])
- //                    .nice(timeInterval);
+            var { width, height } = this.getViewSize(); 
+            var x = d3.time.scale()
+                    .domain([timeInterval.floor(startTime), timeInterval.ceil(endTime)])
+                    .range([0, width/4 * 3])
+                    .nice(timeInterval);
 
- //            console.log(this.themeLine[i])
- //            this.themeLine[i].dimension(timeDim);
-	//         this.themeLine[i].group(countGroup);
-	//         this.themeLine[i].x(x);
+            this.themeLine[i].dimension(timeDim);
+	        this.themeLine[i].group(countGroup);
+	        this.themeLine[i].x(x);
  
-	//         this.themeLine[i].yAxis().ticks(0);
-	//         this.themeLine[i].xAxis().ticks(0);
-	//         this.themeLine[i].render();
+	        this.themeLine[i].yAxis().ticks(0);
+	        this.themeLine[i].xAxis().ticks(0);
+	        this.themeLine[i].render();
 
-	//     	this.themeLine[i].selectAll(".y").attr("display", "none");
-	//     	this.themeLine[i].selectAll(".x").attr("display", "none");
-	//     	this.themeLine[i].selectAll(".chart-body").attr("transform", "translate(0, 0)")
-	//     	$(this.getContainer()).find(thumbnail + " svg").children("g").attr("transform", "translate(5, 0)scale(3, 1.5)");
-	//     }
-	// }
+	    	this.themeLine[i].selectAll(".y").attr("display", "none");
+	    	this.themeLine[i].selectAll(".x").attr("display", "none");
+	    	this.themeLine[i].selectAll(".chart-body").attr("transform", "translate(0, 0)")
+	    	$(this.getContainer()).find(thumbnail + " svg").children("g").attr("transform", "translate(5, 0)scale(3, 1.5)");
+	    }
+	}
 }
 
 export { FacetsView };

@@ -686,14 +686,15 @@ class DocumentGalaxyView extends BaseView {
         var model;
 
         // get topic-model
-        // if(DataCenter.topicModel){
-        //     model = DataCenter.topicModel;
-        // }
-        // else{
-        model = await DataCenter.getTopicModel(_this.topicNum, 0, null, null);;
-        DataCenter.topicModel = model;
-        model.pullToGroups();
-        PubSub.publish("DataCenter.TopicModel.Update");
+        if(DataCenter.topicModel){
+            model = DataCenter.topicModel;
+        }
+        else{
+            model = await DataCenter.getTopicModel(_this.topicNum, 0, null, null);
+            DataCenter.topicModel = model;
+            model.pullToGroups();
+            PubSub.publish("DataCenter.TopicModel.Update");
+        }
         
         // get distanceMatrix
         for (var i = 0; i < docs.length; i++) {

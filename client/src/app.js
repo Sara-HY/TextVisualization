@@ -39,6 +39,11 @@ $(async () => {
     await DataCenter.loadMeta();
     await DataCenter.loadAllData();
 
+    var model = await DataCenter.getTopicModel(5, 0, null, null);
+    DataCenter.topicModel = model;
+    model.pullToGroups();
+    PubSub.publish("DataCenter.TopicModel.Update");
+    
     //根据配置创建view
     for (var view of viewConfig) {
         var layout = JSON.stringify(view.layout);
@@ -47,8 +52,6 @@ $(async () => {
         console.log(command)
         eval(command)
     }
-
-    DataCenter.topicModel = null;
 
     // for (var i = 0; i < modelNumber; i++) {
     //     var model = await DataCenter.getTopicModel(topicModelK, i);
