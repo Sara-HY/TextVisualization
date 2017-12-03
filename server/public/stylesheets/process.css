@@ -12,11 +12,78 @@
 }
 
 .step {
-	position: relative;
+    position: relative;
 }
 
 .next {
-	position: absolute; 
-	bottom: 10%; 
-	right: 5%;
+    position: absolute; 
+    bottom: 3%; 
+    right: 5%;
+}
+
+.process-container{
+    position: absolute;
+    top: 5%;
+    margin-top: 10px;
+    height: 90%;
+    width: 95%;
+}
+
+.checkbox-wrap{
+    position: absolute;
+    left: 0%;
+    top: 19%;
+    width: 98%;
+    text-align: left;
+    margin: 0 auto;
+    background-color: white;
+}
+.checkbox-wrap input[type="checkbox"]{
+    display: none;
+}
+
+.checkbox-wrap input[type="checkbox"]+label {
+    display: inline-block;
+    width: 40%;
+    margin-top: 10px;
+    margin-left: 5px;
+    text-align: left;
+    -webkit-box-sizing: border-box;
+}
+
+.checkbox-wrap label::before {
+    content: "";
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background: #D3D3D3;
+    vertical-align: middle;
+    -webkit-border-radius: 50%;
+    margin-right: 5px;
+    -webkit-box-sizing:border-box;
+    -webkit-transition:background ease-in .5s
+}
+
+.checkbox-wrap input[type="checkbox"]:checked+label::before{
+    background-color: #23527c;
+    border: 5px #D3D3D3 solid;
+}
+
+#save-field-btn {
+    position: absolute;
+    right: 10%;
+    bottom: 3%;
+}
+
+#save-nlp-process-btn {
+    position: absolute;
+    right: 10%;
+    bottom: -110%;
+}
+
+#start-process-btn{
+    bottom: 5%;
+    position: absolute;
+    text-align: center;
+    left: 45%;
 }

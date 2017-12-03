@@ -10,7 +10,7 @@ import chardet
 from pyquery import PyQuery as pq
 
 def querySinaPage(url):
-    print(url)
+    # print(url)
     try:
         page_src_string = urllib.request.urlopen(url).read()
         charset = chardet.detect(page_src_string)["encoding"]
@@ -28,12 +28,12 @@ def querySinaPage(url):
         print("httperror: ", err)
         return " "
     except Exception as err:
-        print("error: ", err)
+        # print("error: ", err)
         text = html(".article p").remove(".article-editor").text()
         return text
 
 def query163Page(url):
-    print(url)
+    # print(url)
     try:
         page_src_string = urllib.request.urlopen(url).read()
         charset = chardet.detect(page_src_string)["encoding"]
@@ -51,7 +51,7 @@ def query163Page(url):
 
 
 def querySohuPage(url):
-    print(url)
+    # print(url)
     try:
         page_src_string = urllib.request.urlopen(url).read()
         charset = chardet.detect(page_src_string)["encoding"]
@@ -68,7 +68,6 @@ def querySohuPage(url):
         return " "
 
 def queryCctvPage(url):
-    print(url)
     try:
         page_src_string = urllib.request.urlopen(url).read()
         charset = chardet.detect(page_src_string)["encoding"]
@@ -77,16 +76,15 @@ def queryCctvPage(url):
         else:
             html = pq(url, encoding="gbk")
 
-        text = html(".cnt_bd").remove("h1").remove(".o-tit").remove(".function").remove("script").text().encode("latin1", 'ignore').decode("utf-8", errors="replace")
+        text = html(".cnt_bd").remove("script").remove("style").remove("h1").remove(".o-tit").remove(".function").text()
         text = " ".join(text.split())
-
         return text
     except urllib.error.HTTPError as err:
         print("httperror: ", err)
         return " "
     except Exception as err:
-        print("error: ", err)
-        text = html(".cnt_bd").remove("h1").remove(".o-tit").remove(".function").remove("script").text()
+        # print("error: ", err)
+        text = html(".cnt_bd").remove("script").remove("style").remove("h1").remove(".o-tit").remove(".function").text()
         return text
 
 
@@ -100,7 +98,6 @@ def sitesType(site, url):
 
 
 def queryBaiduPage(site, url):
-
     urlMap = {}
     dataList = []
     html = pq(url=url)
@@ -125,9 +122,12 @@ def queryBaiduPage(site, url):
                 newsSite = splitted[0]
                 timeStr = splitted[2]
 
-                if (timeStr.find(u"前") >= 0):
+                if (timeStr.find(u"小时前") >= 0):
                     hour = int(timeStr.replace(u"小时前", ""))
                     timeStamp = int(time.time()) - hour * 3600
+                elif(timeStr.find(u"分钟前") >= 0):
+                    min = int(timeStr.replace(u"分钟前", ""))
+                    timeStamp = int(time.time()) - min * 60
                 else:
                     timeStamp = int(time.mktime(time.strptime(timeStr, u"%Y年%m月%d日 %H:%M")))
 
@@ -151,13 +151,14 @@ def queryBaiduPage(site, url):
 def crawl(word, pageNum, sites):
     DataList = []
     for site in sites:
-        # print(site)
+        print(site)
         query = "site:" + site + " title:" + word
         start = 0
         while start < int(pageNum):
-            url = "http://news.baidu.com/ns?tn=news&ie=utf-8&clk=sortbytime&rn=50&word=" + query + "&pn=" + str(start)
+            url = "http://news.baidu.com/ns?tn=news&ie=utf-8&ct=0&rn=50&word=" + query + "&pn=" + str(start)
             print("url", url)
             dataList = queryBaiduPage(site, url)
+
             DataList.extend(dataList)
             start = start + 50
             print("start:", start)

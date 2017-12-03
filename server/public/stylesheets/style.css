@@ -7,6 +7,16 @@ body {
     height: 5%;
 }
 
+#title {
+    position: absolute;
+    left: 10%;
+}
+
+#navbar-crawler{
+    position: absolute;
+    right: 20%;
+}
+
 .menubar{
     line-height: 24px;
 }
@@ -17,15 +27,20 @@ body {
 }
 .menubar-item .top-nav-dropdown{
     position: relative;
-    left: 50%;
-    top: 35px;
-    width: 100px;
-    height: 70px; 
+    left: 35%;
+    top: 50px;
+    width: 110px;
+    height: 80px;
     color: #777;
     padding: 0;
     margin: 0;
     text-align: center;
     list-style: none;
+}
+
+.menubar-item li {
+    position: absolute;
+    width: 100px;
 }
 
 /** 下面的控制显示和隐藏 **/
@@ -35,13 +50,25 @@ body {
 
 .menubar-item:hover .top-nav-dropdown{
     display: block;
-}   
+    padding: 12px 15px;
+    border-radius: 5px;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.2);
+    cursor: pointer;
+    outline: none;
+} 
 
-.process-container {
-    position: relative;
-    top: 5%;
-    margin-top: 10px;
-    height: 90%;
+.fa {
+    position: absolute;
+    left: 5%;
+    top: 20%;
+}  
+
+#particles-js {
+    position: absolute;
+    top: 0;
+    z-index: -99;
+    width: 100%;
+    height: 100%;
 }
 
 .footer {

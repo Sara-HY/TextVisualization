@@ -19,11 +19,10 @@ class TimelineView extends BaseView {
     _init() {
         var _this = this;
 
-        this.setTimelineUnit("month", "day");
-
         this.data = DataCenter.data;
         this.filteredData = this.data;
 
+        this.setTimelineUnit();
         this._initView();
         this.render();
 
@@ -41,15 +40,15 @@ class TimelineView extends BaseView {
             .append("div")
             .attr("class", "focus-timeline")
             .attr("width", width)
-            .attr("height", height * 0.5);
+            .attr("height", height);
 
-        // d3.select(this.getContainer())
-        //     .append("div")
-        //     .attr("class", "overview-timeline")
-        //     .attr("width", width)
-        //     .attr("height", height * 0.5);
+        d3.select(this.getContainer())
+            .append("div")
+            .attr("class", "overview-timeline")
+            .attr("width", width)
+            .attr("height", height);
 
-        // this.overviewTimelineChart = dc.lineChart("#" + this.getContainerID() + " .overview-timeline"); 
+        this.overviewTimelineChart = dc.barChart("#" + this.getContainerID() + " .overview-timeline"); 
         this.focusTimelineChart = dc.barChart("#" + this.getContainerID() + " .focus-timeline");
     }
 
@@ -73,9 +72,30 @@ class TimelineView extends BaseView {
     //     }
     // }   
 
-    setTimelineUnit(overviewUnit, focusUnit) {
-        this.focusTimeInterval = d3.time[focusUnit];
-        this.focusTimeUnits = d3.time[focusUnit + "s"];
+    setTimelineUnit() {
+        var minTime = _.minBy(this.data, 'time').time,
+            maxTime = _.maxBy(this.data, 'time').time;
+        
+        var timeInterval = (maxTime - minTime)/1000,
+            days = timeInterval/86400,
+            months = days/30,
+            years = months/12;
+
+        if(years >= 10){
+            this.overviewTimeInterval = d3.time['year'];
+            this.overviewTimeUnits = d3.time['years'];
+        }
+        else if(years >= 3){
+            this.overviewTimeInterval = d3.time['month'];
+            this.overviewTimeUnits = d3.time['months'];
+        }else{
+            this.overviewTimeInterval = d3.time['day'];
+            this.overviewTimeUnits = d3.time['days'];
+        }
+        this.focusTimeInterval = d3.time['day'];
+        this.focusTimeUnits = d3.time['days'];
+        // this.focusTimeInterval = d3.time[focusUnit];
+        // this.focusTimeUnits = d3.time[focusUnit + "s"];
         // this.overviewTimeInterval = d3.time[overviewUnit];
         // this.overviewTimeUnits = d3.time[overviewUnit + "s"];
     } 
@@ -87,12 +107,12 @@ class TimelineView extends BaseView {
         var focusCountGroup = timeDim.group(function(time) {
                 return _this.focusTimeInterval.floor(new Date(time))
             }).reduceCount();
-        // var overviewCountGroup = timeDim.group(function(time) {
-        //         return _this.overviewTimeInterval.floor(new Date(time))
-        //     }).reduceCount();
+        var overviewCountGroup = timeDim.group(function(time) {
+                return _this.overviewTimeInterval.floor(new Date(time))
+            }).reduceCount();
         return {
             "focusCountGroup": focusCountGroup,
-            // "overviewCountGroup": overviewCountGroup,
+            "overviewCountGroup": overviewCountGroup,
             "timeDim": timeDim
         }
     }
@@ -102,7 +122,7 @@ class TimelineView extends BaseView {
         var countGroup = this.getDataCountGroup(this.data);
         var timeDim = countGroup.timeDim;
         var focusCountGroup = countGroup.focusCountGroup;
-        // var overviewCountGroup = countGroup.overviewCountGroup;   
+        var overviewCountGroup = countGroup.overviewCountGroup;   
 
         var startTime = timeDim.bottom(1)[0]["_MAINTIME"], 
             endTime = timeDim.top(1)[0]["_MAINTIME"];
@@ -112,10 +132,10 @@ class TimelineView extends BaseView {
                     .domain([this.focusTimeInterval.floor(startTime), this.focusTimeInterval.ceil(endTime)])
                     .range([0, width])
                     .nice(this.focusTimeInterval);
-        // var overviewX = d3.time.scale()
-        //             .domain([this.overviewTimeInterval.floor(startTime), this.overviewTimeInterval.ceil(endTime)])
-        //             .range([0, width])
-        //             .nice(this.overviewTimeInterval);
+        var overviewX = d3.time.scale()
+                    .domain([this.overviewTimeInterval.floor(startTime), this.overviewTimeInterval.ceil(endTime)])
+                    .range([0, width])
+                    .nice(this.overviewTimeInterval);
 
         this.focusTimelineChart
             .width(width)
@@ -124,29 +144,28 @@ class TimelineView extends BaseView {
             .group(focusCountGroup)
             .elasticY(true)
             .gap(1)
-            .round(d3.time.day.round)
+            .round(this.focusTimeInterval.round)
             .alwaysUseRounding(true)
             .xUnits(this.focusTimeUnits)
             .x(focusX)
-            // .rangeChart(this.overviewTimelineChart)
+            .rangeChart(this.overviewTimelineChart)
             
 
-        // this.overviewTimelineChart
-        //     .width(width)
-        //     .height(height * 0.5)
-        //     .dimension(timeDim)
-        //     .group(overviewCountGroup)
-        //     .elasticY(true) 
-        //     .round(d3.time.month.round)
-        //     .x(overviewX)
-        //     .xUnits(this.overviewTimeUnits)
-        //     .renderArea(true);
-            // .alwaysUseRounding(true)
-            // .gap(1)
+        this.overviewTimelineChart
+            .width(width)
+            .height(height * 0.8)
+            .dimension(timeDim)
+            .group(overviewCountGroup)
+            .elasticY(true) 
+            .round(this.overviewTimeInterval.round)
+            .x(overviewX)
+            .xUnits(this.overviewTimeUnits)
+            .alwaysUseRounding(true)
+            .gap(1);
 
 
-        this.focusTimelineChart.yAxis().ticks(5);
-        // this.overviewTimelineChart.yAxis().ticks(2);
+        this.focusTimelineChart.yAxis().ticks(2);
+        this.overviewTimelineChart.yAxis().ticks(2);
 
         this.reRender();
 
@@ -179,19 +198,19 @@ class TimelineView extends BaseView {
                     .domain([this.focusTimeInterval.floor(startTime), this.focusTimeInterval.ceil(endTime)])
                     .range([0, width])
                     .nice(this.focusTimeInterval);
-        // var overviewX = d3.time.scale()
-        //             .domain([this.overviewTimeInterval.floor(startTime), this.overviewTimeInterval.ceil(endTime)])
-        //             .range([0, width])
-        //             .nice(this.overviewTimeInterval);
+        var overviewX = d3.time.scale()
+                    .domain([this.overviewTimeInterval.floor(startTime), this.overviewTimeInterval.ceil(endTime)])
+                    .range([0, width])
+                    .nice(this.overviewTimeInterval);
 
         this.focusTimelineChart.group(focusCountGroup);
         this.focusTimelineChart.dimension(timeDim);
         this.focusTimelineChart.x(focusX);
-        // this.overviewTimelineChart.group(overviewCountGroup);
-        // this.overviewTimelineChart.dimension(timeDim);
-        // this.overviewTimelineChart.x(overviewX);
+        this.overviewTimelineChart.group(overviewCountGroup);
+        this.overviewTimelineChart.dimension(timeDim);
+        this.overviewTimelineChart.x(overviewX);
         this.focusTimelineChart.render();
-        // this.overviewTimelineChart.render();
+        this.overviewTimelineChart.render();
     }
 
 }

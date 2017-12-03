@@ -21,7 +21,7 @@ async function process(dataset) {
         g.db.getCollection(collectionName).removeMany();
 
         dataset.processStatus = {
-            status: "processing",
+            status: "Processing",
             message: "Loading data"
         }
         console.log("dataset", dataset.processStatus);
@@ -37,7 +37,7 @@ async function process(dataset) {
             for (var i = 0; i < dataset.preprocess.length; i++) {
                 var stage = dataset.preprocess[i];
                 dataset.processStatus = {
-                    status: "processing",
+                    status: "Processing",
                     message: "Process:" + stage
                 } 
                 g.db.syncSave(g.datasetCollection, dataset);
@@ -49,8 +49,8 @@ async function process(dataset) {
         }
 
         dataset.processStatus = {
-            status: "processed",
-            message: "success"
+            status: "Processed",
+            message: "Success"
         }
         g.db.syncSave(g.datasetCollection, dataset);   
     } catch (e) {

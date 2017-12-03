@@ -6,6 +6,7 @@ var path = require('path');
 var fs = require('fs');
 
 var g = require.main.require("./global.js");
+var utils = require.main.require("./utils/utils.js");
 var dir = path.join(config.rootPath, "/public/crawler");
 var saveDir = path.join(config.rootPath, "/public/uploaded/files/");
 
@@ -19,41 +20,64 @@ router.get('/', async function(req, res, next) {
     res.render('crawler', {serverPath: g.serverPath, userName:req.session.user});
 });
 
-router.post('/', async function(req, res, next){
-	var keywords = req.body.keywords;
-	var site = req.body.site;
-	var pageNum = req.body.pageNum;
-	var date = new Date();
-	var filename = keywords + "-" + site.replace(/\./g, '-') + ".json";
-	var filePath = path.join(dir, filename);
-	if(pageNum != 0){
+router.post('/start', async function(req, res, next) {
+	var cmd = "rm -rf " + dir + "; mkdir " + dir;
+	console.log(cmd);
+	exec(cmd, function(err, stdout, stderr) {
+        if (err != null) {
+            console.log(err);
+            response.error(res, err);
+        }
+        res.send("delete");
+    })
+})
+
+router.post('/crawling', async function(req, res, next) {
+	try{
+		var keywords = req.body.keywords;
+		var site = req.body.site;
+		var pageNum = req.body.pageNum;
+
+		var filename = keywords + "-" + site.replace(/\./g, '-') + ".json";
+		var filePath = path.join(dir, filename);
+
 		var cmd = "python3 externals/crawlerNews.py " + filePath + " " + keywords + " " + pageNum + " " + site; 
 		console.log(cmd);
+
 		exec(cmd, {maxBuffer: 1024 * 10000}, function(err, stdout, stderr) {
 	        if (err != null) {
 	            console.log(err);
 	            response.error(res, err);
 	        }
-	        var stat = fs.statSync(filePath); 
-	        var result = {"filename": filename, "size": stat.size}
-	        res.send(result);
-	    })
+	        res.send("success");
+		})
+	} catch (e) {
+		throw(e);
 	}
-	else{
-		var cmd = "rm -rf " + dir + "; mkdir " + dir;
-		console.log(cmd);
-		exec(cmd, function(err, stdout, stderr) {
-	        if (err != null) {
-	            console.log(err);
-	            response.error(res, err);
-	        }
-	        res.send("delete");
-	    })
+})
+
+router.get('/file/:filename', function(req, res, next){
+	try{
+		var filePath = path.join(dir, req.params.filename);
+
+		fs.exists(filePath, function(exists){
+        	if(exists){
+	        	var stat = fs.statSync(filePath); 
+		        var result = {"filename": req.params.filename, "size": stat.size}
+		        res.send(result);
+		    }
+		    else{
+		    	res.send("file not exists!");
+		    }
+        })
+	} catch (e) {
+		throw(e);
 	}
 })
 
 router.post('/file', function(req, res, next){
 	var filename = req.body.filename;
+	var time = req.body.time;
 	var srcPath = dir;
 	var distPath = path.join(saveDir, filename);
 	fs.exists(distPath, function(exists){
@@ -74,7 +98,7 @@ router.post('/file', function(req, res, next){
 				            name: filename,
 				            size: stat.size,
 				            type: "application/json",
-				            uploadTime: Date.parse(new Date(filename.substring(filename.indexOf('-') + 1, filename.length - 5).replace('+', ' ')))
+				            uploadTime: parseInt(time)
 				        },
 				        processStatus: {
 				            status: "unprocessed",

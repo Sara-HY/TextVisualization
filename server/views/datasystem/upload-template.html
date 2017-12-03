@@ -69,7 +69,7 @@
                 <a href="process/{%=file._id%}" class="btn btn-primary process-btn">Process</a>
             {% } %}
             <span delete-url="{%=o.options.redirectServer%}/upload/delete/{%=file._id%}" class="btn btn-danger delete-btn">Delete</span>
-            {% if (file.processStatus != null && file.processStatus.status == "processed") { %}
+            {% if (file.processStatus != null && file.processStatus.status == "Processed") { %}
             {% var href = o.options.redirect + file._id; %}
                 <a href={%=href%} class="btn btn-default analyze-btn">Analyze</span>
             {% } %}            

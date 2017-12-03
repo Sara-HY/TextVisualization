@@ -12,6 +12,7 @@
 
 {% block content %}
 <div id="file-upload">
+    <div id="particles-js"></div>
     <!-- The file upload form used as target for the file upload widget -->
         <form id="fileupload" action="/upload" method="POST" enctype="multipart/form-data">
           
@@ -82,6 +83,8 @@
     <script src="{{serverPath}}/libraries/blueimp-file-upload/js/jquery.fileupload.js"></script>
     <script src="{{serverPath}}/libraries/blueimp-file-upload/js/jquery.fileupload-process.js"></script>
     <script src="{{serverPath}}/libraries/blueimp-file-upload/js/jquery.fileupload-ui.js"></script>
+    <script type="text/javascript" src="{{serverPath}}/libraries/particles.js/particles.js"></script>
+    <script type="text/javascript">particlesJS.load("particles-js", "{{serverPath}}/config/particles.json");</script>  
 
     <!-- The main application script -->
     <script src="{{serverPath}}/javascripts/datasystem/upload-main.js"></script>

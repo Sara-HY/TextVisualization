@@ -3,6 +3,7 @@ import {DataUtils} from "../DataUtils.js"
 import {DataCenter} from "../DataCenter.js"
 import {FilterCenter} from "../FilterCenter.js"
 import {GroupCenter} from "../GroupCenter.js"
+import {TopicModel} from "../TopicModel.js"
 import {Utils} from "../Utils.js"
 import viewTemplate from "../../templates/views/facets-view.html!text"
 
@@ -11,28 +12,28 @@ import "dc";
 import "dc-css!css";
 
 class FacetsView extends BaseView {
-	constructor(viewID, viewTitle, layout, config){
-		super(viewID, "facets-view", viewTitle, viewTemplate, layout);
-		window.FacetsView = this;
-		this._init();
-		this.render();
-	}
+  constructor(viewID, viewTitle, layout, config){
+    super(viewID, "facets-view", viewTitle, viewTemplate, layout);
+    window.FacetsView = this;
+    this._init();
+    this.render();
+  }
 
-	_init(){
-		var _this = this;
-		this._processData();
+  _init(){
+    var _this = this;
+    this._processData();
 
-		PubSub.subscribe("DataCenter.TopicModel.Update", function(){
-			_this.topicModel = DataCenter.topicModel;
-			_this.renderTheme();
-		})
+    PubSub.subscribe("DataCenter.TopicModel.Update", function(){
+      _this.topicModel = DataCenter.topicModel;
+      _this.renderTheme();
+    })
 
-		// PubSub.subscribe("FilterCenter.Changed", function(msg, data){
-		// 		_this.filterData = FilterCenter.getFilteredDataByView(_this);
+    // PubSub.subscribe("FilterCenter.Changed", function(msg, data){
+    //    _this.filterData = FilterCenter.getFilteredDataByView(_this);
   //               _this.reRender();
   //       })
 
-  		$(this.getContainer()).on("click", ".filter-btn", function() {
+      $(this.getContainer()).on("click", ".filter-btn", function() {
             var groupID = +$(this).attr("group-id");
             if ($(this).hasClass("active")) {  //取消filter
                 $(_this.getContainer()).find(".filter-btn").removeClass("active");
@@ -41,26 +42,27 @@ class FacetsView extends BaseView {
                 $(_this.getContainer()).find(".filter-btn").removeClass("active");
                 $(this).addClass("active");
                 var type = $(this).attr("group-type"),
-                	groupID = +$(this).attr("group-id");
+                  groupID = +$(this).attr("group-id");
                 var selectedData = [];
                 if(type == "Topic"){
-                	var topic = _this.topicModel.getTopicByGroupID(groupID);
-	                for (var id of topic.belongs) {
-	                    selectedData.push(DataCenter.data[id]);
-	                }
+                  var topic = DataCenter.topicModel.getTopicByGroupID(groupID);
+                  console.log(groupID, topic);
+                  for (var id of topic.belongs) {
+                      selectedData.push(DataCenter.data[id]);
+                  }
                 }
                 else{
-                	var entitys = _.filter(_this.filterEntity, function(entity){
-			        	return entity.type == type;
-			        });
-	            	selectedData = entitys[groupID].data;
+                  var entitys = _.filter(_this.filterEntity, function(entity){
+                return entity.type == type;
+              });
+                selectedData = entitys[groupID].data;
                 }
                 FilterCenter.addFilter(_this, selectedData);        
             }
         })
-	}
+  }
 
-	_processData(){
+  _processData(){
         var _this = this;
         var docs = DataCenter.data;
         this.entityMap = {};
@@ -75,7 +77,7 @@ class FacetsView extends BaseView {
                             "count": 1,
                             "data":[],
                             "id": -1,
-            				"type": entityType
+                    "type": entityType
                         }
                         this.entityMap[name]["data"].push(doc);
                         this.entity.push(this.entityMap[name]);
@@ -101,7 +103,7 @@ class FacetsView extends BaseView {
         var nodeWeightFilterThreshold = this._getSizeThreshold(sizeList);
 
         this.filterEntity = _.filter(this.entity, function(entity){
-        	return entity.count >= nodeWeightFilterThreshold;
+          return entity.count >= nodeWeightFilterThreshold;
         });
     }
 
@@ -119,7 +121,7 @@ class FacetsView extends BaseView {
         return filterThreshold;       
     }
 
-	renderTheme() {
+  renderTheme() {
         var _this = this;
         var docs = DataCenter.data;
         var tpl = _.template($(_this.viewTemplate).find("#facets-template").html())
@@ -136,25 +138,25 @@ class FacetsView extends BaseView {
         }
 
         for (var i = 0; i < groups.length; i++) {
-        	var group = groups[i];
+          var group = groups[i];
 
-        	var thumbnail = "#Topic"+group.id;
+          var thumbnail = "#Topic"+group.id;
             var timeLine = dc.lineChart(thumbnail);
 
-        	var data = [];
+          var data = [];
             if(group.data && group.data.length){
                 for (var id of group.data)
                     data.push(DataCenter.data[id]);
             }
           
             var ndx = crossfilter(data),
-            	timeDim = ndx.dimension(function(d) {return d["_MAINTIME"]});
+              timeDim = ndx.dimension(function(d) {return d["_MAINTIME"]});
             var timeInterval = d3.time["day"];
             var countGroup = timeDim.group(function(time) {
-            	return timeInterval.floor(new Date(time))
+              return timeInterval.floor(new Date(time))
             }).reduceCount();
             var startTime = timeDim.bottom(1)[0]["_MAINTIME"], 
-            	endTime = timeDim.top(1)[0]["_MAINTIME"]; 
+              endTime = timeDim.top(1)[0]["_MAINTIME"]; 
 
             var width = $(_this.viewTemplate).find(thumbnail).width(),
                 height = $(_this.viewTemplate).find(thumbnail).height();
@@ -165,26 +167,26 @@ class FacetsView extends BaseView {
                     .nice(timeInterval);
 
             timeLine.width(width)
-	            .height("50")
-	            .dimension(timeDim)
-	            .group(countGroup)
-	            .brushOn(false)
-	            .elasticY(true)
-	            .round(d3.time.day.round)
-	            .xUnits(d3.time["days"])
-	            .x(x)
-	            .renderArea(true);
+              .height("50")
+              .dimension(timeDim)
+              .group(countGroup)
+              .brushOn(false)
+              .elasticY(true)
+              .round(d3.time.day.round)
+              .xUnits(d3.time["days"])
+              .x(x)
+              .renderArea(true);
 
-	        timeLine.yAxis().ticks(0);
-	        timeLine.xAxis().ticks(0);
-	        timeLine.render();
+          timeLine.yAxis().ticks(0);
+          timeLine.xAxis().ticks(0);
+          timeLine.render();
 
-	    	timeLine.selectAll(".y").attr("display", "none");
-	    	timeLine.selectAll(".x").attr("display", "none");
-	    	timeLine.selectAll(".chart-body").attr("transform", "translate(0, 0)")
-	    	$(this.getContainer()).find(thumbnail + " svg").children("g").attr("transform", "translate(5, 5)scale(1.5, 1)");
-	    }
-	}
+        timeLine.selectAll(".y").attr("display", "none");
+        timeLine.selectAll(".x").attr("display", "none");
+        timeLine.selectAll(".chart-body").attr("transform", "translate(0, 0)")
+        $(this.getContainer()).find(thumbnail + " svg").children("g").attr("transform", "scale(1.5)");
+      }
+  }
 
     renderGroup(facet) {
         var _this = this;
@@ -194,11 +196,11 @@ class FacetsView extends BaseView {
       
         $(this.getContainer()).find(id).html("");
         var entitys = _.filter(this.filterEntity, function(entity){
-        	return entity.type == facet;
+          return entity.type == facet;
         });
     
         for(var i=0; i<entitys.length; i++){
-        	entitys[i]["id"] = i;
+          entitys[i]["id"] = i;
         }
 
         for (var i = 0; i < entitys.length; i++) {
@@ -208,19 +210,19 @@ class FacetsView extends BaseView {
         }
 
         for (var i = 0; i < entitys.length; i++) {
-        	var entity = entitys[i];
-        	var thumbnail = "#" + facet + i;
+          var entity = entitys[i];
+          var thumbnail = "#" + facet + i;
 
             var timeLine = dc.lineChart(thumbnail);
 
             var ndx = crossfilter(entity.data),
-            	timeDim = ndx.dimension(function(d) {return d["_MAINTIME"]});
+              timeDim = ndx.dimension(function(d) {return d["_MAINTIME"]});
             var timeInterval = d3.time["day"];
             var countGroup = timeDim.group(function(time) {
-            	return timeInterval.floor(new Date(time))
+              return timeInterval.floor(new Date(time))
             }).reduceCount();
             var startTime = timeDim.bottom(1)[0]["_MAINTIME"], 
-            	endTime = timeDim.top(1)[0]["_MAINTIME"]; 
+              endTime = timeDim.top(1)[0]["_MAINTIME"]; 
 
             // var { width, height } = this.getViewSize(); 
 
@@ -233,71 +235,71 @@ class FacetsView extends BaseView {
                     .nice(timeInterval);
 
             timeLine.width(width)
-	            .height("50")
-	            .dimension(timeDim)
-	            .group(countGroup)
-	            .brushOn(false)
-	            .elasticY(true)
-	            .round(d3.time.day.round)
-	            .xUnits(d3.time["days"])
-	            .x(x)
-	            .renderArea(true);
+              .height("50")
+              .dimension(timeDim)
+              .group(countGroup)
+              .brushOn(false)
+              .elasticY(true)
+              .round(d3.time.day.round)
+              .xUnits(d3.time["days"])
+              .x(x)
+              .renderArea(true);
 
-	        timeLine.yAxis().ticks(0);
-	        timeLine.xAxis().ticks(0);
-	        timeLine.render();
+          timeLine.yAxis().ticks(0);
+          timeLine.xAxis().ticks(0);
+          timeLine.render();
 
-	    	timeLine.selectAll(".y").attr("display", "none");
-	    	timeLine.selectAll(".x").attr("display", "none");
-	    	timeLine.selectAll(".chart-body").attr("transform", "translate(0, 0)")
-	    	$(this.getContainer()).find(thumbnail + " svg").children("g").attr("transform", "translate(5, 5)scale(1.5, 1)");
-	    }
-	}
+        timeLine.selectAll(".y").attr("display", "none");
+        timeLine.selectAll(".x").attr("display", "none");
+        timeLine.selectAll(".chart-body").attr("transform", "translate(0, 0)")
+        $(this.getContainer()).find(thumbnail + " svg").children("g").attr("transform", "scale(1.5)");
+      }
+  }
 
-	render() {
-		this.renderTheme();
-		this.renderGroup("name");
-		this.renderGroup("place");
-		this.renderGroup("organization");
-	}
+  render() {
+    this.renderTheme();
+    this.renderGroup("name");
+    this.renderGroup("place");
+    this.renderGroup("organization");
+  }
 
-	reRender() {
-		var _this = this;
-		var groups = _.filter(GroupCenter.groups, function(group) {
+  reRender() {
+    var _this = this;
+    var groups = _.filter(GroupCenter.groups, function(group) {
                 return group.type == "Topic";
             });
-		for (var i = 0; i < groups.length; i++) {
-        	var group = groups[i];
+    for (var i = 0; i < groups.length; i++) {
+          var group = groups[i];
 
-        	var thumbnail = "#Topic"+group.id;
-        	$(this.getContainer()).find(thumbnail + " svg").innerHTML = '';
+          var thumbnail = "#Topic"+group.id;
+          $(this.getContainer()).find(thumbnail + " svg").innerHTML = '';
             var timeLine = dc.lineChart(thumbnail);
 
-        	var data = [];
+          var data = [];
             if(group.data && group.data.length){
                 for (var id of group.data)
                     data.push(DataCenter.data[id]);
             }
             for(var j=0; j< data.length; j++){
-            	if(_this.filterData.indexOf(data[j]) < 0)
-            		data[j]._filter = 0;
-            	else
-            		data[j]._filter = 1;
+              if(_this.filterData.indexOf(data[j]) < 0)
+                data[j]._filter = 0;
+              else
+                data[j]._filter = 1;
             }
 
-          	var filterData = _.filter(data, function(data){
-	        	return data._filter == 1;
-	        })
+            var filterData = _.filter(data, function(data){
+            return data._filter == 1;
+          })
 
             var ndx = crossfilter(filterData),
-            	timeDim = ndx.dimension(function(d) {return d["_MAINTIME"]});
+              timeDim = ndx.dimension(function(d) {return d["_MAINTIME"]});
             var timeInterval = d3.time["month"];
             var countGroup = timeDim.group(function(time) {
-            	return timeInterval.floor(new Date(time))
+              return timeInterval.floor(new Date(time))
             }).reduceCount();
 
             var startTime = timeDim.bottom(1)[0]["_MAINTIME"], 
-            	endTime = timeDim.top(1)[0]["_MAINTIME"]; 
+              endTime = timeDim.top(1)[0]["_MAINTIME"]; 
 
             var { width, height } = this.getViewSize(); 
             var x = d3.time.scale()
@@ -306,21 +308,20 @@ class FacetsView extends BaseView {
                     .nice(timeInterval);
 
             this.themeLine[i].dimension(timeDim);
-	        this.themeLine[i].group(countGroup);
-	        this.themeLine[i].x(x);
+          this.themeLine[i].group(countGroup);
+          this.themeLine[i].x(x);
  
-	        this.themeLine[i].yAxis().ticks(0);
-	        this.themeLine[i].xAxis().ticks(0);
-	        this.themeLine[i].render();
+          this.themeLine[i].yAxis().ticks(0);
+          this.themeLine[i].xAxis().ticks(0);
+          this.themeLine[i].render();
 
-	    	this.themeLine[i].selectAll(".y").attr("display", "none");
-	    	this.themeLine[i].selectAll(".x").attr("display", "none");
-	    	this.themeLine[i].selectAll(".chart-body").attr("transform", "translate(0, 0)")
-	    	$(this.getContainer()).find(thumbnail + " svg").children("g").attr("transform", "translate(5, 0)scale(3, 1.5)");
-	    }
-	}
+        this.themeLine[i].selectAll(".y").attr("display", "none");
+        this.themeLine[i].selectAll(".x").attr("display", "none");
+        this.themeLine[i].selectAll(".chart-body").attr("transform", "translate(0, 0)")
+        $(this.getContainer()).find(thumbnail + " svg").children("g").attr("transform", "translate(5, 0)scale(3, 1.5)");
+      }
+  }
 }
 
 export { FacetsView };
-
 

@@ -13,6 +13,7 @@
 
     {% block content %}
     <div id="content">
+        <div id="particles-js"></div>
        <!--  <div class="word-cloud">
             <div id="wordle" class="wordle"></div>
         </div> -->
@@ -30,38 +31,46 @@
             <input type="text" id="keywords" autocomplete="off" placeholder="  Please input the keywords...">
             <button type="submit" id="search"></button>
         </div>
-        <div id="sites-checkbox" class="check-box">
-            <label style="display: inline-block; width: 100px;"><input type="checkbox" name="sites" value="sina.com.cn" /> Sina </label>
-            <label style="display: inline-block; width: 100px;"><input type="checkbox" name="sites" value="163.com" /> Netease </label>
-            <label style="display: inline-block; width: 100px;"><input type="checkbox" name="sites" value="sohu.com" /> Sohu </label>
-            <label style="display: inline-block; width: 100px;"><input type="checkbox" name="sites" value="cctv.com" /> CCTV </label>
+        <div id="sites-checkbox"  class="checkbox-wrap">
+            <input type="checkbox" name="sites" value="sina.com.cn" id="sina"/> 
+            <label for="sina"> Sina </label>
+            <input type="checkbox" name="sites" value="163.com" id="netease"/> 
+            <label for="netease"> Netease </label>
+            <input type="checkbox" name="sites" value="sohu.com" id="sohu"/> 
+            <label for="sohu"> Sohu </label>
+            <input type="checkbox" name="sites" value="cctv.com" id="cctv"/> 
+            <label for="cctv"> CCTV </label>
         </div>
         <div class="file hide" id="file">
             <div>
                 <font> <b>File name :</b></font>
-                 <font id="file-name"></font>&nbsp;&nbsp;
+                <input style="width: 200px;" type="text" id="file-name" value="" name="">&nbsp;&nbsp;
                 <font> <b>Size: </b></font>
-                <font id="file-size"></font>&nbsp;&nbsp;
+                <font id="file-size">0KB</font>&nbsp;&nbsp;
                  <font><b>News: </b></font>
-                <font id="data-length"></font>
+                <font id="data-length">0</font>
             </div>
             <button type="submit" id="save"></button>
             <b style="position:absolute; right:7%; top:101%; font-size: 16px; font-family: Arial, sans-serif;">Save File</b>
         </div>
         <div class="sites">
-            <div class="site hide" id="sina-com-cn">
+            <div class="site" id="sina-com-cn">
+                <img src ="{{serverPath}}/config/sina.png"/>
                 <label> Sina </label>
                 <div class="sparkline" id="sina-com-cn-sparkline"></div>
             </div>
-            <div class="site hide" id="netease-com">
+            <div class="site" id="netease-com">
+                <img src ="{{serverPath}}/config/netease.png"/>
                 <label> Netease </label>
                 <div class="sparkline" id="netease-com-sparkline"></div>  
             </div>
-            <div class="site hide" id="sohu-com">
+            <div class="site" id="sohu-com">
+                <img src ="{{serverPath}}/config/sohu.png"/>
                 <label> Sohu </label>
                 <div class="sparkline" id="sohu-com-sparkline"></div>
             </div>
-            <div class="site hide" id="cctv-com">
+            <div class="site" id="cctv-com">
+                <img src ="{{serverPath}}/config/cctv.png"/>
                 <label> CCTV </label>
                 <div class="sparkline" id="cctv-com-sparkline"></div>
             </div>
@@ -78,5 +87,7 @@
     <script type="text/javascript" src="{{serverPath}}/libraries/dcjs/dc.js"></script>
     <script type="text/javascript" src="{{serverPath}}/libraries/spin.js/spin.js"></script>
     <script type="text/javascript" src="{{serverPath}}/libraries/wordcloud/src/wordcloud2.js"></script>
+    <script type="text/javascript" src="{{serverPath}}/libraries/particles.js/particles.js"></script>
+    <script type="text/javascript">particlesJS.load("particles-js", "{{serverPath}}/config/particles.json");</script>  
     <script type="text/javascript" src="{{serverPath}}/javascripts/crawlRender.js"></script>
 {% endblock %}

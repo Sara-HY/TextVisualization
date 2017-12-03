@@ -40,6 +40,7 @@ $(document).ready(function() {
             // alert("保存成功");
         })
     })
+
     $("#save-nlp-process-btn").click(function() {
         var preprocess = [];
         $("#nlp-process-list input[type=checkbox]").each(function() {
@@ -61,7 +62,6 @@ $(document).ready(function() {
         })
     })
 
-
     $("#start-process-btn").click(function() {
         var datasetID = $("data").attr("dataset-id");
         var url =  $("#title").attr("serverPath") + "/api/datasystem/process/start/" + datasetID;
@@ -69,7 +69,7 @@ $(document).ready(function() {
             url: url,
             type: "get"
         }).done(function(d) {
-            $("#process-status-modal").modal();
+            $("#process-status-modal").modal(); 
             changeStatus();
             setTimeout(queryStatus(), 1000);
         })
@@ -87,7 +87,7 @@ function queryStatus() {
     $.get( $("#title").attr("serverPath") + "/api/datasystem/process/status/" + datasetID, function(data) {
         console.log(data.data)
         changeStatus(data.data)
-        if (data.data == null || data.data.status != "processing") {
+        if (data.data == null || data.data.status != "Processing") {
             return;
         }
         setTimeout(function() {
@@ -100,8 +100,16 @@ function changeStatus(status) {
     if (status == null) {
         $("#Status").html("Start processing");
     } else {
+        console.log(status)
+        if(status.status == "Processing" && status.message== "Process:chinese")
+            $("#progressBar")[0].value = 30;
+        else if(status.status == "Processing" && status.message== "Process:english")
+            $("#progressBar")[0].value = 30;
+        else if(status.status == "Processed")
+            $("#progressBar")[0].value = 100;
+
         $("#Status").html(status.status + "</p><p>" +status.message);
-        if (status.status == "processed") {
+        if (status.status == "Processed") {
             $("#Analyze").removeClass("hide");
         }
     }

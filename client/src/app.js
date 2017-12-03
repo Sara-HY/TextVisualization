@@ -40,8 +40,9 @@ $(async () => {
     await DataCenter.loadAllData();
 
     var model = await DataCenter.getTopicModel(5, 0, null, null);
-    DataCenter.topicModel = model;
     model.pullToGroups();
+    DataCenter.topicModel = model;
+
     PubSub.publish("DataCenter.TopicModel.Update");
     
     //根据配置创建view

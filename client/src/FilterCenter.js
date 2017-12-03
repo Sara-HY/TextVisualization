@@ -30,8 +30,10 @@ class FilterCenter {
         }
         FilterCenter._filteredData = new Map();
         this._filterChangedDebounce();
-
-    }
+        
+        this.spinner = new Spinner().spin($("body")[0]);
+        setTimeout(function(){_this.spinner.stop();}, 5000);
+    } 
 
     static getGroupByID(id) {
         return GroupCenter._groupMap[id];

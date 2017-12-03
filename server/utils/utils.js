@@ -20,7 +20,7 @@ module.exports = {
 
     syncExec: function(cmd) {
         return new Promise((resolve) => {
-            exec(cmd, function(err, stdout, stderr) {
+            exec(cmd, {maxBuffer: 1024 * 10000}, function(err, stdout, stderr) {
                 var data = {
                     err: err,
                     stdout: stdout,

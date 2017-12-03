@@ -12,6 +12,7 @@
     {% block content %}
 
     <data dataset-id="{{datasetID}}"></data> 
+    <div id="particles-js"></div>
     <div class="process-container">
         <div class="step" step=0>
             <h2 class="">Data Fields</h2>
@@ -48,8 +49,8 @@
                     </ul>
                 </div>
             </div>
-            <div class="next">
-                <span id="save-field-btn" class="btn btn-default btn-primary next-btn" step=0>Next</span>
+            <div id="save-field-btn">
+                <span class="btn btn-default btn-primary next-btn" step=0>Next</span>
             </div>
         </div>
         <div class="step display-none" step=1>
@@ -57,27 +58,25 @@
             <hr>
             <div class="row">
                 <div class="col-md-12" style="margin-left: 20px; position: relative;">
-                    <form id="nlp-process-list">
+                    <form id="nlp-process-list" class="checkbox-wrap">
                         <div class="checkbox">
-                            <label><input type="checkbox" id="nlp-process-ch-seg-checkbox" name="chinese"><strong>Chinese Segmentation and NER</strong></label>
+                            <input type="checkbox" id="nlp-process-ch-seg-checkbox" name="chinese">
+                            <label for="nlp-process-ch-seg-checkbox"><strong>Chinese Segmentation and NER</strong></label>
                         </div>
                         <div class="checkbox">
-                            <label><input type="checkbox" id="nlp-process-ch-ner-checkbox" name="english"><strong>English</strong></label>
+                            <input type="checkbox" id="nlp-process-ch-ner-checkbox" name="english">
+                            <label for="nlp-process-ch-ner-checkbox"><strong>English</strong></label>
                         </div>
-                    </form>          
+                    </form>           
                 </div>
             </div>
-            <div class="next">
-                <span id="save-nlp-process-btn" class="btn btn-default btn-primary next-btn" step=1>Next</span>
-            </div>  
+            <div id="save-nlp-process-btn">
+                <span class="btn btn-default btn-primary next-btn" step=1>Next</span>
+            </div> 
         </div>
         <hr/>
-        <div class="step display-none" step=2 >
-            <div class="row" style="text-align: center;">
-                <div class="col-md-12">
-                    <span id="start-process-btn" class="btn btn-primary">Start Process</span>
-                </div>
-            </div>
+        <div class="step display-none" step=2 id="start-process-btn">
+            <span class="btn btn-primary">Start Process</span>
         </div>
         <div class="modal fade" id="process-status-modal" style="margin-top: 150px">
             <div class="modal-dialog">
@@ -87,8 +86,13 @@
                         <h4 class="modal-title">Processing Status</h4>
                     </div>
                     <div class="modal-body h4 text-center">
-                        <p id="Status"> </p>
-                        <a id="Analyze" href={{webPath}}{{datasetID}} class="btn btn-primary analyze-btn hide" target="_blank">Analyze</a>
+                        <div>
+                            <p id="Status"> </p>
+                             <progress max="100" value="0" id="progressBar"></progress></div>
+                        </div>
+                        <div class="text-center" style="margin-bottom: 30px;">
+                            <a id="Analyze" href={{webPath}}{{datasetID}} class="btn btn-primary analyze-btn hide" target="_blank">Analyze</a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -99,6 +103,8 @@
 {% block foot-include %} 
     <script type="text/javascript" src="{{serverPath}}/libraries/jquery/jquery.js"></script> 
     <script type="text/javascript" src="{{serverPath}}/libraries/jquery-ui/jquery-ui.js"></script>     
-    <script type="text/javascript" src="{{serverPath}}/libraries/bootstrap/js/bootstrap.js"></script>  
+    <script type="text/javascript" src="{{serverPath}}/libraries/bootstrap/js/bootstrap.js"></script> 
+    <script type="text/javascript" src="{{serverPath}}/libraries/particles.js/particles.js"></script>
+    <script type="text/javascript">particlesJS.load("particles-js", "{{serverPath}}/config/particles.json");</script>  
     <script type="text/javascript" src="{{serverPath}}/javascripts/datasystem/process.js"></script>
 {% endblock %}

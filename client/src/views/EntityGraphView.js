@@ -32,7 +32,7 @@ class EntityGraphView extends BaseView {
             for(var i=0; i<_this.filteredData.length; i++)
                 _this.filteredSet.add(_this.filteredData[i]._index);
             // console.log(_this.filteredData);
-            _this._updateData();
+            // _this._updateData();
             _this.reRender();
         })  
 
@@ -183,7 +183,7 @@ class EntityGraphView extends BaseView {
         //         _this.svg.attr("transform", "translate(" + [translateX, translateY] + ")scale(" + scale + ")"); 
         //     }))
 
-        this.linkDistance = 4;
+        this.linkDistance = 10;
         this.update = 0;
 
         // this.linkDistanceBar = this.svgControll
@@ -287,7 +287,7 @@ class EntityGraphView extends BaseView {
         var nodes = _.values(nodeMap);
 
         // console.log(nodeMap, nodes);
-        var edgeWeightFilterThreshold = 5;
+        var edgeWeightFilterThreshold = 15;
         var edges = [];
         for (var entityName in nodeMap) {
             var neighbors = entityMap[entityName].links;
@@ -326,14 +326,14 @@ class EntityGraphView extends BaseView {
             }
         } else {
             var dataSet = new Set(data);
-            // for (var node of this.nodes) {
-            //     var weight = 0;
-            //     for (var doc of node.docs) {
-            //         if (dataSet.has(doc))
-            //             weight++;
-            //     }
-            //     node["weight"] = weight;
-            // }
+            for (var node of this.nodes) {
+                var weight = 0;
+                for (var doc of node.docs) {
+                    if (dataSet.has(doc))
+                        weight++;
+                }
+                node["weight"] = weight;
+            }
             for (var edge of this.edges) {
                 var weight = 0;
                 for (var doc of edge.docs) {
@@ -372,11 +372,16 @@ class EntityGraphView extends BaseView {
             .size([width, height])
             .charge(function(d, i){
                 if(d.weight > 50)
-                    return -10;
+                    return -15;
                 else
                     return -1;
             })
-            .linkDistance(this.linkDistance)
+            .linkDistance(function(d, i){
+                if(d.weight > 50)
+                    return 3;
+                else
+                    return 5;
+            })
             .alpha(0.8)
             .gravity(0.8)
             .start();
@@ -540,11 +545,16 @@ class EntityGraphView extends BaseView {
             .size([width, height])
             .charge(function(d, i){
                 if(d.weight > 50)
-                    return -10;
+                    return -15;
                 else
                     return -1;
             })
-            .linkDistance(this.linkDistance)
+            .linkDistance(function(d, i){
+                if(d.weight > 50)
+                    return 3;
+                else
+                    return 5;
+            })
             .alpha(0.8)
             .gravity(0.8)
             .start();
@@ -604,8 +614,11 @@ class EntityGraphView extends BaseView {
 
     reRender() {
         var _this = this;
-        var maxWeightEle = _.maxBy(this.nodes, "weight");
-        var maxWeight = maxWeightEle.weight;
+        var maxWeightEle = _.maxBy(this.nodes, "weight"),
+            maxWeight = maxWeightEle.weight,
+            minWeightEle = _.minBy(this.nodes, "weight"),
+            minWeight = minWeightEle.weight;
+
         // this.node.style("display", function(d) {
         //         return (d["docs"].length && d.weight > 0) ? "block" : "none";
         //     })
@@ -636,7 +649,7 @@ class EntityGraphView extends BaseView {
         this.node.select("circle")
             .attr("r", function(d) {
                 if (maxWeight == 0) return 0;
-                return Utils.scaling(d.weight, 0, maxWeight, 3, 10);
+                return Utils.scaling(d.weight, minWeight, maxWeight, 3, 10);
             })
             
         // this.link.style("stroke-width", function(d) { return Math.sqrt(d.weight); })
@@ -648,7 +661,8 @@ class EntityGraphView extends BaseView {
         //     })
 
         this.link.each(function(d, index){
-            d3.select(this).style("stroke-width", function(d) { return Utils.scaling(d.weight, 0, maxWeight, 1, 3); })
+            d3.select(this)
+                .style("stroke-width", function(d) { return Utils.scaling(d.weight, minWeight, maxWeight, 0.5, 2); })
                 .classed("filtered-out", function() {
                    for(var i=0; i < d.docs.length; i++){
                         if(_this.filteredSet.has(d.docs[i]._index))
@@ -671,7 +685,7 @@ class EntityGraphView extends BaseView {
         //     })
 
         this.path.each(function(d, index){
-            d3.select(this).style("stroke-width", function(d) { return Utils.scaling(d.weight, 0, maxWeight, 1, 3); })
+            d3.select(this).style("stroke-width", function(d) { return Utils.scaling(d.weight, minWeight, maxWeight, 0.5, 2); })
                 .classed("filtered-out", function() {
                     for(var i=0; i < d.docs.length; i++){
                         if(_this.filteredSet.has(d.docs[i]._index))

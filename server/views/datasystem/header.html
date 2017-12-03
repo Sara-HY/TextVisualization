@@ -1,15 +1,15 @@
 <div class="navbar navbar-default navbar-fixed-top">
     <div class="container">
-        <strong class="navbar-brand">Document Facets Analytics System</strong>
+        <strong class="navbar-brand" id='title'>Document Facets Analytics System</strong>
         <div class="menubar">
             <div class="menubar-item">
                 <strong class="navbar-brand navbar-right" id="navbar-user">{{ userName }}</strong>
                 <ul class="navbar-default top-nav-dropdown" id="top-nav-profile-dropdown">
-                    <li><a href="{{serverPath}}/datasystem/upload">Files</a></li>
-                    <li><a href="{{serverPath}}/crawler/">Crawler</a></li>
-                    <li><a href="{{serverPath}}/signout">Log Out</a></li>
+                    <a href="{{serverPath}}/datasystem/upload"><li><i class="fa fa-list"></i>Files</li></a>
+                    <a href="{{serverPath}}/signout"><li style="top: 50%;"><i class="fa fa-power-off"></i>Log Out</li></a>
                 </ul>
             </div>
+            <strong class="navbar-brand navbar-right" id="navbar-crawler"><a href="{{serverPath}}/crawler/">Crawler</a></strong>
         </div>
     </div>
 </div>
