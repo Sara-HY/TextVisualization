@@ -1,29 +1,5 @@
 [
     {
-        "Class": "KeyWordsView",
-        "id": "keywords-view",
-        "title": "Keywords View",
-        "layout": {
-            "position": "absolute",
-            "left": "0%",
-            "top": "50px",
-            "width": "15%",
-            "bottom": "40%"
-        }
-    },
-    {
-        "Class": "EntityView",
-        "id": "entity-view",
-        "title": "Entity View",
-        "layout": {
-            "position": "absolute",
-            "left": "0",
-            "top": "60%",
-            "width": "15%",
-            "bottom": "0%"
-        } 
-    },
-    {
         "Class": "DocumentGalaxyView",
         "id": "document-galaxy-view",
         "title": "Document Galaxy View",
@@ -94,6 +70,30 @@
             "bottom": 0,
             "top": "50px"
         }
+    },
+    {
+        "Class": "KeyWordsView",
+        "id": "keywords-view",
+        "title": "Keywords View",
+        "layout": {
+            "position": "absolute",
+            "left": "0%",
+            "top": "50px",
+            "width": "15%",
+            "bottom": "40%"
+        }
+    },
+    {
+        "Class": "EntityView",
+        "id": "entity-view",
+        "title": "Entity View",
+        "layout": {
+            "position": "absolute",
+            "left": "0",
+            "top": "60%",
+            "width": "15%",
+            "bottom": "0%"
+        } 
     },
     // {
     //     "Class": "TopicEntityView",
